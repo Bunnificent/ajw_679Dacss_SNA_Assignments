@@ -1,0 +1,28 @@
+---
+title: "679 Assignment- Week 1"
+description: |
+  
+author:
+  - name: ajw
+    url:
+    affiliation:
+    affiliation_url:
+date: "`r Sys.Date()`"
+output: distill::distill_article
+---
+
+```{r setup SNA Distill Blog Libraries, include=FALSE}
+
+knitr::opts_chunk$set(echo = FALSE)
+library(learnr)
+knitr::opts_chunk$set(echo = FALSE)
+library(igraph)
+library(statnet)
+
+
+```
+
+
+
+
+
