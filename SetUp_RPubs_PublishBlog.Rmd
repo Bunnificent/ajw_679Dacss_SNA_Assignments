@@ -1,20 +1,32 @@
 ---
-title: "Untitled"
+title: "SetUp_RPubs_PublishBlog"
 description: |
-  A new article created using the Distill format.
+  Publishing to RPubs: A new article created using the Distill format.
 author:
-  - name: Nora Jones 
-    url: https://example.com/norajones
-    affiliation: Spacely Sprockets
-    affiliation_url: https://example.com/spacelysprokets
+  - name: 
+    url: 
+    affiliation: 
+    affiliation_url:
 date: "`r Sys.Date()`"
 output: distill::distill_article
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
+
 ```
 
+*Publishing to RPubs*
+
+Open RStudio and create a new Rmd file
+                            (File > New File > R Markdown).
+When you’re ready to publish to RPubs, click Knit.
+From your knitted document, click Publish in the top, right-hand corner.
+Select Rpubs.
+
+Click Publish. You’ll then be able to create/edit a title, short description and customized slug.
+
+********
 Distill is a publication format for scientific and technical writing, native to the web. 
 
 Learn more about using Distill for R Markdown at <https://rstudio.github.io/distill>.
