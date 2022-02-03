@@ -1,0 +1,26 @@
+Publishing a distill article 
+Sean Conway 
+
+12/21/2021 
+
+Publishing an article via distill 
+
+• First, make sure you have the distill package installed. 
+
+• To install the package, run 
+                               install.packages("distill") 
+  in your RStudio console. 
+
+• Next, create an R Markdown file that will output a distill article in html format. 
+  – To do so, you can run 
+                           distill::create_article("<insert your new file name>") 
+    in your RStudio console. 
+  – OR, you can click File-> New File-> R Markdown-> From Template-> Distill Article-> OK 
+
+• Make sure your Rmd file includes the following: 
+  – Include a brief description in the YAML description field. This can be anything, but it should be in quotes and should describe the general content of your article. 
+  – Also, make sure to change your setup chunk to 
+                        knitr::opts_chunk$set(echo = TRUE)
+    This step is crucial, as it ensures your code will print in the knitted file. 
+
+• Then, follow the regular steps to complete the RMarkdown file, publish the post to RPubs, and then submit it to the course blog. 
