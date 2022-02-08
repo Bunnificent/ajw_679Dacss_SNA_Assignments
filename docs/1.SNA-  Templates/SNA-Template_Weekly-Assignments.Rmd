@@ -1,0 +1,68 @@
+---
+title: "Social Network Analysis: Assignment: Week#"
+description: " lorum ipsum "
+  A new article created using the Distill format.
+author:
+  - name: "Audra Jamai White" 
+    url: 
+    affiliation: " DACSS 679: Social Network Analysis"
+    affiliation_url: 
+date: "`r Sys.Date()`"
+output: distill::distill_article
+---
+
+```{r setup, Libraries, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+# Document Creation
+library(knitr)
+library(rmarkdown)
+library(yaml)
+library(distill)
+library(blogdown)
+
+# Basic Analysis
+library(ggplot2)
+library(tidyverse)
+library(clipr)
+library(dbplyr)
+library(data.table)
+library(stringr)
+library(stringi)
+library(tibble)
+library(tidyr)
+
+# SNA - Social Network Analysis
+
+library(tergm)
+library(ergm)
+
+library(network)
+library(networkDynamic)
+library(networkDynamicData)
+
+library(statnet)
+library(igraph)
+library(igraphdata)
+library(tsna)
+library(sna)
+
+```
+
+*Week \# Assignment*
+
+```{r,Import Data Set,include=FALSE}
+
+```
+
+```{r, Describe Data Set}
+
+```
+
+```{r, Analyze Data Set}
+
+```
+
+Distill is a publication format for scientific and technical writing, native to the web.
+
+Learn more about using Distill for R Markdown at <https://rstudio.github.io/distill>.
