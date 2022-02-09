@@ -394,33 +394,3 @@ transitivity(flo.ig,
 > Learn more about using Distill for R Markdown at <https://rstudio.github.io/distill>.
 ##
 
-# Week3:    Briefly describe the dataset:
-1.   identify initial network format; 
-2.   describe and identify the nodes 
-     including: 
-        *  how many nodes are in the dataset; 
-3.   what constitutes a tie or edge
-     including:
-        *  how many ties, 
-        *   whether ties are directed/undirected,
-        *   whether ties are weighted/binary, 
-        *   and how to interpret the value of the tie if any.
-        *   Whether or not there are edge attributes 
-            that might be used to:
-            *   subset data, or 
-            *   stack multiple networks. 
-
-#WEEK 3:     Working from the example R syntax:
-1.   calculate network density; 
-2.   degree centrality, and 
-3.   centralization measures for your network data. 
-
-#WEEK 3:  Provide at least two or three noteworthy results
-1.   the relevant statistics and interpretation. 
-        For example, explaining which node(s) are most central and which are least central. 
-2.   Discuss (with any related evidence) whether or not the node(s) behavior is in line with or violates expectations based on the degree centrality measure. 
-3.   What do you make of network density and centralization measures?  
-4.   What about differences in the binary 100 million threshold network vs valued trade flows network. 
- 5.  Check tutorial for other ideas of results to discuss.
-
-

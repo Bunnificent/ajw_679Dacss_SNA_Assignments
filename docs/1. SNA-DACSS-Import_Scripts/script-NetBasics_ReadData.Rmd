@@ -1,0 +1,315 @@
+---
+title: "Tutorial: Network Creation"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+knitr::opts_chunk$set(echo = FALSE)
+library(igraph)
+library(statnet)
+#create a network.rda object
+#can also use igraphdata
+#load("network.rda")
+tutorial_options(exercise.timelimit = 10)
+```
+##**Introduction**
+This tutorial will introduce the basic commands used to create a network data object in R that can be analyzed using a network analysis package. There are three or four major steps required to create a usable network object. 
+
+    1. Read raw data into R
+    2. Identify critical features of data:
+      - edgelist or adjacency matrix format
+      - weighted or binary edges
+      - single mode or affiliation (bipartite)
+      - symmetric or directed
+    3. Create a network data object
+    4. If required, assign node and edge attributes
+
+We will be using two network analysis packages throughout the course: **igraph** and **statnet**. Each of the packages uses a slightly different network object format, and the network analysis commands in the package will only work on the correct format of network object. Throughout this tutorial, and future tutorials, generic indicators will be appended to the network object name to distinguish between statnet and igraph format:
+
+- *network.ig* - igraph network object
+- *network.stat* - statnet network object
+
+##**Loading Raw Data into R**
+Typically, reading raw data into R will require a series of steps: setting the working directory and path to the data file, finding the data file name, identifying the raw data type, and then choosing the correct R command to read in the specific file type. 
+
+For this course, the required network datasets are all provided in the workspace and only need to be loaded into memory. If you plan to use original network data for weekly assignments, you will need to read the raw data into R and have it available in the workspace to use for analysis each week. An R tutorial, *Reading Data into R*, is available to help you create a custom syntax file to read your original network data in and save it in your course workspace.
+
+```{r load-example, echo=TRUE}
+#networkdata<-load("data")
+```
+
+
+```{r load, exercise=TRUE}
+##load the network data named "DATA"
+
+```
+
+```{r load-solution}
+##load the network data named "DATA"
+networkdata<-load("data") 
+```
+
+##**Identify Data: Format & Edge Weights**
+In order to analyze your network, you'll need to clean up the data and identify it accurately. If you do not already know the four critical features of network data listed in the introduction, the following commands can allow you to identify these features of your network data.
+
+An edgelist is a list of edges between two nodes, and is provided in 2 (binary) or 3 (weighted) columns. Here is an edgelist of men who have invited women on a date.
+
+| Node From | Node To | Edge weight |
+| ---------:|:-------:|:------------|
+| Bob       | Susan   |      2      |
+| John      | Mary    |      5      |
+
+An adjacency matrix is an $n$x$n$ matrix (or $n1$x$n2$ if affiliation data) with the names of nodes as both column and row labels, and either a 0 (if no tie exists) or the weight of the edge.
+
+|           |  Bob  | Susan | John | Mary |
+| ---------:|:-----:|:-----:|:----:|:-----|
+| Bob       |   -   |   2   |   0  |  0   |
+| Susan     |   0   |   -   |   0  |  0   |
+| John      |   0   |   0   |   -  |  5   |
+| Mary      |   0   |   0   |   0  |  -   |
+
+###`dim()` command
+
+The command `dim()` can be used to tells if your data is an adjacency matrix or an edgelist. If `networkdata` is in the form of a standard adjacency matrix, the dimension will be square ($n$x$n$). If `networkdata` is in the form of an edgelist, the dimension will be $n$x2 (or $n$x3). 
+```{r dim-example, echo=TRUE}
+#dim(networkdata)
+```
+
+```{r quiz1}
+quiz(
+  question("How would you describe `networkdata`?",
+    answer("unweighted adjacency matrix", correct=TRUE),
+    answer("weighted adjacency matrix"),
+    answer("unweighted edgelist"),
+    answer("weighted edgelist")
+  )
+)
+```
+
+##**Identify Data: Affiliation?**
+
+If you have affiliation data (e.g., people who belong to organizations), there are two types of nodes (e.g., people and organizations). Affiliation data can be provided in both edgelist and adjacency matrix format. 
+
+Affiliation networks can usually be identified in the previous step if they are in adjacency matrix format. If `networkdata` is an affiliation network in adjacency matrix format, the dimension will be $n1$x$n2$, where $n2$ will typically be substantially more than 3 but not equal to $n1$. For example, here is an affiliation network in adjacency format: men who own dress shirts of different colors. (In this toy example, $n2$=3, but this is not typical.)
+
+|           |  Blue  | White | Other |
+| ---------:|:-----:|:------:|:------|
+| Bob       |   0   |   8    |   0  |
+| Carl      |   4   |   3    |   6  |
+| John      |   5   |   3    |   2  |
+| George    |   5   |   6    |   3  |
+
+Affiliation data can also be provided in edgelist format. Here is a partial excerpt of the data above on the color of shirts owned by several men.
+
+| Name      | Shirt Color | Num owned |
+| ---------:|:-----------:|:----------|
+| Bob       | White       |      8    |
+| Carl      | Blue        |      4    |
+| Carl      | White       |      3    |
+
+###`colnames()` command
+
+If the `dim()` command indicates that your data have more than 2 columns but are not square, the `colnames()` command can be used to confirm whether or not you are working with affiliation data. This command allows you to visually inspect the actual column names as 3rd, 4th, 5th...kth columns of `networkdata` may instead contain edge attributes such as edge weight, type,  etc, or even additional node information.
+
+```{r colnames-example, echo=TRUE}
+##need example of two different nxk datasets
+##one is affiliation matrix
+##one is edgelist with additional info
+##can find in weekly examples or in networks list
+#dim(networkdata)
+#colnames(networkdata)
+```
+
+```{r quiz2}
+quiz(
+  question("Which of the datasets is an affiliation network?",
+    answer("networka.data", correct=TRUE),
+    answer("networkb.data"),
+    answer("both"),
+    answer("neither")
+  )
+)
+```
+
+### Other useful commands
+It is also possible to provide affiliation network data in edgelist format, but it is more difficult to easily identify whether or not an edgelist captures a traditional one-mode network or a bipartite or affiliation network. Several basic commands that take advantage of the edge names or identifiers provided in the first two columns ("from" and "to") of an edgelist can be used to explore whether or not a network is an affiliation network.
+
+```{r unique-example, echo=TRUE}
+#extract a list of unique nodes 
+#unique(networkdata[,1])
+
+#Sort the list of unique node identifiers
+#sort(unique(networkdata[,1]))
+
+```
+
+Now, try creating a unique list of node identifiers that appear in the second or *TO* column of `networkdata`, and then sort that list.
+
+```{r unique, exercise=TRUE}
+#extract a list of unique nodes 
+
+#Sort the list of unique node identifiers
+
+```
+
+```{r unique-solution}
+#extract a list of unique nodes 
+unique(networkdata[,2])
+
+#Sort the list of unique node identifiers
+sort(unique(networkdata[,2]))
+
+```
+
+**ADVANCED** If there are many nodes with difficult identifiers, you can use `%in%` to compare the *FROM* and *TO* columns. `%in%` will provide a TRUE or FALSE respond that tells you whether or not each element of the unique node list from column 1 appears in the unique node list from column 2. If you are working with affiliation data, none of the nodes in column 1 (*FROM*) should appear in column 2 (*TO*). In other words, all of the responses to the `%in%` command should be FALSE. Use `table()` to investigate how many responses are TRUE and how many are FALSE.
+
+```{r uniquein-example, echo=TRUE}
+#Is a node in column 1 also in column 2?
+#unique(networkdata[,1])%in%unique(networkdata[,2])
+
+#tabulate the TRUE/FALSE responses
+#table(unique(networkdata[,1])%in%unique(networkdata[,2]))
+```
+
+##**Identify Data: Directed or Undirected Ties**
+Low priority placeholder.
+
+This need to be filled in - don't remember how I have done this in past - just a placeholder for now. Maybe an example in game of thrones file or other weekly file? Look for symmetric or directed/undirected language. Essentially, check to see if there are reciprocal ties where i,j == j,i. In edgelist, if there is an i, j edge there is either no j,i or if there, i,j==j,i for all i,j. Maybe examples online? 
+
+##**Create Network Object from Edgelist**
+
+If data are in edgelist format and are undirected, use one of the following commands:
+
+```{r graph1, echo=TRUE}
+##igraph object
+#network.ig<-graph.edgelist(as.matrix(networkdata),directed=F)
+
+##statnet object
+#network.stat<-network(networkdata, directed=F, matrix.type="edgelist") 
+```
+
+If data are in edgelist format and are directed, use the following command:
+
+```{r graph2, echo=TRUE}
+#igraph object
+#network.ig<-graph.edgelist(as.matrix(networkdata),directed=T) 
+
+#statnet object
+#network.stat<-network(networkdata, directed=T, matrix.type="edgelist")
+```
+
+###Weighted edges
+
+For all of these commands, statnet will automatically read in additional columns (3...k) as edge attributes with attribute names equal to the column name in the rawdata. Thus, weights included in the raw data are automatically read into the network object.
+
+Weighted edgelists will also read in automatically in igraph if third column in the edgelist dataframe is named *weight*. Otherwise, you will need to perform an additional step to assign the weight values to igraph network edges based on the weighted edgelist. All additional edge attribute data in columns 4...k will need to be read in using the same basic command, see Section on Edge attributes below.
+
+```{r weight-edge, echo=TRUE}
+#add edge weight to igraph object
+#E(network.ig)$weight <- as.numeric(networkdata[,3])
+```
+
+###Affiliation data
+
+When reading affiliation or bipartite network data into a statnet object, it is necessary is to include an additional option in the `network()` command: `bipartite=n1` where $n1$ should be replaced with the number of unique actors in the first mode (e.g., length of unique node identifier list created from first column).
+
+When creating an igraph network object, an additional step is needed to indicate that there are two types of nodes. 
+
+```{r bipartite-edge, echo=TRUE}
+#add node type to igraph object
+#the second column of edges is TRUE type
+#V(network.ig)$type <- V(network.ig)$name %in% edges[,2] 
+```
+
+##**Create Network Object from Adjacency Matrix**
+
+If data are in adjacency format and are undirected, use the following command:
+
+```{r graph3, echo=TRUE}
+#igraph object
+#network.ig<-graph.adjacency(networkdata,mode="undirected") 
+#statnet object
+#network.stat<-network(networkdata, directed=F, matrix.type="adjacency") 
+```
+
+If data are in adjacency format and are directed, use the following command:
+
+```{r graph4, echo=TRUE}
+#igraph object
+#network.ig<-graph.adjacency(networkdata,mode="directed") 
+
+ #statnet object
+#network.stat<-network(networkdata, directed=F, matrix.type="adjacency")
+```
+
+###Weighted Edges
+This seems messed up - mentions igraph then example is statnet
+
+Weighted adjacency matrices (entries are not 0/1) will read automatically in igraph. Just like the edgelist data, weights from an adjacency matrix require an additional line of code for statnet graphs, using option `ignore.eval` and `names.eval`
+
+```{r graph5, echo=TRUE}
+#statnet object
+#network.stat<-network(networkdata, directed=F, matrix.type="adjacency", ignore.eval=FALSE, names.eval="weight") 
+```
+
+###Bipartite Adjacency Networks
+
+use option `matrix.type="incidence"` in statnet
+For igraph, different constructor is used:
+graph_from_incidence_matrix(same as adjacency options)
+
+
+##**Adding and checking Edge Attributes**
+If you have edgelist data, edge attributes will often be stored in same data file. Statnet (and iGraph?) will read in all edge attributes automatically. Inspect edge attributes for both packages as follows:
+
+```{r graph6, echo=TRUE}
+#display edge attributes for igraph object
+#edge_attr(network.ig)`
+
+#display edge attributes for statnet object
+#list.edge.attributes(network.stat)`
+```
+
+Create new edge attributes if sorted in same order.
+
+```{r graph7, echo=TRUE}
+#display edge attributes for igraph object
+#E(network.ig)$COLNAME<-edge.attribute$COLNAME
+
+#display edge attributes for statnet object
+#set.edge.attribute(network.stat,COLNAME,edge.attribute$COLNAME)
+#network.stat %e% "COLNAME"
+
+```
+
+##**Node or Vertex Attributes**
+
+Sometimes, node attributes will be in a separate datafile. Read in the file, replacing "filename" as needed, and then attach the attribute data to the correct nodes.
+
+```{r graph8, echo=TRUE}
+#vertex_attributes<-read.csv("vertex_attribute_file.csv",header=T,stringsAsFactors=F)
+```
+
+The vertex names in this file must exactly match those in the network. Sometimes this requires using `as.character(x)` to change from factor to character. Now, you can create vertex attributes in igraph
+
+```{r graph9, echo=TRUE}
+##add vertex attributes to igraph object
+#V(network.ig)[match(V(network)$name,vertex_attributes$VERTEX_NAME)]$COLNAME<-
+#  vertex_attributes$COLNAME
+
+##add vertex attributes to statnet object
+#network.stat%v%'COLNAME'<- vertex_attributes$COLNAME
+
+```
+
+##**Optional: Convert Affiliation to Single Mode**
+This section needs to be updated and decide whether to convert to single mode before or after it is read into network format. Consider whether it is necessary - probably for graduate students.
+
+Next, convert your data to a single mode network in order to analyze. Choose either dimension n1xn1 or n2xn2 (nodes in rows or nodes in columns) If `networkdata` is a matrix of dimension $n1$x$n2$. If it already is, skip to the next step.
+```{r five-plus-two, echo=TRUE}
+#network_mat<-as.matrix(networkdata)%*%t(as.matrix(networkdata)) #n1xn1 (rows)
+#network_mat<-t(as.matrix(networkdata))%*%as.matrix(networkdata) #n2xn2 (columns)
+```
+
