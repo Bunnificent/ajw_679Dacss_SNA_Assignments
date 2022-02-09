@@ -1,5 +1,9 @@
 #This script imports 
 
+#Let's load the libraries you need (install them first if you need to)
+if("statnet" %in% rownames(installed.packages()) == FALSE) {install.packages("statnet")}
+if("igraph"  %in% rownames(installed.packages()) == FALSE) {install.packages("igraph")}
+
 library(statnet)
 library(igraph)
 
