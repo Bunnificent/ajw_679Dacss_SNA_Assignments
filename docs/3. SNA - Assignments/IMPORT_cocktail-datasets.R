@@ -1,27 +1,29 @@
 # 1. Read raw data into R
-# Load csv files directly into R environment
-    # data.frame
-    death-drinkRecipie <- cocktail_recipies.DeathAndCom
-    smugglers-drinkIndex <- index.by_name.Smuggler_Cove.cocktail_recipies
-    pdt-drinkIndex <-  index_by_name_Please_Dont_Tell_cocktail_recipies
-        # spec_tbl_df- needs formatting
-      index_by_ingredient.Please_Dont_Tell.cocktail_recipies
-      
+# Load csv files directly into R Files and use auto-import function
+
 #Load your dataset into the environment#
 
-      library(readr)
-      
-    leConRecip <- read_csv("C:/Users/white/iCloudDrive/Documents/1_DACSS_UMassAmherst/Dacss_RProjects/3. Sp22_rProjects/Dacss_679- Coursework/GIT-ajw_Learning-SocialNetworkAnalysis/docs/3. SNA-Data/cocktail_recipies_(by bartender)-le cocktail connoisseur.csv")
-      View(leCon-recipies)
-    
-   
-      deathCoRecip <- read_csv("C:/Users/white/iCloudDrive/Documents/1_DACSS_UMassAmherst/Dacss_RProjects/3. Sp22_rProjects/Dacss_679- Coursework/GIT-ajw_Learning-SocialNetworkAnalysis/docs/3. SNA-Data/cocktail_recipies-DeathAndCo.csv")
-      View(deathCoRecip)
-      
-      pdtDrinks <- read_csv("C:/Users/white/iCloudDrive/Documents/1_DACSS_UMassAmherst/Dacss_RProjects/3. Sp22_rProjects/Dacss_679- Coursework/GIT-ajw_Learning-SocialNetworkAnalysis/docs/3. SNA-Data/index-by_name-Please_Dont_Tell-cocktail_recipies.csv")
+library(readr)
 
-      smugCovDrinks <- read_csv("C:/Users/white/iCloudDrive/Documents/1_DACSS_UMassAmherst/Dacss_RProjects/3. Sp22_rProjects/Dacss_679- Coursework/GIT-ajw_Learning-SocialNetworkAnalysis/docs/3. SNA-Data/index-by_name-Smuggler_Cove-cocktail_recipies.csv")
-      View(smugCovDrinks)
+#     _Recip variables contain complete recipies, with measurements in a 
+#     classic spreadsheet Rows contain = individual cases / Columns contain attribute data
+
+leConRecip <- 
+  read_csv("C:/Users/white/iCloudDrive/Documents/1_DACSS_UMassAmherst/Dacss_RProjects/3. Sp22_rProjects/Dacss_679- Coursework/GIT-ajw_Learning-SocialNetworkAnalysis/docs/3. SNA-Data/cocktail_recipies_(by bartender)-le cocktail connoisseur.csv")
+      # le Cocktail Connoisseur webscrape. Unique because it includes Bartenders and Bars drinks are attributed to
+
+
+deathCoRecip <-
+  read_csv("C:/Users/white/iCloudDrive/Documents/1_DACSS_UMassAmherst/Dacss_RProjects/3. Sp22_rProjects/Dacss_679- Coursework/GIT-ajw_Learning-SocialNetworkAnalysis/docs/3. SNA-Data/cocktail_recipies-DeathAndCo.csv")
+      # Death & Company's cocktail recipie book
+      # It's really long because all each column class of ingredients <Spirits, Liqueur, Juice, Garnish, Bitters, et al>
+
+pdtDrinks <-
+  read_csv("C:/Users/white/iCloudDrive/Documents/1_DACSS_UMassAmherst/Dacss_RProjects/3. Sp22_rProjects/Dacss_679- Coursework/GIT-ajw_Learning-SocialNetworkAnalysis/docs/3. SNA-Data/index-by_name-Please_Dont_Tell-cocktail_recipies.csv")
+
+smugCovDrinks <- 
+  read_csv("C:/Users/white/iCloudDrive/Documents/1_DACSS_UMassAmherst/Dacss_RProjects/3. Sp22_rProjects/Dacss_679- Coursework/GIT-ajw_Learning-SocialNetworkAnalysis/docs/3. SNA-Data/index-by_name-Smuggler_Cove-cocktail_recipies.csv")
+
 
       
 # 2. Identify critical features of data:
