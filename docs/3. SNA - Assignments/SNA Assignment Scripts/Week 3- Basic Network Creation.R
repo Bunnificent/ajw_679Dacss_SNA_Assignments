@@ -9,16 +9,31 @@ setwd()
 #Step 2: Read raw data into R
 #Different approaches to reading into R, depending on file format
 
+
+## possible adjacency matrix
+
+## possible edgelists
+
+
 ###################################################################
 #Step 3: clean network_data into edgelist or adjacency matrix format
 
 #check for adjacency vs edgelist 
-dim(network_data)
 
-#if your data are in the form of an edgelist, network data is nx2 (or more with edge attributes)
-#first column of network_data should be "From", second column should be "To"
-##inspect column names as 3rd-kth columns of network_data may include network attributes
-colnames(network_data)
+dim(deathCo_Recip.df)
+dim(leConRecip.df)
+dim(smugDrink_Indx.df)
+
+
+
+          #if your data are in the form of an edgelist, network data is nx2 (or more with edge attributes)
+          #first column of network_data should be "From", second column should be "To"
+
+  ##inspect column names as 3rd-kth columns of network_data may include network attributes
+colnames( )
+# lol need to find readable human format
+
+
 
 ###################################################################
 #Step 4: Generating a graph object (igraph) or network object (statnet)
@@ -27,7 +42,7 @@ colnames(network_data)
 
 #igraph object 
 network.ig<-
-  graph.edgelist(as.matrix(network_data),
+  graph.edgelist(as.matrix(deathCo_recip.df),
                  directed=F) 
 #statnet object 
 network.stat<-
@@ -39,7 +54,7 @@ network.stat<-
 
 #igraph object 
 network.ig<-
-  graph.edgelist(as.matrix(network_data),
+  graph.edgelist(as.matrix(deathCo_recip.df),
                  directed=T) 
               ##weighted edgelists will read in automatically if third column is "weights" in igraph
 

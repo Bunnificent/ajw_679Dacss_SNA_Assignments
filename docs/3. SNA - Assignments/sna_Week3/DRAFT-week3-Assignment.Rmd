@@ -1,5 +1,5 @@
 ---
-title: "Social Network Analysis: Week 3: Degree and Centrality"
+title: "DRAFT: Week 3: Degree and Centrality"
 description: " "
 author:
   - name: "Audra Jamai White" 
@@ -47,24 +47,6 @@ library(sna)
 
 ```
 
-      *Week 3 Assignment: Degree and Centrality*
-
-Using the tutorial as a guide, 
-      *  you may use your own data; 
-      *  the data provided in the week 3. Syntax dataset is Correlates of War trade network - you can read more about it online; or
-      *  choose another dataset.
-
-## Working from the example R syntax:
-1.   calculate network density; 
-2.   degree centrality, and 
-3.   centralization measures for your network data. 
-
-
-## Write up your results briefly:
-*   focus on interpretation of the results. 
-*   Don’t list statistics or provide code, 
-*  **the goal is to choose a few interesting results and provide an interpretation.**
-
 ## Briefly describe the dataset:
 1.   identify initial network format; 
 2.   describe and identify the nodes 
@@ -80,40 +62,42 @@ Using the tutorial as a guide,
             that might be used to:
             *   subset data, or 
             *   stack multiple networks. 
-Not every feature of the network needs to be described, but **description should orient reader to the network data and provide any necessary context for the results provided.**
-
-## Provide at least two or three noteworthy results, including:
-1.   the relevant statistics and interpretation. 
-        For example, explaining which node(s) are most central and which are least central. 
-2.   Discuss (with any related evidence) whether or not the node(s) behavior is in line with or violates expectations based on the degree centrality measure. 
-3.   What do you make of network density and centralization measures?  
-4.   What about differences in the binary 100 million threshold network vs valued trade flows network. 
- 5.  Check tutorial for other ideas of results to discuss.
-
-
-
-##
-1.  [**Identify an existing data set.**]{.ul}
-
-| This can be one provided in the course directory, in an R package or library, located online, or some other source. 
-
-2.  [**Briefly describe the network dataset.**]{.ul}
-
-| Identify and describe content of nodes and links, and identify format of data set (i.e., matrix or edgelist, directed or not, weighted or not), and whether attribute data are present. 
-  Be sure to provide information about network size (e.g., information obtained from network description using week 1 network basics tutorial commands.)
-
 
 # Week 2: Scripts
+1.  [**Identify an existing data set.**]{.ul}
+```{r Set Working Directory, include=FALSE}
+getwd()
 
-```{r Import Data Set, echo=TRUE}
-  
-  # install.packages("network")
-  
-    data("flo", package = "network")
+setwd("C:/Users/white/iCloudDrive/Documents/1_DACSS_UMassAmherst/Dacss_RProjects/3. Sp22_rProjects/Dacss_679- Coursework/GIT-ajw_Learning-SocialNetworkAnalysis/docs/3. SNA - Assignments")
 
 ```
 
-# 2. Briefly describe the network dataset.
+```{r Read raw data into R}
+
+library(readr)
+
+index_by_name_Smuggler_Cove_cocktail_recipies <- read_csv("C:/Users/white/iCloudDrive/Documents/1_DACSS_UMassAmherst/Dacss_RProjects/3. Sp22_rProjects/Dacss_679- Coursework/GIT-ajw_Learning-SocialNetworkAnalysis/docs/3. SNA-Data/index-by_name-Smuggler_Cove-cocktail_recipies.csv", 
+    col_names = FALSE, col_types = cols(X1 = col_skip(), 
+        X4 = col_skip()), na = "empty")
+
+View(index_by_name_Smuggler_Cove_cocktail_recipies)
+
+summary(index_by_name_Smuggler_Cove_cocktail_recipies)
+
+ # Smuggler's Cove
+
+```
+
+
+2. Briefly describe the network dataset.
+```{r Identify critical features of data:, echo=FALSE}
+
+dim(smugDrink_Indx.df)
+colnames(smugDrink_Indx.df)
+
+```
+
+
 
 -   *Be sure to provide information about network size (e.g., information obtained from network description using week 1 network basics tutorial commands.)*
 
@@ -122,28 +106,25 @@ Not every feature of the network needs to be described, but **description should
 -   each of the 16 Florentine Family Names represent a Node in the network.
 
 ```{r Colnames}
- colnames(flo)
+ 
 ```
 
 2.  *Identify format of data set (i.e., matrix or edgelist, directed or not, weighted or not), and*
 
-    -   Flo Format: Size: 16 x 16 square dimmentions indicate a adjacency matrix format
-
-    Network attributes: vertices = 16 directed = TRUE hyper = FALSE loops = FALSE multiple = FALSE bipartite = FALSE total edges= 40 missing edges= 0 non-missing edges= 40
 
 Vertex attribute names: vertex.names
 
-No edge attributes
+
 
 ```{r Dimmentions, echo=TRUE}
   
-  dim(flo)
+  dim(smugDrink_Indx.df)
 
 ```
 
 ```{r Network Attributes, echo=TRUE}
 
-  network(flo)
+  network(smugDrink_Indx.df)
 
 ```
 
@@ -151,7 +132,7 @@ No edge attributes
 
 ```{r Summary,echo=TRUE}
   
-  summary(flo,
+  summary(smugDrink_Indx.df,
           print.adj = TRUE
           )
 ```
@@ -159,17 +140,17 @@ No edge attributes
 ## Create & Describe: Directed Adjacency Matrix
 
 *Florentine Families Directed Adjacency Matrix Network Objects:*
-    **iGraph** flo.ig 
-    **Statnet** flo.stat
+    **iGraph** smugDrink_Indx.df.ig 
+    **Statnet** smugDrink_Indx.df.stat
 
 
 iGraph and Statnet both use {r graph4} for Directed Adjacency Matrix Objects
 
 ```{r graph4, statnet: Directed: Adjacency Network, echo=TRUE}
 
-    flo.stat<-
+    smugDrink_Indx.df.stat<-
         network(
-        flo,
+        smugDrink_Indx.df,
         directed=F,
         matrix.type="adjacency"
         )
