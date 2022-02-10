@@ -1,12 +1,3 @@
-#This script imports 
-
-#Let's load the libraries you need (install them first if you need to)
-if("statnet" %in% rownames(installed.packages()) == FALSE) {install.packages("statnet")}
-if("igraph"  %in% rownames(installed.packages()) == FALSE) {install.packages("igraph")}
-
-library(statnet)
-library(igraph)
-
 # The import script has created three objects that represent the network:
 #   - sourceEL.net (a dataframe of an edgelist and edge attributes)
 #   - sourceEL.net_ig (an igraph object)
@@ -14,9 +5,11 @@ library(igraph)
 
 
 #######
-      #Lets read the data into the enviroment.
+#Lets read the data into the environment.
 
-source.df <-cow_alliance
+## possible edgelists
+
+######
 
 #####
     #Format DF to become an edgelist

@@ -1,0 +1,455 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r setup, Libraries, include=FALSE}
+
+knitr::opts_chunk$set(echo = FALSE)
+
+# Document Creation
+library(knitr)
+library(markdown)
+library(yaml)
+library(distill)
+library(blogdown)
+
+# Basic Analysis
+library(ggplot2)
+library(tidyverse)
+library(clipr)
+library(dbplyr)
+library(data.table)
+library(stringr)
+library(stringi)
+library(tibble)
+library(tidyr)
+
+# SNA - Social Network Analysis
+
+library(tergm)
+library(ergm)
+library(network)
+library(networkDynamic)
+library(networkDynamicData)
+
+library(statnet)
+library(igraph)
+library(igraphdata)
+library(tsna)
+library(sna)
+
+```
+
+## Briefly describe the dataset:
+
+1.  identify initial network format;
+
+2.  describe and identify the nodes including:
+
+    -   how many nodes are in the dataset;
+
+3.  what constitutes a tie or edge including:
+
+    -   how many ties,
+
+    -   whether ties are directed/undirected,
+
+    -   whether ties are weighted/binary,
+
+    -   and how to interpret the value of the tie
+        if any.
+
+    -   Whether or not there are edge attributes
+        that might be used to:
+
+        -   subset data, or
+        -   stack multiple networks.
+
+# Week 2: Scripts
+
+1.  [**Identify an existing data set.**]{.ul}
+
+```{r Set Working Directory, include=FALSE}
+getwd()
+
+setwd("C:/Users/white/iCloudDrive/Documents/1_DACSS_UMassAmherst/Dacss_RProjects/3. Sp22_rProjects/Dacss_679- Coursework/GIT-ajw_Learning-SocialNetworkAnalysis/docs/3. SNA - Assignments")
+
+```
+
+```{r Read raw data into R}
+
+library(readr)
+
+indx_SmugglerCove_recip <- read_csv("C:/Users/white/iCloudDrive/Documents/1_DACSS_UMassAmherst/Dacss_RProjects/3. Sp22_rProjects/Dacss_679- Coursework/GIT-ajw_Learning-SocialNetworkAnalysis/docs/3. SNA-Data/index-by_name-Smuggler_Cove-cocktail_recipies.csv", 
+    col_names = FALSE, col_types = cols(X1 = col_skip(), 
+        X4 = col_skip()), na = "empty")
+
+View(indx_SmugglerCove_recip)
+summary(indx_SmugglerCove_recip)
+
+ # Smuggler's Cove
+
+smugDnkIdx_df <- indx_SmugglerCove_recip
+
+```
+
+2.  Briefly describe the network dataset.
+
+```{r Getting Information on a Dataset:, echo=FALSE}
+
+# list the structure of smugDnkIdx_df
+str(smugDnkIdx_df)
+
+# class of an object (numeric, matrix, data frame, etc)
+class(smugDnkIdx_df)
+
+# list the variables in smugDnkIdx_df
+names(smugDnkIdx_df)
+
+# dimensions of an object
+dim(smugDnkIdx_df)
+```
+#### list the structure of smugDnkIdx_df
+$ X2: chr [1:785]
+$ X3: chr [1:785]
+$ X5: chr [1:785]
+$ X6: num [1:785]
+
+cols(
+  ..   X1 = col_skip(),
+  ..   X2 = col_character(),
+  ..   X3 = col_character(),
+  ..   X4 = col_skip(),
+  ..   X5 = col_character(),
+  ..   X6 = col_double()
+  .. )
+
+#### class of an object
+class(smugDnkIdx_df)
+  [1] "spec_tbl_df" 
+      "tbl_df"      
+      "tbl"         
+      "data.frame" 
+
+#### list the variables in smugDnkIdx_df
+ names(smugDnkIdx_df)
+[1] "X2" 
+    "X3" 
+    "X5" 
+    "X6"
+#### dimensions of an object
+ dim(smugDnkIdx_df)
+[1] Rows: 785   
+    Cols:   4
+
+
+```{r}
+
+colnames(smugDnkIdx_df)
+
+head(smugDnkIdx_df, n=10)
+
+head(smugDnkIdx_df, n=10)
+
+
+```
+
+> dim() smugDnkIdx_df
+>
+> rows: 785
+>
+> columns: 4
+>
+> column names: "X2" "X3" "X5" "X6"
+
+-   *need to rename column names to something
+    memorable*
+
+    ```{r}
+
+    # example of melt function
+    library(reshape)
+
+    mdata <- 
+      melt(smugDnkIdx_df,
+           id=c(
+             "id",
+             "time")
+           )
+    ```
+
+1.  *Identify and describe content of nodes and
+    links,*
+
+-   each of the 16 Florentine Family Names
+    represent a Node in the network.
+
+```{r Colnames}
+ 
+```
+
+2.  *Identify format of data set (i.e., matrix or
+    edgelist, directed or not, weighted or not),
+    and*
+
+Vertex attribute names: vertex.names
+
+```{r Dimmentions, echo=TRUE}
+  
+  dim(smugDnkIdx_df)
+
+```
+
+```{r Network Attributes, echo=TRUE}
+
+  network(smugDnkIdx_df)
+
+```
+
+3.  *Identify whether attribute data are present.*
+
+```{r Summary,echo=TRUE}
+  
+  summary(smugDnkIdx_df,
+          print.adj = TRUE
+          )
+```
+
+## Create & Describe: Directed Adjacency Matrix
+
+*Florentine Families Directed Adjacency Matrix
+Network Objects:* **iGraph** smugDnkIdx_df.ig
+**Statnet** smugDnkIdx_df.stat
+
+iGraph and Statnet both use {r graph4} for
+Directed Adjacency Matrix Objects
+
+```{r graph4, statnet: Directed: Adjacency Network, echo=TRUE}
+
+    smugDnkIdx_df.stat<-
+        network(
+        smugDnkIdx_df,
+        directed=F,
+        matrix.type="adjacency"
+        )
+
+#     provides a description of several critical network features
+    print(flo.stat)
+    
+```
+
+```{r graph4, igraph: Directed: Adjacency Network, echo=TRUE}
+
+    flo.ig<-
+      graph.adjacency(
+      flo,
+      mode="undirected"
+      ) 
+    print(flo.ig)
+```
+
+```{r igraph: Network Description, echo=TRUE}
+
+#     Count Vertices
+    vcount(flo.ig)
+
+#     Count Edges
+    ecount(flo.ig)
+
+# Is this a Bipartite or single mode network?
+    is_bipartite(flo.ig)
+
+#  Are edges directed or undirected?
+    is_directed(flo.ig)
+
+#Are edges weighted or unweighted?
+    is_weighted(flo.ig)        
+    
+```
+
+**Vertex and Edge Attributes**
+
+```{r statnet: Attribute Data: Directed: Adjacency Network, echo=TRUE}
+
+#     access vertex attributes
+  head(flo.stat %v% "vertex.names")
+
+#      list the names of vertex attributes
+  network::list.vertex.attributes(flo.stat)
+
+#     access edge attribute
+  head(flo.stat%e% "weight")
+
+#  Generate a list the names of edge attributes
+  network::list.edge.attributes(flo.stat)
+ 
+#   summarize numeric network attribute
+  summary(flo.stat  %v% "name")
+  
+```
+
+```{r igraph: Attribute Data: Directed: Adjacency Network, echo=TRUE}
+
+#     access vertex attribute 
+  V(flo.ig)$name
+#     Generate a list the names of vertex attributes
+  igraph::vertex_attr_names(flo.ig)
+
+#     access edge attribute
+  E(flo.ig)$weight
+
+#   Generate a list the names of edge attributes  
+  igraph::edge_attr_names(flo.ig)
+
+#   summarize numeric network attribute
+  summary(E(flo.ig)$weight)  
+
+```
+
+# 3. Explore the dataset using commands from week 2 tutorial.
+
+5.  *geodesic and path distances,*
+
+## Path Length and Geodesic
+
+```{r iGraph:Nodes: Path: Length, echo=TRUE}
+
+#     Calculate distances between two nodes
+    distances(flo.ig,"Bischeri","Ridolfi")
+
+#     Calculate distance between two nodes using unweighted edges
+    distances(flo.ig,"Bischeri", "Castellani",weights=NA)
+    
+```
+
+We can also find all of the shortest paths between
+two famalies in this network. These list the
+starting node and the ending node with all nodes
+inbetween for each path. The option weights=NA
+means that any available edge weights are ignored.
+
+```{r iGraph:Nodes: Path: Shortest, echo=TRUE}
+    
+#     isolating the distances between specific node
+    all_shortest_paths(flo.ig,"Strozzi","Tornabuoni", weights=NA)$res
+## Note: manually tell igraph to ignore edge weights.
+```
+
+The concept of shortest path to describe the
+overall network structure can be more useful
+
+```{r iGraph:Network: Path: Shortest, echo=TRUE}
+
+#     find average shortest path for network
+    average.path.length(flo.ig,directed=F)    
+  
+```
+
+6.  *triads or transitivity,*
+
+## Dyad Census
+
+Classifies all dyads in the network as: -
+Reciprocal (mutual), or mut - Asymmetric
+(non-mutual), or asym, and - Absent, or null
+
+```{r statnet: Dyad Census , echo=TRUE}
+
+    sna::dyad.census(flo.stat)
+
+```
+
+```{r iGraph: Dyad Census, echo=TRUE}
+
+  igraph::dyad.census(flo.ig)
+
+```
+
+## Triad Census
+
+Classifies all triads in the network. The triad
+census provides a fundamental descriptive insight
+into the types of triads found in a particular
+dataset.
+
+```{r statnet: Triad Census, echo=TRUE}
+
+#     Classify all Triad in the network: Directed Network
+  sna::triad.census(flo.stat, mode= )
+
+#     Classify all Triad in the network: Undirected Network
+   sna::triad.census(flo.stat, mode="graph")
+
+#     total number of all four triad types returned by triad census
+   sum(sna::triad.census(flo.stat, mode="graph"))
+   
+   
+```
+
+```{r iGraph: Triad Census, echo=TRUE}
+#Classify all Triad in the network
+     igraph::triad_census(flo.ig)
+
+```
+
+## Transitivity or Global Clustering
+
+```{r iGraph: weighted/ network transitivity, echo=TRUE}
+
+#     network transitivity:
+    transitivity(flo.ig)
+
+#     weighted network transitivity:
+#   igraph::transivity(flo.ig)
+
+```
+
+```{r statnet: weighted/ directed network transitivity, echo=TRUE}
+
+#     Directed Networks transitivity:
+  gtrans(flo.stat)
+
+#   methods for weighted networks, rank and correlation, along with the relevant references.
+#  sna::gtrans()
+  
+```
+
+## Local Transivity or Clustering
+
+`Local transitivity` (local clustering
+coefficient), is a technical description of the
+density of an ego network.
+
+```{r iGraph:Local transitivity, echo=TRUE}
+
+#     Retrive a list of the vertices we are interested
+    V(flo.ig)[c("Bischeri" ,
+                "Castellani", 
+                "Medici",
+                "Ridolfi")]
+
+#     check ego network transitivity
+transitivity(flo.ig,
+             type="local", 
+             vids=V(flo.ig)
+             [c("Bischeri",
+                "Castellani", 
+                "Medici",
+                "Ridolfi")]) 
+#     get global clustering cofficient
+  transitivity(flo.ig, type="global")
+
+#     get average local clustering coefficient
+  transitivity(flo.ig, type="average")
+
+```
+
+7.  *connectedness and.or component structure,
+    etc.*
+
+> Distill is a publication format for scientific
+> and technical writing, native to the web.
+>
+> Learn more about using Distill for R Markdown at
+> <https://rstudio.github.io/distill>. ##
