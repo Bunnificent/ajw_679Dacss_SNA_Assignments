@@ -143,56 +143,93 @@ class(smugDnkIdx_df)
 [1] Rows: 785   
     Cols:   4
 
-# DATA Cleaning
--   rename column names to something memorable
-```{r Rename columns}
-
-   # Rename column names
-
-names(smugDnkIdx_df)[1] <- "Drink_Name"
-names(smugDnkIdx_df)[2] <- "Ingredient"
-names(smugDnkIdx_df)[3] <- "Ingredient_ClassType"
-names(smugDnkIdx_df)[4] <- "Drink_Code"   
-   
-```
--   Drop rows without values 
-```{r Remove missing values}
-
-#One-column based criteria: Extract rows where
-
-testData <- smugDnkIdx_df 
-
-testData  %>% filter(is.na(Drink_Code))
-
-```
-
-
--   Col X5
-    Drop All together
-    split varriables into new columns 
-
 #
+## Basic R: Import & Clean Data
+```{r Import }
+library(tidyr)
+library(readr)
+
+smugCovIdx <- read_csv("C:/Users/white/iCloudDrive/Documents/1_DACSS_UMassAmherst/Dacss_RProjects/3. Sp22_rProjects/Dacss_679- Coursework/GIT-ajw_Learning-SocialNetworkAnalysis/docs/3. SNA-Data/index-by_name-Smuggler_Cove-cocktail_recipies.csv", 
+                       col_names = FALSE, 
+                       col_types = cols(X1 = col_skip(), 
+                                                        X4 = col_skip()))
+```
+
+```{r & Clean Data}
+      # Drop NA rows
+smugCovIdx <- na.omit(smugCovIdx) 
+
+# DATA Cleaning
+
+
+#     Extract variables
+#####
+library(stringr)
+          # extract first word of the column, adds values in new Column at the end of DF
+
+                    #1st pastIt
+passIt <- smugCovIdx      
+
+                    #2nd passIt
+passIt$substring_first <-     
+  str_extract(
+    passIt$X5,
+    "(\\w+)") 
+
+#####
+
+#####
+#     Drop it like...
+#####
+      # DROP COLUMNS FROM DATA FRAME
+                      
+                      #3rd PassIt
+passIt = subset(passIt, 
+                       select = -c(3)
+                       )
+#####
+
+#####
+#     Give Variables a human name
+#####
+
+# rename column names with human language
+
+                      # Return it
+smugCovIdx <- passIt
+
+names(smugCovIdx )[1] <- "dnkName"
+names(smugCovIdx )[2] <- "dnkIng"
+names(smugCovIdx )[3] <- "dnkCode"   
+names(smugCovIdx )[4] <- "classIng"
+
+```
+
+## Basic R: Brief Dataset Description
+```{r Identify critical features of data:, echo=FALSE}
+
+dim(smugCovIdx)
+
+colnames(smugCovIdx)
+
+summary(smugCovIdx)
+
+```
+
+# Network: Creating network Data
+
+
+
+# Network: Describe Network Data
 ## 1.  *Identify and describe content of nodes and
     links,*
 
--   each of the 16 Florentine Family Names
-    represent a Node in the network.
-
-```{r Colnames}
- 
-```
 
 ##2.  *Identify format of data set (i.e., matrix or
     edgelist, directed or not, weighted or not),
     and*
 
 Vertex attribute names: vertex.names
-
-```{r Dimmentions, echo=TRUE}
-  
-  dim(smugDnkIdx_df)
-
-```
 
 ```{r Network Attributes, echo=TRUE}
 

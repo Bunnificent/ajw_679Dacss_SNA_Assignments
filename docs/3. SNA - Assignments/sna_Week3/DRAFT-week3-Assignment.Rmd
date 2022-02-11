@@ -89,13 +89,6 @@ summary(index_by_name_Smuggler_Cove_cocktail_recipies)
 ```
 
 
-2. Briefly describe the network dataset.
-```{r Identify critical features of data:, echo=FALSE}
-
-dim(smugDrink_Indx.df)
-colnames(smugDrink_Indx.df)
-
-```
 
 
 
@@ -105,28 +98,11 @@ colnames(smugDrink_Indx.df)
 
 -   each of the 16 Florentine Family Names represent a Node in the network.
 
-```{r Colnames}
- 
-```
-
 2.  *Identify format of data set (i.e., matrix or edgelist, directed or not, weighted or not), and*
 
 
 Vertex attribute names: vertex.names
 
-
-
-```{r Dimmentions, echo=TRUE}
-  
-  dim(smugDrink_Indx.df)
-
-```
-
-```{r Network Attributes, echo=TRUE}
-
-  network(smugDrink_Indx.df)
-
-```
 
 3.  *Identify whether attribute data are present.*
 
