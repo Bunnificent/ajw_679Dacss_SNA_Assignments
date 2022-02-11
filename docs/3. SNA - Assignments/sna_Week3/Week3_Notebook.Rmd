@@ -41,35 +41,6 @@ library(sna)
 
 ```
 
-## Briefly describe the dataset:
-
-1.  identify initial network format;
-
-2.  describe and identify the nodes including:
-
-    -   how many nodes are in the dataset;
-
-3.  what constitutes a tie or edge including:
-
-    -   how many ties,
-
-    -   whether ties are directed/undirected,
-
-    -   whether ties are weighted/binary,
-
-    -   and how to interpret the value of the tie
-        if any.
-
-    -   Whether or not there are edge attributes
-        that might be used to:
-
-        -   subset data, or
-        -   stack multiple networks.
-
-# Week 2: Scripts
-
-1.  [**Identify an existing data set.**]{.ul}
-
 ```{r Set Working Directory, include=FALSE}
 getwd()
 
@@ -77,82 +48,41 @@ setwd("C:/Users/white/iCloudDrive/Documents/1_DACSS_UMassAmherst/Dacss_RProjects
 
 ```
 
+
+## Basic R: Import & Clean Data
+
 ```{r Read raw data into R}
 
 library(readr)
 
 indx_SmugglerCove_recip <- read_csv("C:/Users/white/iCloudDrive/Documents/1_DACSS_UMassAmherst/Dacss_RProjects/3. Sp22_rProjects/Dacss_679- Coursework/GIT-ajw_Learning-SocialNetworkAnalysis/docs/3. SNA-Data/index-by_name-Smuggler_Cove-cocktail_recipies.csv", 
-    col_names = FALSE, col_types = cols(X1 = col_skip(), 
-        X4 = col_skip()), na = "empty")
+    col_names = FALSE, 
+    col_types = cols(X1 = col_skip(),
+                     X4 = col_skip()), 
+                    na = "empty")
 
 View(indx_SmugglerCove_recip)
 summary(indx_SmugglerCove_recip)
 
  # Smuggler's Cove
 
-smugDnkIdx_df <- indx_SmugglerCove_recip
+smugCovIdx <- indx_SmugglerCove_recip
 
 ```
-
-2.  Briefly describe the network dataset.
 
 ```{r Getting Information on a Dataset:, echo=FALSE}
 
-# list the structure of smugDnkIdx_df
-str(smugDnkIdx_df)
+# list the structure of smugCovIdx
+str(smugCovIdx)
 
 # class of an object (numeric, matrix, data frame, etc)
-class(smugDnkIdx_df)
+class(smugCovIdx)
 
-# list the variables in smugDnkIdx_df
-names(smugDnkIdx_df)
+# list the variables in smugCovIdx
+names(smugCovIdx)
 
 # dimensions of an object
-dim(smugDnkIdx_df)
-```
-#### list the structure of smugDnkIdx_df
-$ X2: chr [1:785]
-$ X3: chr [1:785]
-$ X5: chr [1:785]
-$ X6: num [1:785]
-
-cols(
-  ..   X1 = col_skip(),
-  ..   X2 = col_character(),
-  ..   X3 = col_character(),
-  ..   X4 = col_skip(),
-  ..   X5 = col_character(),
-  ..   X6 = col_double()
-  .. )
-
-#### class of an object
-class(smugDnkIdx_df)
-  [1] "spec_tbl_df" 
-      "tbl_df"      
-      "tbl"         
-      "data.frame" 
-
-#### list the variables in smugDnkIdx_df
- names(smugDnkIdx_df)
-[1] "X2" 
-    "X3" 
-    "X5" 
-    "X6"
-#### dimensions of an object
- dim(smugDnkIdx_df)
-[1] Rows: 785   
-    Cols:   4
-
-#
-## Basic R: Import & Clean Data
-```{r Import }
-library(tidyr)
-library(readr)
-
-smugCovIdx <- read_csv("C:/Users/white/iCloudDrive/Documents/1_DACSS_UMassAmherst/Dacss_RProjects/3. Sp22_rProjects/Dacss_679- Coursework/GIT-ajw_Learning-SocialNetworkAnalysis/docs/3. SNA-Data/index-by_name-Smuggler_Cove-cocktail_recipies.csv", 
-                       col_names = FALSE, 
-                       col_types = cols(X1 = col_skip(), 
-                                                        X4 = col_skip()))
+dim(smugCovIdx)
 ```
 
 ```{r & Clean Data}
@@ -205,61 +135,43 @@ names(smugCovIdx )[4] <- "classIng"
 
 ```
 
-## Basic R: Brief Dataset Description
-```{r Identify critical features of data:, echo=FALSE}
-
-dim(smugCovIdx)
-
-colnames(smugCovIdx)
-
-summary(smugCovIdx)
-
-```
-
 # Network: Creating network Data
+## Basic R: Brief Dataset Description
+```{r Network: Identify critical features, echo=FALSE}
+#### dimensions of an object
+dim()
 
+#### class of an object
+class()
 
+# list the structure of smugCovIdx
+str()
 
-# Network: Describe Network Data
-## 1.  *Identify and describe content of nodes and
-    links,*
+# class of an object (numeric, matrix, data frame, etc)
+class()
 
+# list the variables in smugCovIdx
+names()
 
-##2.  *Identify format of data set (i.e., matrix or
-    edgelist, directed or not, weighted or not),
-    and*
+colnames( )
 
-Vertex attribute names: vertex.names
+summary( )
 
-```{r Network Attributes, echo=TRUE}
-
-  network(smugDnkIdx_df)
 
 ```
 
-3.  *Identify whether attribute data are present.*
 
-```{r Summary,echo=TRUE}
-  
-  summary(smugDnkIdx_df,
-          print.adj = TRUE
-          )
-```
 
-## Create & Describe: Directed Adjacency Matrix
-
-*Florentine Families Directed Adjacency Matrix
-Network Objects:* **iGraph** smugDnkIdx_df.ig
-**Statnet** smugDnkIdx_df.stat
+## Directed Adjacency Matrix: Create & Describe
 
 iGraph and Statnet both use {r graph4} for
 Directed Adjacency Matrix Objects
 
 ```{r graph4, statnet: Directed: Adjacency Network, echo=TRUE}
 
-    smugDnkIdx_df.stat<-
+    smugCovIdx.stat<-
         network(
-        smugDnkIdx_df,
+        smugCovIdx,
         directed=F,
         matrix.type="adjacency"
         )
@@ -297,6 +209,9 @@ Directed Adjacency Matrix Objects
     is_weighted(flo.ig)        
     
 ```
+
+
+
 
 **Vertex and Edge Attributes**
 
@@ -337,7 +252,36 @@ Directed Adjacency Matrix Objects
 
 ```
 
-# 3. Explore the dataset using commands from week 2 tutorial.
+
+
+#   Week 2: Scripts
+##    Network: Describe Network Data
+##    *Identify and describe content of nodes and
+    links,*
+
+
+##    *Identify format of data set (i.e., matrix or
+    edgelist, directed or not, weighted or not),
+    and*
+
+Vertex attribute names: vertex.names
+
+```{r Network Attributes, echo=TRUE}
+
+  network(smugCovIdx)
+
+```
+
+3.  *Identify whether attribute data are present.*
+
+```{r Summary,echo=TRUE}
+  
+  summary(smugCovIdx,
+          print.adj = TRUE
+          )
+```
+
+#       Explore the dataset using commands from week 2 tutorial.
 
 5.  *geodesic and path distances,*
 
