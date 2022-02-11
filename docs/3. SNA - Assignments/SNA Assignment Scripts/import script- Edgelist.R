@@ -18,6 +18,25 @@ library(igraph)
 
 source.df <-cow_alliance
 
+
+      # Basic Info on Object}
+#### list the structure of smugCovIdx
+
+#### class of an object
+class()
+
+#### list the variables in smugCovIdx
+names()
+
+#### dimensions of an object
+dim()
+
+
+colnames(smugCovIdx)
+
+summary(smugCovIdx)
+
+# ```
 #####
     #Format DF to become an edgelist
     
