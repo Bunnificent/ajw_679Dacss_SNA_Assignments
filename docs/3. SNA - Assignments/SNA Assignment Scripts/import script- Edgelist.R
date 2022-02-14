@@ -108,7 +108,7 @@ print(temp)
             # round 1 TOTAL: n-rows x 2 
 
 
-      ## round 2
+      ##**round 2**
         # code still selecting from "_netEdge", add "colNames"
         # future attr: state_name2 (e/c), ccode2 (e/n)
 colnames(temp)<-
@@ -125,9 +125,11 @@ print(temp)
 temp<-
   rbind(temp,
        sourceEL.net[,
-                         c("state_name2"
-                           ,"ccode2"
-                         )])
+                         c("state_name2",
+                           "ccode2")
+                    ]
+       )
+
 print(temp)
           # A tibble: n-rows x 2 <selected colmns>
           # round 3 TOTAL: (round 1 n-rows) + (round 2 n-rows) x 2

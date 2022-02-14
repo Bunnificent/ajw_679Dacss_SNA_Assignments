@@ -3,6 +3,7 @@ title: "R Notebook"
 output: html_notebook
 ---
 
+
 ```{r setup, Libraries, include=FALSE}
 
 knitr::opts_chunk$set(echo = FALSE)
@@ -61,7 +62,7 @@ indx_SmugglerCove_recip <- read_csv("C:/Users/white/iCloudDrive/Documents/1_DACS
                      X4 = col_skip()), 
                     na = "empty")
 
-View(indx_SmugglerCove_recip)
+# View(indx_SmugglerCove_recip)
 summary(indx_SmugglerCove_recip)
 
  # Smuggler's Cove
@@ -102,12 +103,12 @@ smugCovIdx <- na.omit(smugCovIdx)
                     #1st pastIt
 passIt <- smugCovIdx      
 
+colnames(passIt)
                     #2nd passIt
-passIt$substring_first <-     
-  str_extract(
-    passIt$X5,
-    "(\\w+)") 
+passIt$substring_first <- 
+  str_extract(passIt$X5,"(\\w+)") 
 
+colnames(passIt)
 #####
 
 #####
@@ -117,8 +118,9 @@ passIt$substring_first <-
                       
                       #3rd PassIt
 passIt = subset(passIt, 
-                       select = -c(3)
+                       select = -c(3,4)
                        )
+colnames(passIt)
 #####
 
 #####
@@ -132,14 +134,118 @@ smugCovIdx <- passIt
 
 names(smugCovIdx )[1] <- "dnkName"
 names(smugCovIdx )[2] <- "dnkIng"
-names(smugCovIdx )[3] <- "dnkCode"   
-names(smugCovIdx )[4] <- "classIng"
+names(smugCovIdx )[3] <- "ingType"
 
+colnames(smugCovIdx)
 ```
 
 # Network: Creating network Data
+```{r NETWORK: Network Formation}
+passIt <- smugCovIdx
+dim(passIt)
+  #####
+        #### Edgelist: Network Formation
+            ## NOTE: Edgelist Format
+#####
+            ## network data is nx2 (or more with edge attributes)
+            ## first column is "From", 
+            ## second column is "To"
+  #####
+          ### Edgelist: inspect column names
+              ## inspect column names as 3rd-kth columns of network_data may include network attributes
+
+colnames(passIt)
+
+```
+
+```{r EDGELIST: IGRAPH: create a network object from the dataset, echo=TRUE}
+
+ smug_unrIg <- smugCovIdx
 
 
+smug_unrIg <-
+  graph.data.frame(
+    smug_unrIg[,1:3],
+    directed = F)
+
+
+summary(smug_unrIg)
+
+##### Summary Output
+#####
+      # IGRAPH c6de075 UN-- 274 672 -- 
+      # + attr: name (v/c), ingType (e/c)
+
+
+```
+
+```{r Edgelist: Statnet Network Object}
+
+#Lets read the data into the enviroment.
+#This will import it formatted as an edgelist
+
+source_netEdge <- smugCovIdx
+
+# Identify Edge Vertices and Edge Attributes
+
+colnames(source_netEdge)
+# dnkName <- "dnkName" 
+# dnkIng <- "dnkIng"  
+# edgeAT <- "ingType"
+
+
+
+#Lets create an statnet object from our edgelist
+#First we make the object. It will have no vertex or edge attributes
+sourceEL_sn <- 
+  network(as.matrix(source_netEdge[1:2], 
+                    matrix.type = 'edgelist')
+  )
+
+#**%e%** Let's add edge atributes, do not include the colNames for edge vertex
+
+
+sourceEL_sn%e%"ingType" <- source_netEdge$ingType
+sourceEL_sn%e%"dnkIng" <- source_netEdge$dnkIng
+
+
+# Generating the EdgeList
+
+##**round 1**
+          # from "_netEdge" select "colNames" to be identified with "vertex.names"
+
+temp <- source_netEdge[,c("dnkName")]
+
+
+
+##**round 2**
+            # code still selecting from "_netEdge", add "colNames"
+
+colnames(temp)<- c("dnkIng")
+
+
+##**round 3**
+            # "rBind" selects "colnames" from "_netEdge" and BINDS them to temp
+
+temp<- rbind(temp, source_netEdge[, c("dnkIng")])
+
+
+
+##**final round** !!! is being used as variable in generating an edgelist object
+                # temp contains 
+        
+
+sourceEL_sn%v%"dnkName"<- 
+  temp$dnkIng[match(sourceEL_sn%v%"vertex.names",
+                    temp$dnkIng)]
+
+print(sourceEL_sn)
+
+# it's a bloody statnet edgelist 
+```
+
+
+# Network Info
 ## Basic R: Brief Dataset Description
 ```{r Network: Identify critical features, echo=FALSE}
 #### dimensions of an object
