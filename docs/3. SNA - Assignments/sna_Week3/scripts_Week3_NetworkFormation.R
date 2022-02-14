@@ -121,10 +121,10 @@ summary(temp)
             #**statnet** Generate Edgelist: w/ attributes 
             # << %v% attribute-name <- value >> extracts "ccode" frompassit_ns and assigns new value
 
-sourceEL_stat%v%"ingType"<-
+sourceEL_stat%v%"dnkIng"<-
   temp$dnkIng[
     match(
-      sourceEL_stat%v%"vertex.names",temp$dnkIng)]
+      sourceEL_stat%v%"vertex.names",temp$state_name2)]
     
 summary(sourceEL_stat)
 # it's a bloody statnet edgelist !!!

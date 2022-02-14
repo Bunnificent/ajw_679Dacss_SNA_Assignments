@@ -3,6 +3,13 @@ title: "R Notebook"
 output: html_notebook
 ---
 
+```{r}
+vectordata=as.vector(mtrxIt)
+print(smugCov_ntWrk)
+```
+
+
+
 
 ```{r setup, Libraries, include=FALSE}
 
@@ -62,7 +69,7 @@ indx_SmugglerCove_recip <- read_csv("C:/Users/white/iCloudDrive/Documents/1_DACS
                      X4 = col_skip()), 
                     na = "empty")
 
-# View(indx_SmugglerCove_recip)
+View(indx_SmugglerCove_recip)
 summary(indx_SmugglerCove_recip)
 
  # Smuggler's Cove
@@ -108,7 +115,6 @@ colnames(passIt)
 passIt$substring_first <- 
   str_extract(passIt$X5,"(\\w+)") 
 
-colnames(passIt)
 #####
 
 #####
@@ -118,7 +124,7 @@ colnames(passIt)
                       
                       #3rd PassIt
 passIt = subset(passIt, 
-                       select = -c(3,4)
+                       select = -c(3)
                        )
 colnames(passIt)
 #####
@@ -140,47 +146,41 @@ colnames(smugCovIdx)
 ```
 
 # Network: Creating network Data
-```{r NETWORK: Network Formation}
-passIt <- smugCovIdx
-dim(passIt)
-  #####
-        #### Edgelist: Network Formation
-            ## NOTE: Edgelist Format
-#####
-            ## network data is nx2 (or more with edge attributes)
-            ## first column is "From", 
-            ## second column is "To"
-  #####
-          ### Edgelist: inspect column names
-              ## inspect column names as 3rd-kth columns of network_data may include network attributes
+```{r HOLD: EDGELIST: IGRAPH: create a network object from the dataset, eval=FALSE, include=FALSE}
+colnames(smugCovIdx )
+ 
+# [1] "dnkName" "dnkIng"  "ingType"
+# V1 <- "dnkName" 
+# V2 <- "dnkIng"  
+# EA <- "ingType"
+dr_smugCov <- smugCovIdx
 
-colnames(passIt)
+ ##If data are in edgelist format (A) and are undirected (B), use the following command:#
 
-```
+#igraph object 
+network_ig<- graph.edgelist(as.matrix(smugCovIdx[1:2]), directed=F) 
 
-```{r EDGELIST: IGRAPH: create a network object from the dataset, echo=TRUE}
+#  Adding edge and node attributes to network/graph object 
 
- smug_unrIg <- smugCovIdx
+#If you have edgelist data, edge attributes will often be stored in same data file
+#iGraph will read in all edge attributes automatically, inspect as follows
+edge_attr(network_ig)
 
+##but to create new edge attribute if edges sorted correctly
+# E(network_ig)$COLNAME<-edge.attribute$COLNAME
 
-smug_unrIg <-
-  graph.data.frame(
-    smug_unrIg[,1:3],
-    directed = F)
+#The vertex names in this file must exactly match those in the network#
+#sometimes this requires using as.character(x) to change from factor to character
+#create vertex attributes in igraph
+# V(network_ig)[match(V(network)$name,vertex_attributes$VERTEX_NAME)]$COLNAME<-
+#  vertex_attributes$COLNAME
 
-
-summary(smug_unrIg)
-
-##### Summary Output
-#####
-      # IGRAPH c6de075 UN-- 274 672 -- 
-      # + attr: name (v/c), ingType (e/c)
 
 
 ```
 
-```{r Edgelist: Statnet Network Object}
 
+```{r NETWORK EDGELIST: Statnet & Igraph, include=FALSE}
 #Lets read the data into the enviroment.
 #This will import it formatted as an edgelist
 
@@ -189,13 +189,14 @@ source_netEdge <- smugCovIdx
 # Identify Edge Vertices and Edge Attributes
 
 colnames(source_netEdge)
-# dnkName <- "dnkName" 
-# dnkIng <- "dnkIng"  
-# edgeAT <- "ingType"
+# [1] "dnkName" "dnkIng"  "ingType"
+# V1 <- "dnkName" 
+# V2 <- "dnkIng"  
+# EA <- "ingType"
 
 
-
-#Lets create an statnet object from our edgelist
+# Lets create an statnet object from our edgelist
+#####
 #First we make the object. It will have no vertex or edge attributes
 sourceEL_sn <- 
   network(as.matrix(source_netEdge[1:2], 
@@ -238,36 +239,58 @@ temp<- rbind(temp, source_netEdge[, c("dnkIng")])
 sourceEL_sn%v%"dnkName"<- 
   temp$dnkIng[match(sourceEL_sn%v%"vertex.names",
                     temp$dnkIng)]
+      #####
+            summary(sourceEL_sn)
+dim(sourceEL_sn)
 
-print(sourceEL_sn)
+              # it's a bloody statnet edgelist !!!
+ 
+#**igraph** version of the network
+#####
+          # NOTE: igraph automatically adds edge attributes, but not vertices 
+    
+    #First let's create the object. 
 
-# it's a bloody statnet edgelist 
+sourceEL_ig <- smugCovIdx
+
+sourceEL_ig <- graph_from_data_frame(d = sourceEL_ig, directed = FALSE)
+
+ #**igraph** Generate Edgelist
+
+
+V(sourceEL_ig)$dnkName<-
+  temp$dnkIng[
+    match(V
+          (sourceEL_ig)$name,
+          temp$dnkIng)
+  ]
+print(sourceEL_ig )
+edge_attr(sourceEL_ig)
+
+#########
+########
+          smugEL_sn  <- sourceEL_sn
+          smugEL_ig <- sourceEL_ig
+dim(smug_sn)
 ```
 
 
 # Network Info
 ## Basic R: Brief Dataset Description
 ```{r Network: Identify critical features, echo=FALSE}
-#### dimensions of an object
-dim()
 
+#**Statnet EdgeList**   smugEL_sn
+#####
 #### class of an object
-class()
+class(smugEL_sn )
+class(smugEL_ig )
 
 # list the structure of smugCovIdx
-str()
+str(smugEL_sn )
+str(smugEL_ig )
 
-# class of an object (numeric, matrix, data frame, etc)
-class()
-
-# list the variables in smugCovIdx
-names()
-
-colnames( )
-
-summary( )
-
-
+View(smug_sn)
+View(smug_ig)
 ```
 
 
@@ -287,36 +310,36 @@ Directed Adjacency Matrix Objects
         )
 
 #     provides a description of several critical network features
-    print(flo.stat)
+    print(source.stat)
     
 ```
 
 ```{r graph4, igraph: Directed: Adjacency Network, echo=TRUE}
 
-    flo.ig<-
+    source.ig<-
       graph.adjacency(
       flo,
       mode="undirected"
       ) 
-    print(flo.ig)
+    print(source.ig)
 ```
 
 ```{r igraph: Network Description, echo=TRUE}
 
 #     Count Vertices
-    vcount(flo.ig)
+    vcount(source.ig)
 
 #     Count Edges
-    ecount(flo.ig)
+    ecount(source.ig)
 
 # Is this a Bipartite or single mode network?
-    is_bipartite(flo.ig)
+    is_bipartite(source.ig)
 
 #  Are edges directed or undirected?
-    is_directed(flo.ig)
+    is_directed(source.ig)
 
 #Are edges weighted or unweighted?
-    is_weighted(flo.ig)        
+    is_weighted(source.ig)        
     
 ```
 
@@ -328,37 +351,37 @@ Directed Adjacency Matrix Objects
 ```{r statnet: Attribute Data: Directed: Adjacency Network, echo=TRUE}
 
 #     access vertex attributes
-  head(flo.stat %v% "vertex.names")
+  head(source.stat %v% "vertex.names")
 
 #      list the names of vertex attributes
-  network::list.vertex.attributes(flo.stat)
+  network::list.vertex.attributes(source.stat)
 
 #     access edge attribute
-  head(flo.stat%e% "weight")
+  head(source.stat%e% "weight")
 
 #  Generate a list the names of edge attributes
-  network::list.edge.attributes(flo.stat)
+  network::list.edge.attributes(source.stat)
  
 #   summarize numeric network attribute
-  summary(flo.stat  %v% "name")
+  summary(source.stat  %v% "name")
   
 ```
 
 ```{r igraph: Attribute Data: Directed: Adjacency Network, echo=TRUE}
 
 #     access vertex attribute 
-  V(flo.ig)$name
+  V(source.ig)$name
 #     Generate a list the names of vertex attributes
-  igraph::vertex_attr_names(flo.ig)
+  igraph::vertex_attr_names(source.ig)
 
 #     access edge attribute
-  E(flo.ig)$weight
+  E(source.ig)$weight
 
 #   Generate a list the names of edge attributes  
-  igraph::edge_attr_names(flo.ig)
+  igraph::edge_attr_names(source.ig)
 
 #   summarize numeric network attribute
-  summary(E(flo.ig)$weight)  
+  summary(E(source.ig)$weight)  
 
 ```
 
@@ -400,10 +423,10 @@ Vertex attribute names: vertex.names
 ```{r iGraph:Nodes: Path: Length, echo=TRUE}
 
 #     Calculate distances between two nodes
-    distances(flo.ig,"Bischeri","Ridolfi")
+    distances(source.ig,"node 1","node 2")
 
 #     Calculate distance between two nodes using unweighted edges
-    distances(flo.ig,"Bischeri", "Castellani",weights=NA)
+    distances(source.ig,"node 1", "node 5",weights=NA)
     
 ```
 
@@ -416,7 +439,7 @@ means that any available edge weights are ignored.
 ```{r iGraph:Nodes: Path: Shortest, echo=TRUE}
     
 #     isolating the distances between specific node
-    all_shortest_paths(flo.ig,"Strozzi","Tornabuoni", weights=NA)$res
+    all_shortest_paths(source.ig,"node 3","node 4", weights=NA)$res
 ## Note: manually tell igraph to ignore edge weights.
 ```
 
@@ -426,7 +449,7 @@ overall network structure can be more useful
 ```{r iGraph:Network: Path: Shortest, echo=TRUE}
 
 #     find average shortest path for network
-    average.path.length(flo.ig,directed=F)    
+    average.path.length(source.ig,directed=F)    
   
 ```
 
@@ -440,13 +463,13 @@ Reciprocal (mutual), or mut - Asymmetric
 
 ```{r statnet: Dyad Census , echo=TRUE}
 
-    sna::dyad.census(flo.stat)
+    sna::dyad.census(source.stat)
 
 ```
 
 ```{r iGraph: Dyad Census, echo=TRUE}
 
-  igraph::dyad.census(flo.ig)
+  igraph::dyad.census(source.ig)
 
 ```
 
@@ -460,20 +483,20 @@ dataset.
 ```{r statnet: Triad Census, echo=TRUE}
 
 #     Classify all Triad in the network: Directed Network
-  sna::triad.census(flo.stat, mode= )
+  sna::triad.census(source.stat, mode= )
 
 #     Classify all Triad in the network: Undirected Network
-   sna::triad.census(flo.stat, mode="graph")
+   sna::triad.census(source.stat, mode="graph")
 
 #     total number of all four triad types returned by triad census
-   sum(sna::triad.census(flo.stat, mode="graph"))
+   sum(sna::triad.census(source.stat, mode="graph"))
    
    
 ```
 
 ```{r iGraph: Triad Census, echo=TRUE}
 #Classify all Triad in the network
-     igraph::triad_census(flo.ig)
+     igraph::triad_census(source.ig)
 
 ```
 
@@ -482,17 +505,17 @@ dataset.
 ```{r iGraph: weighted/ network transitivity, echo=TRUE}
 
 #     network transitivity:
-    transitivity(flo.ig)
+    transitivity(source.ig)
 
 #     weighted network transitivity:
-#   igraph::transivity(flo.ig)
+#   igraph::transivity(source.ig)
 
 ```
 
 ```{r statnet: weighted/ directed network transitivity, echo=TRUE}
 
 #     Directed Networks transitivity:
-  gtrans(flo.stat)
+  gtrans(source.stat)
 
 #   methods for weighted networks, rank and correlation, along with the relevant references.
 #  sna::gtrans()
@@ -508,32 +531,32 @@ density of an ego network.
 ```{r iGraph:Local transitivity, echo=TRUE}
 
 #     Retrive a list of the vertices we are interested
-    V(flo.ig)[c("Bischeri" ,
-                "Castellani", 
-                "Medici",
-                "Ridolfi")]
+    V(source.ig)[c("node 1" ,
+                "node 5", 
+                "node 6",
+                "node 2")]
 
 #     check ego network transitivity
-transitivity(flo.ig,
+transitivity(source.ig,
              type="local", 
-             vids=V(flo.ig)
-             [c("Bischeri",
-                "Castellani", 
-                "Medici",
-                "Ridolfi")]) 
+             vids=V(source.ig)
+             [c("node 1",
+                "node 5", 
+                "node 6",
+                "node 2")]) 
 #     get global clustering cofficient
-  transitivity(flo.ig, type="global")
+  transitivity(source.ig, type="global")
 
 #     get average local clustering coefficient
-  transitivity(flo.ig, type="average")
+  transitivity(source.ig, type="average")
 
 ```
 
 7.  *connectedness and.or component structure,
     etc.*
 
-> Distill is a publication format for scientific
-> and technical writing, native to the web.
+Distill is a publication format for scientific
+and technical writing, native to the web.
 >
-> Learn more about using Distill for R Markdown at
-> <https://rstudio.github.io/distill>. ##
+Learn more about using Distill for R Markdown at
+<https://rstudio.github.io/distill>. ##

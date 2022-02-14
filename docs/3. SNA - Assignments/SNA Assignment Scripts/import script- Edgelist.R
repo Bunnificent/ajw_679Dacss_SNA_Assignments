@@ -62,7 +62,6 @@ sourceEL.net <-
 sourceEL.ig <- 
   graph_from_data_frame(d = sourceEL.net, 
                         directed = FALSE
-                        )
 
 #####
     #**statnet** object from our edgelist

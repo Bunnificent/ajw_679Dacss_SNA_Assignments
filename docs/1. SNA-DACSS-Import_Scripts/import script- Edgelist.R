@@ -50,12 +50,15 @@ sourceEL.ig <-
           # Will not have vertex
           # Will not have edge attributes
 
-    #First we make the eobject. 
+    #First we make the Network object. 
 sourceEL.stat <- 
-  network(as.matrix
-          (sourceEL.net[1:2], 
-            matrix.type = 'edgelist')
+  network(
+    as.matrix(
+      sourceEL.net[1:2],
+      matrix.type = 'edgelist')
           )
+
+
 #####     
       #**statnet** add edge atributes <aka colnames>
 sourceEL.stat%e%"source_ColName" <- 
