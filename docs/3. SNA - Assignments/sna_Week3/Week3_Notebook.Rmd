@@ -193,48 +193,64 @@ colnames(source_netEdge)
 #First we make the object. It will have no vertex or edge attributes
 sourceEL_sn <- 
   network(as.matrix(source_netEdge[1:2], 
-                    matrix.type = 'edgelist')
+                    matrix.type = 'edgelist',
+                    loops=T,
+                    hyper=T)
   )
+print(sourceEL_sn)
 
 #**%e%** Let's add edge atributes, do not include the colNames for edge vertex
-
 
 sourceEL_sn%e%"ingType" <- source_netEdge$ingType
 sourceEL_sn%e%"dnkIng" <- source_netEdge$dnkIng
 
+print(sourceEL_sn)
 
+sourceEL_sn%v%"dnkName"<- sourceEL_sn%v%"vertex.names",source_netEdge$dnkName
+
+print(sourceEL_sn)
 # Generating the EdgeList
-
+#####
 ##**round 1**
           # from "_netEdge" select "colNames" to be identified with "vertex.names"
 
 temp <- source_netEdge[,c("dnkName")]
 
 
-
+View(temp)
 ##**round 2**
             # code still selecting from "_netEdge", add "colNames"
 
-colnames(temp)<- c("dnkIng")
-
+ colnames(temp)<- c("dnkIng")
+# View(temp)
 
 ##**round 3**
             # "rBind" selects "colnames" from "_netEdge" and BINDS them to temp
 
-temp<- rbind(temp, source_netEdge[, c("dnkIng")])
+temp <- rbind(temp,source_netEdge[, c("dnkIng")])
 
-
+View(temp)
+#######
 
 ##**final round** !!! is being used as variable in generating an edgelist object
                 # temp contains 
         
 
 sourceEL_sn%v%"dnkName"<- 
-  temp$dnkIng[match(sourceEL_sn%v%"vertex.names",
-                    temp$dnkIng)]
+  temp$dnkName[match(sourceEL_sn%v%"vertex.names",
+                    temp$dnkName)]
       #####
             summary(sourceEL_sn)
-dim(sourceEL_sn)
+View(sourceEL_sn)
+
+#####
+
+  
+#     access edge attribute
+#  head(smugEL_sn%e% "weight")
+
+#####
+
 
               # it's a bloody statnet edgelist !!!
  
@@ -248,8 +264,11 @@ sourceEL_ig <- smugCovIdx
 
 sourceEL_ig <- graph_from_data_frame(d = sourceEL_ig, directed = FALSE)
 
- #**igraph** Generate Edgelist
 
+
+#####
+      #**igraph** Generate Edgelist
+######
 
 V(sourceEL_ig)$dnkName<-
   temp$dnkIng[
@@ -264,6 +283,10 @@ V(sourceEL_ig)$dnkName<-
 ########
           smugEL_sn  <- sourceEL_sn
           smugEL_ig <- sourceEL_ig
+          
+            # list the structure of smugCovIdx
+    str(smugEL_ig )
+    str(smug_sn)
 
 ```
 
@@ -273,6 +296,42 @@ V(sourceEL_ig)$dnkName<-
                   STATNET: smugEL_sn
                   IGRAPH: smugEL_ig
           
+```{r}
+
+colnames(smugCovIdx)
+#Lets make some network objects
+
+smugCovIdx_igraph <- graph_from_data_frame(smugCovIdx)
+print(smugCovIdx_igraph)
+
+ 
+#Now let's create a statnet object
+
+network_edgelist <- smugCovIdx
+
+network_statnet <- network(as.matrix(network_edgelist[,c("dnkName")]), 
+                             directed = FALSE, matrix.type = "edgelist")
+
+  network_statnet%e%'dnkIng'  <- smugCovIdx$dnkIng
+  network_statnet%e%'ingType' <- smugCovIdx$ingType
+
+
+    
+  network_statnet%v%'dnkName'<-
+    as.character(smugCovIdx$dnkName[match(smugCovIdx,network_statnet%v%'vertex.names')])
+  
+print(network_statnet)
+  
+                                 #     access vertex attributes
+  view(network_statnet%v% "vertex.names")
+            # list the names of vertex attributes
+  network::list.vertex.attributes(network_statnet)
+            #  Generate a list the names of edge attributes
+  network::list.edge.attributes(network_statnet)
+            #   summarize numeric network attribute
+  summary(network_statnet%v%"dnkName")
+
+```
 
 
 ## Smuggler's Cove Index- NETWORK: EDGELIST: Features & Descriptions
@@ -311,9 +370,6 @@ str(smugEL_sn )
   
       # class of an object
     class(smugEL_ig )
-
-        # list the structure of smugCovIdx
-    str(smugEL_ig )
     
 ## Network Size
       # Count Vertices
@@ -344,7 +400,7 @@ str(smugEL_sn )
     class(smugEL_sn)
 
 #     access vertex attributes
-  head(smugEL_sn %v% "vertex.names")
+  view(smugEL_sn %v% "vertex.names")
 
 #      list the names of vertex attributes
   network::list.vertex.attributes(smugEL_sn)
