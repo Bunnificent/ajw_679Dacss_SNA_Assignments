@@ -52,7 +52,8 @@ library(sna)
 ```{r Set Working Directory, include=FALSE}
 getwd()
 
-setwd("C:/Users/white/iCloudDrive/Documents/1_DACSS_UMassAmherst/Dacss_RProjects/3. Sp22_rProjects/Dacss_679- Coursework/GIT-ajw_Learning-SocialNetworkAnalysis/docs/3. SNA - Assignments")
+setwd("C:/Users/white/iCloudDrive/Documents/1_DACSS_UMassAmherst/Dacss_RProjects/3. Sp22_rProjects/Dacss_679- Coursework/GIT-ajw_Learning-SocialNetworkAnalysis/docs/3. SNA - Assignments/sna_Week3")
+
 
 ```
 
@@ -264,14 +265,14 @@ V(sourceEL_ig)$dnkName<-
           (sourceEL_ig)$name,
           temp$dnkIng)
   ]
-print(sourceEL_ig )
-edge_attr(sourceEL_ig)
+# print(sourceEL_ig )
+# edge_attr(sourceEL_ig)
 
 #########
 ########
           smugEL_sn  <- sourceEL_sn
           smugEL_ig <- sourceEL_ig
-dim(smug_sn)
+
 ```
 
 
@@ -289,99 +290,76 @@ class(smugEL_ig )
 str(smugEL_sn )
 str(smugEL_ig )
 
-View(smug_sn)
-View(smug_ig)
+
 ```
 
 
 
-## Directed Adjacency Matrix: Create & Describe
+## EDGELIST: Describe
 
-iGraph and Statnet both use {r graph4} for
-Directed Adjacency Matrix Objects
-
-```{r graph4, statnet: Directed: Adjacency Network, echo=TRUE}
-
-    smugCovIdx.stat<-
-        network(
-        smugCovIdx,
-        directed=F,
-        matrix.type="adjacency"
-        )
-
-#     provides a description of several critical network features
-    print(source.stat)
-    
-```
-
-```{r graph4, igraph: Directed: Adjacency Network, echo=TRUE}
-
-    source.ig<-
-      graph.adjacency(
-      flo,
-      mode="undirected"
-      ) 
-    print(source.ig)
-```
 
 ```{r igraph: Network Description, echo=TRUE}
+# class of an object
 
+    class(smugEL_ig )
+
+# list the structure of smugCovIdx
+
+    str(smugEL_ig )
 #     Count Vertices
-    vcount(source.ig)
+    vcount(smugEL_ig)
 
 #     Count Edges
-    ecount(source.ig)
+    ecount(smugEL_ig)
 
 # Is this a Bipartite or single mode network?
-    is_bipartite(source.ig)
+    is_bipartite(smugEL_ig)
 
 #  Are edges directed or undirected?
-    is_directed(source.ig)
+    is_directed(smugEL_ig)
 
 #Are edges weighted or unweighted?
-    is_weighted(source.ig)        
+    is_weighted(smugEL_ig)        
     
 ```
-
-
 
 
 **Vertex and Edge Attributes**
 
 ```{r statnet: Attribute Data: Directed: Adjacency Network, echo=TRUE}
 
+# class of an object
+    class(smugEL_sn)
+
 #     access vertex attributes
-  head(source.stat %v% "vertex.names")
+  head(smugEL_sn %v% "vertex.names")
 
 #      list the names of vertex attributes
-  network::list.vertex.attributes(source.stat)
+  network::list.vertex.attributes(smugEL_sn)
 
 #     access edge attribute
-  head(source.stat%e% "weight")
+#  head(smugEL_sn%e% "weight")
 
 #  Generate a list the names of edge attributes
-  network::list.edge.attributes(source.stat)
+  network::list.edge.attributes(smugEL_sn)
  
 #   summarize numeric network attribute
-  summary(source.stat  %v% "name")
+  summary(smugEL_sn  %v% "name")
   
 ```
 
 ```{r igraph: Attribute Data: Directed: Adjacency Network, echo=TRUE}
 
 #     access vertex attribute 
-  V(source.ig)$name
+  V(smugEL_ig)$name
 #     Generate a list the names of vertex attributes
-  igraph::vertex_attr_names(source.ig)
+  igraph::vertex_attr_names(smugEL_ig)
 
 #     access edge attribute
-  E(source.ig)$weight
+  E(smugEL_ig)$weight
 
 #   Generate a list the names of edge attributes  
-  igraph::edge_attr_names(source.ig)
-
-#   summarize numeric network attribute
-  summary(E(source.ig)$weight)  
+  igraph::edge_attr_names(smugEL_ig)
 
 ```
 
@@ -392,18 +370,7 @@ Directed Adjacency Matrix Objects
 ##    *Identify and describe content of nodes and
     links,*
 
-
-##    *Identify format of data set (i.e., matrix or
-    edgelist, directed or not, weighted or not),
-    and*
-
 Vertex attribute names: vertex.names
-
-```{r Network Attributes, echo=TRUE}
-
-  network(smugCovIdx)
-
-```
 
 3.  *Identify whether attribute data are present.*
 
@@ -423,10 +390,10 @@ Vertex attribute names: vertex.names
 ```{r iGraph:Nodes: Path: Length, echo=TRUE}
 
 #     Calculate distances between two nodes
-    distances(source.ig,"node 1","node 2")
+    distances(smugEL_ig,"node 1","node 2")
 
 #     Calculate distance between two nodes using unweighted edges
-    distances(source.ig,"node 1", "node 5",weights=NA)
+    distances(smugEL_ig,"node 1", "node 5",weights=NA)
     
 ```
 
@@ -439,7 +406,7 @@ means that any available edge weights are ignored.
 ```{r iGraph:Nodes: Path: Shortest, echo=TRUE}
     
 #     isolating the distances between specific node
-    all_shortest_paths(source.ig,"node 3","node 4", weights=NA)$res
+    all_shortest_paths(smugEL_ig,"node 3","node 4", weights=NA)$res
 ## Note: manually tell igraph to ignore edge weights.
 ```
 
@@ -449,7 +416,7 @@ overall network structure can be more useful
 ```{r iGraph:Network: Path: Shortest, echo=TRUE}
 
 #     find average shortest path for network
-    average.path.length(source.ig,directed=F)    
+    average.path.length(smugEL_ig,directed=F)    
   
 ```
 
@@ -458,18 +425,20 @@ overall network structure can be more useful
 ## Dyad Census
 
 Classifies all dyads in the network as: -
-Reciprocal (mutual), or mut - Asymmetric
-(non-mutual), or asym, and - Absent, or null
+Reciprocal (mutual), or 
+mut - Asymmetric (non-mutual), or 
+asym, and - 
+Absent, or null
 
 ```{r statnet: Dyad Census , echo=TRUE}
 
-    sna::dyad.census(source.stat)
+    sna::dyad.census(smugEL_sn)
 
 ```
 
 ```{r iGraph: Dyad Census, echo=TRUE}
 
-  igraph::dyad.census(source.ig)
+  igraph::dyad.census(smugEL_ig)
 
 ```
 
@@ -483,20 +452,21 @@ dataset.
 ```{r statnet: Triad Census, echo=TRUE}
 
 #     Classify all Triad in the network: Directed Network
-  sna::triad.census(source.stat, mode= )
+
+  sna::triad.census(smugEL_sn, mode= )
 
 #     Classify all Triad in the network: Undirected Network
-   sna::triad.census(source.stat, mode="graph")
+   sna::triad.census(smugEL_sn, mode="graph")
 
 #     total number of all four triad types returned by triad census
-   sum(sna::triad.census(source.stat, mode="graph"))
+   sum(sna::triad.census(smugEL_sn, mode="graph"))
    
    
 ```
 
 ```{r iGraph: Triad Census, echo=TRUE}
 #Classify all Triad in the network
-     igraph::triad_census(source.ig)
+     igraph::triad_census(smugEL_ig)
 
 ```
 
@@ -505,17 +475,17 @@ dataset.
 ```{r iGraph: weighted/ network transitivity, echo=TRUE}
 
 #     network transitivity:
-    transitivity(source.ig)
+    transitivity(smugEL_ig)
 
 #     weighted network transitivity:
-#   igraph::transivity(source.ig)
+#   igraph::transivity(smugEL_ig)
 
 ```
 
 ```{r statnet: weighted/ directed network transitivity, echo=TRUE}
 
 #     Directed Networks transitivity:
-  gtrans(source.stat)
+  gtrans(smugEL_sn)
 
 #   methods for weighted networks, rank and correlation, along with the relevant references.
 #  sna::gtrans()
@@ -531,24 +501,24 @@ density of an ego network.
 ```{r iGraph:Local transitivity, echo=TRUE}
 
 #     Retrive a list of the vertices we are interested
-    V(source.ig)[c("node 1" ,
+    V(smugEL_ig)[c("node 1" ,
                 "node 5", 
                 "node 6",
                 "node 2")]
 
 #     check ego network transitivity
-transitivity(source.ig,
+transitivity(smugEL_ig,
              type="local", 
-             vids=V(source.ig)
+             vids=V(smugEL_ig)
              [c("node 1",
                 "node 5", 
                 "node 6",
                 "node 2")]) 
 #     get global clustering cofficient
-  transitivity(source.ig, type="global")
+  transitivity(smugEL_ig, type="global")
 
 #     get average local clustering coefficient
-  transitivity(source.ig, type="average")
+  transitivity(smugEL_ig, type="average")
 
 ```
 
