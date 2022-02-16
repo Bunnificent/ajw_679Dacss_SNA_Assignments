@@ -229,9 +229,9 @@ summary.network(network-EXAMPLEet,print.adj = FALSE)
  
  print()
  
- 
- # Dyad Census:
- 
+ ######
+          # Dyad Census:
+ ######
  #Classify all dyads in the network: igraph
  igraph::dyad.census(EXAMPLE.ig)
  
@@ -525,6 +525,8 @@ summary.network(network-EXAMPLEet,print.adj = FALSE)
  
  groupby()%>%
    group_indices(.data, ...))
+######
+ 
  
  ### Plotting Distributions
  
@@ -820,95 +822,4 @@ summary.network(network-EXAMPLEet,print.adj = FALSE)
  install.packages("networkD3")
  install.packages("ndtv")
  #######
-        ###### Statnet: Visualization
- #######
- The statnet package also allows for you to easily visualize your network graphs with the gplot function.
- 
- ```{r}
- 
- # visualize your network graphs 
- gplot(network-EXAMPLE)
- 
- # add in vertex labels and change the size and color of these labels
- gplot(network-EXAMPLE, 
-       displaylabels=TRUE,
-       label.cex=.75, 
-       label.col="black"
- )
- 
- # For directed graphs, you can turn off the arrows
- gplot(network-EXAMPLE, 
-       displaylabels=TRUE, 
-       label.cex=.75, 
-       label.col="black", 
-       usearrows = FALSE
- )
- 
- # differentiate nodes based on their attributes
- gplot(network-EXAMPLE, 
-       displaylabels=TRUE,
-       label.cex=.75,
-       label.col="black",
-       vertex.col=att$DEPT
- )
- 
- legend("bottomleft",
-        fill=0:4,
-        legend=paste("DEPT",0:4),
-        cex=0.75
- )
- 
- # changed the shape of the nodes based on the level of their positions. 
- ## You change the shape of the nodes by specifying the number of sides you want the shape to have using the vertex.sides argument. 
- gplot(network-EXAMPLE, 
-       displaylabels=TRUE,
-       label.cex=.75,
-       label.col="black",
-       vertex.cex = 2,
-       vertex.sides=(att$LEVEL+2)
- )
- 
- ```
- 
- 
- 
- graph provides three different ways for visualization
- ```{r}
- # igraph Visualizations
- 
- plot.igraph()
- # uses regular R graphics and can be used with any R device.
- 
- 
- ```
- 
- 
- ```{r}
- # igraph Visualizations
- #  (Tk is quite resource hungry, so don't try this for very large graphs.)
- 
- tkplot(EXAMPLE.ig, 
-        canvas.width = 450, 
-        canvas.height = 450, 
-        ..., # ... Additional plot parameters
- )
- 
- tk_close(EXAMPLE.id, window.close = TRUE)
- 
- tk_off()
- 
- tk_fit(EXAMPLE.id, width = NULL, height = NULL)
- 
- tk_center(EXAMPLE.id)
- 
- tk_reshape(EXAMPLE.id, newlayout, ..., params)
- 
- tk_postscript(EXAMPLE.id)
- 
- tk_coords(EXAMPLE.id, norm = FALSE)
- 
- tk_set_coords(EXAMPLE.id, coords)
- 
- tk_rotate(EXAMPLE.id, degree = NULL, rad = NULL)
- 
- tk_canvas(EXAMPLE.id)
+   

@@ -138,14 +138,29 @@ names(smugCovIdx )[3] <- "ingType"
 colnames(smugCovIdx)
 ```
 
+#   Project Varriables
+    
+    Raw Data:
+  indx_SmugglerCove_recip
+
+    DataFrame:
+  smugCovIdx
+  network_nodes <- smugCovIdx << "dnkName"
+    
+    Matrix:
+  smug_matrix
+  network_edgelist <- smug_matrix
+        
+    Network Objects: EDGE LIST
+  STATNET: smugEL_sn
+  IGRAPH: smugEL_ig
 
 # Network Info
   Network Objects: EDGE LIST
                   STATNET: smugEL_sn
                   IGRAPH: smugEL_ig
           
-```{r EDGELIST: Network Objects}
-
+```{r EDGELIST: Network Objects: statnet & igraph, include=FALSE}
 
 #Lets make some network objects
 
@@ -163,7 +178,8 @@ network_edgelist <- smug_matrix
       select(network_nodes,
              dnkName)
 
-    View(network_nodes)
+        ### View(network_nodes)
+    
 ######
       ######**igraph** 
 ######
@@ -171,20 +187,19 @@ network_edgelist <- smug_matrix
 network_ig <- 
   graph.edgelist(
     as.matrix(
-      smugCovIdx), 
+      smugCovIdx[1:2]), 
     directed=F)
                 ## create new edge attribute
   E(network_ig)$dnkIng<-smugCovIdx$dnkIng
   E(network_ig)$ingType<-smugCovIdx$ingType
   #create vertex attributes in igraph
- V(network_ig)[match(V(smug_matrix)$dnkName,network_nodes$dnkName)]$dnkName<-
+ V(network_ig)[match(V(network_ig)$dnkName,network_nodes$dnkName)]$dnkName<-
    network_nodes$dnkName
   
-  V(network.ig)[match(V(network_edgelist)$name,network_nodes$VERTEX_NAME)]$dnkName <- network_nodes$dnkName
       summary(edge_attr(network_ig))
      
-head(network_ig)
-summary(network_ig)
+  # head(network_ig)
+  # summary(network_ig)
       ######
  
 #####
@@ -210,39 +225,39 @@ View(network_nodes)
   
   network_statnet%e%'ingType'<- 
     network_edgelist$ingType
- 
-summary(network_statnet)
 
-  
-                                 #     access vertex attributes
+       # list the names: vertex attributes
   view(network_statnet%v% "vertex.names")
-            # list the names of vertex attributes
-  network::list.vertex.attributes(network_statnet)
-            #  Generate a list the names of edge attributes
-  network::list.edge.attributes(network_statnet)
-            #   summarize numeric network attribute
-  summary(network_statnet%v%"dnkName")
+  
+summary(network_statnet)
+        #####
 
+ ## Network Objects: EDGE LIST
+              ##**STATNET:**
+  smugEL_sn <- network_statnet
+  
+                ##**IGRAPH:** 
+  smugEL_ig <- network_ig
+  
 ```
-
 
 ## Smuggler's Cove Index- NETWORK: EDGELIST: Features & Descriptions
-```{r Network: Identify critical features, echo=FALSE}
 
-#**Statnet EdgeList**   smugEL_sn
-#####
-
-```
-
-```{r STATNET: Network Description}
+```{r STATNET: Network Description, include=FALSE}
     
       # class of an object
-class(smugEL_sn )
+  class(smugEL_sn )
 
-      # list the structure of smugCovIdx
-str(smugEL_sn )
+## access vertex attributes
+            # list the names:  vertex attributes
+  network::list.vertex.attributes(smugEL_sn)
+  
+            # list the names:  edge attributes
+  network::list.edge.attributes(smugEL_sn)
+      #   summarize: numeric network attribute
+  summary(smug_sn%v%"dnkName")
 
-      ## Network Attributes
+## Network Attributes
  print(smugEL_sn)
           # Vertices =  
           # Directed = 
@@ -255,15 +270,42 @@ str(smugEL_sn )
                 # non-missing edges = 
           # Vertex attribute names:
           # Edge Attribute Names: 
+
+##**NOTE** large quantity of output 
+      
+  # list the structure of smugCovIdx
+# str(smugEL_sn)
 ```
 
+smugEL_sn
 
+[1] "network"
+
+Network attributes:
+  vertices = 274 
+  directed = TRUE 
+  hyper = FALSE 
+  loops = FALSE 
+  multiple = TRUE 
+  bipartite = FALSE 
+  total edges= 672 
+    missing edges= 0 
+    non-missing edges= 672 
+
+ Vertex attribute names: 
+    dnkName vertex.names 
+
+ Edge attribute names: 
+    dnkIng ingType 
+    
+    
 ```{r igraph: Network Description, echo=TRUE}
   
       # class of an object
     class(smugEL_ig )
     
 ## Network Size
+      
       # Count Vertices
     vcount(smugEL_ig)
     
@@ -279,116 +321,98 @@ str(smugEL_sn )
     is_directed(smugEL_ig)
 
     # weighted or unweighted?
-    is_weighted(smugEL_ig)        
+    is_weighted(smugEL_ig)      
     
-```
+    # edge weights
+    E(smugEL_ig)$weight
 
-
-**Vertex and Edge Attributes**
-
-```{r statnet: Attribute Data: Directed: Adjacency Network, echo=TRUE}
-
-# class of an object
-    class(smugEL_sn)
-
-#     access vertex attributes
-  view(smugEL_sn %v% "vertex.names")
-
-#      list the names of vertex attributes
-  network::list.vertex.attributes(smugEL_sn)
-
-#     access edge attribute
-#  head(smugEL_sn%e% "weight")
-
-#  Generate a list the names of edge attributes
-  network::list.edge.attributes(smugEL_sn)
- 
-#   summarize numeric network attribute
-  summary(smugEL_sn  %v% "name")
-  
-```
-
-```{r igraph: Attribute Data: Directed: Adjacency Network, echo=TRUE}
-
-#     access vertex attribute 
+## access vertex attributes
+    
+    # Generate a list the names of vertex attributes
   V(smugEL_ig)$name
-#     Generate a list the names of vertex attributes
+
+    # access edge attribute  names
   igraph::vertex_attr_names(smugEL_ig)
 
-#     access edge attribute
-  E(smugEL_ig)$weight
-
-#   Generate a list the names of edge attributes  
+    # Generate a list the names of edge attributes  
   igraph::edge_attr_names(smugEL_ig)
-
-```
-
-
-
-#   Week 2: Scripts
-##    Network: Describe Network Data
-##    *Identify and describe content of nodes and
-    links,*
-
-Vertex attribute names: vertex.names
-
-3.  *Identify whether attribute data are present.*
-
-```{r Summary,echo=TRUE}
   
-  summary(smugCovIdx,
-          print.adj = TRUE
-          )
+
+## Network Attributes
+ summary(smugEL_ig)
+          # Vertices =  
+          # Directed = 
+          # hyper = 
+          # loops = 
+          # multiple = 
+          # bipartite = 
+          # total edges = 
+                # missing edges =
+                # non-missing edges = 
+          # Vertex attribute names:
+          # Edge Attribute Names: 
 ```
+smugEL_ig
 
-#       Explore the dataset using commands from week 2 tutorial.
+[1] "igraph"
 
-5.  *geodesic and path distances,*
+Network attributes:
+  vertices = 274 
+  directed = FALSE
+  hyper = FALSE 
+  loops = FALSE 
+  multiple = TRUE 
+  bipartite = FALSE 
+  total edges= 672 
+    missing edges= 0 
+    non-missing edges= 672 
+
+ Vertex attribute names: 
+    dnkName vertex.names 
+
+ Edge attribute names: 
+    dnkIng ingType 
+    
+
+
+#   Week 2: Basic Network Structure: Smuggler's Cove Drink Index
 
 ## Path Length and Geodesic
 
-```{r iGraph:Nodes: Path: Length, echo=TRUE}
-
-#     Calculate distances between two nodes
-    distances(smugEL_ig,"node 1","node 2")
-
-#     Calculate distance between two nodes using unweighted edges
-    distances(smugEL_ig,"node 1", "node 5",weights=NA)
-    
-```
-
-We can also find all of the shortest paths between
-two famalies in this network. These list the
-starting node and the ending node with all nodes
-inbetween for each path. The option weights=NA
-means that any available edge weights are ignored.
-
-```{r iGraph:Nodes: Path: Shortest, echo=TRUE}
-    
-#     isolating the distances between specific node
-    all_shortest_paths(smugEL_ig,"node 3","node 4", weights=NA)$res
-## Note: manually tell igraph to ignore edge weights.
-```
-
-The concept of shortest path to describe the
-overall network structure can be more useful
 
 ```{r iGraph:Network: Path: Shortest, echo=TRUE}
 
 #     find average shortest path for network
     average.path.length(smugEL_ig,directed=F)    
   
+```   
+  
+
+```{r iGraph: Specific Nodes: Path: Shortest, echo=TRUE}
+    
+#     isolating the distances between specific node
+    all_shortest_paths(smugEL_ig,"Strozzi","Tornabuoni", weights=NA)$res
+## Note: manually tell igraph to ignore edge weights.
+```   
+    
+    
+```{r iGraph: Specific Nodes: Path: Length, echo=TRUE}
+
+#     Calculate distances between two nodes
+    distances(smugEL_ig,"Bischeri","Ridolfi")
+
+#     Calculate distance between two nodes using unweighted edges
+    distances(smugEL_ig,"Bischeri", "Castellani",weights=NA)
+    
 ```
 
-6.  *triads or transitivity,*
 
 ## Dyad Census
-
-Classifies all dyads in the network as: -
-Reciprocal (mutual), or 
-mut - Asymmetric (non-mutual), or 
-asym, and - 
-Absent, or null
+Classifies all dyads in the network as: - 
+Reciprocal (mutual), 
+or mut - Asymmetric (non-mutual), 
+or asym, 
+and - Absent, or null
 
 ```{r statnet: Dyad Census , echo=TRUE}
 
@@ -404,16 +428,10 @@ Absent, or null
 
 ## Triad Census
 
-Classifies all triads in the network. The triad
-census provides a fundamental descriptive insight
-into the types of triads found in a particular
-smugEL_
+Classifies all triads in the network. 
+The triad census provides a fundamental descriptive insight into the types of triads found in a particular dataset.
 
 ```{r statnet: Triad Census, echo=TRUE}
-
-#     Classify all Triad in the network: Directed Network
-
-  sna::triad.census(smugEL_sn, mode= )
 
 #     Classify all Triad in the network: Undirected Network
    sna::triad.census(smugEL_sn, mode="graph")
@@ -430,15 +448,13 @@ smugEL_
 
 ```
 
+
 ## Transitivity or Global Clustering
 
 ```{r iGraph: weighted/ network transitivity, echo=TRUE}
 
 #     network transitivity:
     transitivity(smugEL_ig)
-
-#     weighted network transitivity:
-#   igraph::transivity(smugEL_ig)
 
 ```
 
@@ -452,28 +468,26 @@ smugEL_
   
 ```
 
-## Local Transivity or Clustering
 
-`Local transitivity` (local clustering
-coefficient), is a technical description of the
-density of an ego network.
+## Local Transivity or Clustering
+`Local transitivity` (local clustering coefficient), is a technical description of the density of an ego network.
 
 ```{r iGraph:Local transitivity, echo=TRUE}
 
 #     Retrive a list of the vertices we are interested
-    V(smugEL_ig)[c("node 1" ,
-                "node 5", 
-                "node 6",
-                "node 2")]
+    V(smugEL_ig)[c("Bischeri" ,
+                "Castellani", 
+                "Medici",
+                "Ridolfi")]
 
 #     check ego network transitivity
 transitivity(smugEL_ig,
              type="local", 
              vids=V(smugEL_ig)
-             [c("node 1",
-                "node 5", 
-                "node 6",
-                "node 2")]) 
+             [c("Bischeri",
+                "Castellani", 
+                "Medici",
+                "Ridolfi")]) 
 #     get global clustering cofficient
   transitivity(smugEL_ig, type="global")
 
@@ -482,8 +496,234 @@ transitivity(smugEL_ig,
 
 ```
 
-7.  *connectedness and.or component structure,
-    etc.*
+## Component Structure and Isolates
+
+```{r Statnet: Isolates, echo=TRUE}
+
+              ## Isolates:
+ 
+ #List the isolates
+ isolates(smugEL_sn)
+ 
+ # Returns a list of the isolates in the graph or graph set
+ isolates(smugEL_sn, diag=FALSE)
+ 
+ # Is Ego an Isolate?
+ is.isolate(smugEL_sn, ego, g=1, diag=FALSE)
+ 
+ # Adds n isolates to the graph (or graphs)
+ add.isolates(smugEL_sn, n, return.as.edgelist = FALSE)
+  
+```
+
+```{r igraph: Component Structure, echo=TRUE}
+                ## Component Structure: 
+ 
+    # Number of components
+ igraph::components(smugEL_ig)$no 
+ 
+  # Size of each component
+ igraph::components(smugEL_ig)$csize 
+
+ 
+```
+
+
+## Network Density
+ 
+ The density of a network is defined as the proportion of ties present out of all possible ties in a network. 
+ 
+
+ **Note:**
+ 
+ the network density command ignores edge values at present. 
+ 
+ If loops are present or there are multiple edges between two nodes, then the results may not make sense.
+ 
+ 
+```{r Statnet, echo=TRUE}
+
+# get network density: with possible loops
+ network.density(smugEL_sn)
+ 
+ # get network density without loops: statnet
+ gden(smugEL_sn, diag=FALSE)
+ 
+  
+```
+
+ **Igraph** provides an incorrect density calculation as the default assumes  that loops are not included but does not remove them. 
+ 
+ Therefore, the default calculation includes the loops in the numerator but not the denominator of the density calculation.
+
+```{r igraph: network density, echo=TRUE}
+#get network density without loops: igraph
+ network.density(smugEL_ig,loops=TRUE)
+ 
+ 
+ # get network density
+ network.density(smugEL_ig)
+ # provides an incorrect density calculation as the default assumes that loops are not included but does not remove them
+ 
+```
+
+## Vertex Degree
+ **Vertex degree** is a description of an individual node; each vertex in a network may have a different node degree.
+ 
+ 
+ *Node Degree:*
+   node degree is one measure of node centrality or popularity; 
+ Node degree cis a count of the relationships that a node is involved in or the count of the edges that are incident to a vertex
+ 
+ **use the network degree command to:**
+   *  compute network summary statistics (such as average network degree);
+ *  graph the network degree distribution; or
+ *  identify particular nodes (such as the five nodes with the most contacts).
+ 
+
+
+```{r Statnet: Vertex Degree, echo=TRUE}
+
+      # statnet: Calculate average network degree
+ 
+  sna::degree(smugEL_sn)
+          # ignores loops or self-nominations 
+
+
+```
+
+```{r igraph: Vertex Degree, echo=TRUE}
+# igraph: Calculate average network degree
+ # provides node name along with node degree
+ 
+ # includes loops
+ igraph::degree(smugEL_ig)
+
+```
+
+
+
+
+## Network Degree Summary Statistics
+
+```{r Statnet: , echo=TRUE}
+      # Basic R: get summary statistics for node attributes
+ summary(network_nodes)
+      # provides range, mean, median and standard deviation of a vector.
+
+ # get summary statistics for node degree for the binary network degree
+ 
+ summary(data.frame(
+   name=smugEL_sn%v%"vertex.names",
+   totdegree=sna::degree(smugEL_sn),
+   indegree=sna::degree(smugEL_sn, cmode="indegree"),
+   outdegree=sna::degree(smugEL_sn, cmode="outdegree")
+ ))
+  
+```
+
+#Visualizations
+
+## igraph Visualizations
+igraph provides three different ways for visualization.
+```{r igraph: , echo=TRUE}
+
+plot.igraph(smugEL_ig)
+
+ # uses regular R graphics and can be used with any R device.
+
+#  (Tk is quite resource hungry, so don't try this for very large graphs.)
+ 
+ tkplot(smugEL_ig)
+
+```
+
+
+```{r Statnet: Visualization, echo=TRUE}
+
+ # add in vertex labels and change the size and color of these labels
+ gplot(smugEL_sn, 
+       displaylabels=TRUE,
+       label.cex=.75, 
+       label.col="black"
+ )
+ 
+ # For directed graphs, you can turn off the arrows
+ gplot(smugCovIdx, 
+       displaylabels=TRUE, 
+       label.cex=.75, 
+       label.col="black", 
+       usearrows = FALSE)
+ 
+ # differentiate nodes based on their attributes
+ gplot(smugEL_sn, 
+       displaylabels=TRUE,
+       label.cex=.75,
+       label.col="black",
+       vertex.col=att$dnkName
+ )
+ 
+ legend("bottomleft",
+        fill=0:4,
+        legend=paste("DEPT",0:4),
+        cex=0.75
+ )
+ 
+ # changed the shape of the nodes based on the level of their positions. 
+ ## You change the shape of the nodes by specifying the number of sides you want the shape to have using the vertex.sides argument. 
+ gplot(smugEL_sn, 
+       displaylabels=TRUE,
+       label.cex=.75,
+       label.col="black",
+       vertex.cex = 2,
+       vertex.sides=(att$LEVEL+2)
+ )
+ 
+  
+```
+
+```{r Statnet: , echo=TRUE}
+
+  
+```
+
+
+## Visualization: ggplot2
+```{r Visualization: ggplot2}
+
+# Dependencies
+ library(network)
+ library(sna)
+ library(ggplot2)
+ 
+library(visNetwork)
+library(threejs)
+ library(networkD3)
+ library(ndtv)
+ # ggnetwork - This package allows to pass network objects to ggplot2 and provides geometries to plot their elements.
+ 
+ library(ggnetwork)
+ 
+  # visualize your network graphs 
+ library(GGally)
+
+## [network visualization with ggplot2]
+
+
+
+
+```
+
+
+#
+```{r Statnet: , echo=TRUE}
+
+  
+```
+
+```{r igraph: , echo=TRUE}
+
+```
 
 Distill is a publication format for scientific
 and technical writing, native to the web.

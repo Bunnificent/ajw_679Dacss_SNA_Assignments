@@ -1,5 +1,6 @@
 
 # Week 1: *Describe Network Data*
+######
 ## 1. **List and inspect:** 
 List the objects to make sure the datafiles are working properly:
   ```is()
@@ -115,9 +116,7 @@ Names- Edge Attributes
 Names- Edge Attributes
 ```network::list.edge.attributes(climate.stat)
 ```
-
-
-
+#######
 
 # Week2: *Network Structure: Overview*
 - Dyads and Dyad Census
@@ -152,80 +151,79 @@ Classifies all dyads in the network as:
 ```  
 **[statnet]**
   ```sna::dyad.census(gotbook.stat
-                      ```
-                      
-                      ## **Triad Census**
-                      Classifies all triads in the network
-                      
-                      **[igraph]**
-                        ``` igraph::triad_census(gotbook.ig)
-                      ```
-                      **[statnet]**
-                        Undirected Network
-                      ``` sna::triad.census(gotbook.stat, mode="graph")```
-                      Directed Detwork
-                      ``` sna::triad.census(gotbook.stat, mode=)```
-                      
-                      ## Transitivity: **Global Clustering**
-                      
-                      network transitivity:
-                        **[igraph]**
-                        ``` transitivity(gotbook.ig)
-                      ```
-                      weighted network transitivity:
-                        ```igraph::transivity()
-                      ```
-                      
-                      **[statnet]**
-                        weighted network transitivity:
-                        ``` sna::gtrans()
-                      ```
-                      For Directed Networks - network structure rooted in hierarchy
-                      ```gtrans()
-                      ```
-                      
-                      
-                      ## Transivity: **Local Clustering**
-                      
-                      **[igraph]**
-                        
-                        1. Retrieve a list of the three vertices we are interested  
-                      
-                      ``` V(gotbook.ig)
-                      [c(
-                        "vertex_attr_names",
-                        "vertex_attr_names",
-                        "vertex_attr_names"
-                      )]
-                      ```
-                      
-                      2. Check ego network transitivity
-                      
-                      ```transitivity(
-                        gotbook.ig,
-                        type="local",
-                        vids=V(gotbook.ig)
-                        [c(
-                          "vertex_attr_names",
-                          "vertex_attr_names",
-                          "vertex_attr_names"
-                        )]
-                      ) 
-                      ```  
-                      
-                      Global clustering cofficient
-                      ```transitivity(gotbook.ig,
-                                      type="global"
-                      )
-                      ```
-                      
-                      Average local clustering coefficient
-                      ```transitivity(gotbook.ig,
-                                      type="average"
-                      )
-                      ```
-                      
-                      # *INCOMPLETE* Advanced [Week 2]
-                      ## ADVANCED: Path Length and Geodesic
-                      ## ADVANCED Component Structure and Membership
-                      
+```
+
+## **Triad Census**
+Classifies all triads in the network
+
+**[igraph]**
+  ``` igraph::triad_census(gotbook.ig)
+```
+**[statnet]**
+  Undirected Network
+``` sna::triad.census(gotbook.stat, mode="graph")```
+Directed Detwork
+``` sna::triad.census(gotbook.stat, mode=)```
+
+## Transitivity: **Global Clustering**
+
+network transitivity:
+  **[igraph]**
+  ``` transitivity(gotbook.ig)
+```
+weighted network transitivity:
+  ```igraph::transivity()
+```
+
+**[statnet]**
+  weighted network transitivity:
+  ``` sna::gtrans()
+```
+For Directed Networks - network structure rooted in hierarchy
+```gtrans()
+```
+
+
+## Transivity: **Local Clustering**
+
+**[igraph]**
+  
+  1. Retrieve a list of the three vertices we are interested  
+
+``` V(gotbook.ig)
+[c(
+  "vertex_attr_names",
+  "vertex_attr_names",
+  "vertex_attr_names"
+)]
+```
+
+2. Check ego network transitivity
+
+```transitivity(
+  gotbook.ig,
+  type="local",
+  vids=V(gotbook.ig)
+  [c(
+    "vertex_attr_names",
+    "vertex_attr_names",
+    "vertex_attr_names"
+  )]
+) 
+```  
+
+Global clustering cofficient
+```transitivity(gotbook.ig,
+                type="global"
+)
+```
+
+Average local clustering coefficient
+```transitivity(gotbook.ig,
+                type="average"
+)
+```
+
+# *INCOMPLETE* Advanced [Week 2]
+## ADVANCED: Path Length and Geodesic
+## ADVANCED Component Structure and Membership
