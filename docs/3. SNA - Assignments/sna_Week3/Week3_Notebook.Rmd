@@ -105,8 +105,7 @@ passIt <- smugCovIdx
 
 colnames(passIt)
                     #2nd passIt
-passIt$substring_first <- 
-  str_extract(passIt$X5,"(\\w+)") 
+passIt$substring_first <- str_extract(passIt$X5,"(\\w+)") 
 
 #####
 
@@ -145,6 +144,7 @@ colnames(smugCovIdx)
 
     DataFrame:
   smugCovIdx
+            colname: "dnkName" "dnkIng"  "ingType"
   network_nodes <- smugCovIdx << "dnkName"
     
     Matrix:
@@ -154,6 +154,13 @@ colnames(smugCovIdx)
     Network Objects: EDGE LIST
   STATNET: smugEL_sn
   IGRAPH: smugEL_ig
+  
+  Edge Vetex:
+              dnkName
+  Edge Attributes:
+                  dnkIng
+                  ingType
+              
 
 # Network Info
   Network Objects: EDGE LIST
@@ -255,7 +262,7 @@ summary(network_statnet)
             # list the names:  edge attributes
   network::list.edge.attributes(smugEL_sn)
       #   summarize: numeric network attribute
-  summary(smug_sn%v%"dnkName")
+  summary(smugEL_sn%v%"dnkName")
 
 ## Network Attributes
  print(smugEL_sn)
@@ -375,7 +382,29 @@ Network attributes:
     
 
 
+
+
+
+
+## igraph: Exploring Network
+
+```{r}
+library("igraph")        
+ 
+
+
+
+```
+IGRAPH 574c3d4 UN-- 274 672 -- 
++ attr: name (v/c), 
+        dnkName (v/c), 
+        dnkIng (e/c),
+      | ingType (e/c)
++ edges from 574c3d4 (vertex names):
+
+
 #   Week 2: Basic Network Structure: Smuggler's Cove Drink Index
+We can break large social networks down into their constituent parts. These constituent parts are referred to as “motifs”. The most basic motif consists of two nodes and is called a dyad. Edges in a network signify the presence or absence of dyadic relations. It follows that a dyad in an undirected network can have two unique configurations: connected or disconnected; and three unique configurations in a directed network (mutual, assymetric, and null)
 
 ## Path Length and Geodesic
 
@@ -408,6 +437,8 @@ Network attributes:
 
 
 ## Dyad Census
+
+
 Classifies all dyads in the network as: - 
 Reciprocal (mutual), 
 or mut - Asymmetric (non-mutual), 
@@ -422,9 +453,42 @@ and - Absent, or null
 
 ```{r iGraph: Dyad Census, echo=TRUE}
 
-  igraph::dyad.census(smugEL_ig)
+graph.density(smugEL_ig)
+    ## Density captures, at the macro-level, the proportion of dyads that are present over the possible total number of dyads in the network
+
+      # Generating a random graph for comparison
+# ?erdos.renyi.game
+      ## In an erdos.renyi.graph, each edge has the same probability of being created. We determine the probability and it returns a random graph with a density that equals (in expectation) this probability.
+
+smugEL_igNod <- vcount(smugEL_ig)
+
+smugEL_igDen <- graph.density(smugEL_ig)
+
+smugEL_igRandoG <- 
+  erdos.renyi.game(
+    n = smugEL_igNod, 
+    p.or.m = smugEL_igDen, 
+    directed = F) 
+      # where n is the number of nodes, 
+      # p.or.m is the probability of drawing an edge, 
+      #directed is whether the network is directed or not
+
+#**plot(smugEL_igRandoG, ...** in .R notebook  
+     # vertex.size = 5, 
+     # vertex.label = 1, 
+     # edge.curved = .1, 
+     # vertex.color = "tomato", 
+     # edge.arrow.size = .1, 
+     # edge.width = .5, 
+     # edge.color = "grey60")
 
 ```
+
+
+
+
+
+
 
 ## Triad Census
 
@@ -471,8 +535,17 @@ The triad census provides a fundamental descriptive insight into the types of tr
 
 ## Local Transivity or Clustering
 `Local transitivity` (local clustering coefficient), is a technical description of the density of an ego network.
+```{r iGraph: Transitivity: Network}
+#     get global clustering cofficient
+  transitivity(smugEL_ig, type="global")
 
-```{r iGraph:Local transitivity, echo=TRUE}
+#     get average local clustering coefficient
+  transitivity(smugEL_ig, type="average")
+
+```
+
+
+```{r iGraph:Local transitivity: Node List & Ego Network, echo=TRUE}
 
 #     Retrive a list of the vertices we are interested
     V(smugEL_ig)[c("Bischeri" ,
@@ -488,12 +561,6 @@ transitivity(smugEL_ig,
                 "Castellani", 
                 "Medici",
                 "Ridolfi")]) 
-#     get global clustering cofficient
-  transitivity(smugEL_ig, type="global")
-
-#     get average local clustering coefficient
-  transitivity(smugEL_ig, type="average")
-
 ```
 
 ## Component Structure and Isolates
@@ -509,10 +576,10 @@ transitivity(smugEL_ig,
  isolates(smugEL_sn, diag=FALSE)
  
  # Is Ego an Isolate?
- is.isolate(smugEL_sn, ego, g=1, diag=FALSE)
+ is.isolate(smugEL_sn, ego_exp, g=1, diag=FALSE)
  
  # Adds n isolates to the graph (or graphs)
- add.isolates(smugEL_sn, n, return.as.edgelist = FALSE)
+ add.isolates(smugEL_sn, n_umber, return.as.edgelist = FALSE)
   
 ```
 
@@ -521,8 +588,9 @@ transitivity(smugEL_ig,
  
     # Number of components
  igraph::components(smugEL_ig)$no 
- 
-  # Size of each component
+      ##**NOTE:** $no prevents a list of comonents from being printed
+  
+# Size of each component
  igraph::components(smugEL_ig)$csize 
 
  
@@ -541,13 +609,15 @@ transitivity(smugEL_ig,
  If loops are present or there are multiple edges between two nodes, then the results may not make sense.
  
  
-```{r Statnet, echo=TRUE}
+```{r Statnet: Network Density, echo=TRUE}
 
-# get network density: with possible loops
- network.density(smugEL_sn)
+            # get network density: with possible loops
+   network.density(smugEL_sn)
+          ##**WARNING: Network is multiplex - no general way to define density.** 
+
+ # get network density **with** loops: statnet
+ gden(smugEL_sn, diag=F)
  
- # get network density without loops: statnet
- gden(smugEL_sn, diag=FALSE)
  
   
 ```
@@ -557,13 +627,12 @@ transitivity(smugEL_ig,
  Therefore, the default calculation includes the loops in the numerator but not the denominator of the density calculation.
 
 ```{r igraph: network density, echo=TRUE}
-#get network density without loops: igraph
- network.density(smugEL_ig,loops=TRUE)
- 
- 
- # get network density
+
+    #get network density **with** loops
  network.density(smugEL_ig)
- # provides an incorrect density calculation as the default assumes that loops are not included but does not remove them
+ class(smugEL_ig)
+          ##**NOTE** provides an incorrect density calculation 
+          ## as the default assumes that loops are not included but does not remove them
  
 ```
 
@@ -597,10 +666,10 @@ transitivity(smugEL_ig,
  # provides node name along with node degree
  
  # includes loops
- igraph::degree(smugEL_ig)
+  igraph::degree(smugEL_ig)
+
 
 ```
-
 
 
 
