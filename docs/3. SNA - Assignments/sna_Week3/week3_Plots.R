@@ -14,6 +14,7 @@ smugEL_ig
  #####
       ### plot: basic R 
       plot(smugEL_ig)
+      plot(ingTypeEL_Dig)
  
       #####
         ###**Plot Name: smugIG_plot-R_blue-curved-small*
@@ -46,7 +47,6 @@ plot(smugEL_ig,
       edge.curved = .3, 
       edge.arrow.size = .1, 
       edge.width = .5)
- 
     ##### 
       ###**Plot: Frucherman-Reingold **
    ###**Plot Name** igrap-smugEL_Frucherman-Reingold
@@ -56,17 +56,16 @@ plot(smugEL_ig,
    layout.fruchterman.reingold(smugEL_ig)
  
  # and then we change the default layout setting to equal the layout we generated above
- plot(smugEL_ig,
-      layout = fruchtermanLayout, 
-      vertex.size = 2, 
-      vertex.color = "green", 
-      vertex.frame.color = NA, 
-      vertex.label.cex = 1,  
-      vertex.label = NA, 
-      edge.curved = 5, 
-      edge.arrow.size = .1, 
-      edge.width = .1)
-  
+ 
+ plot(smugNet, 
+      vertex.size = 6, 
+      vertex.color= "orange",
+      vertex.label.cex = .5, 
+      vertex.label.color = "black", 
+      edge.with = .5,
+      edge.curved = 5,
+      edge.arrow.size = 0.1)
+ 
     #####
    
 ###############
@@ -117,5 +116,36 @@ plot(smugEL_ig,
         #####
       
 ###############
-                ##### Plotting:
+                ##### Plotting: igraph: DEGREE CENTRALITY
 ###############
+######
+      ###**Plot: base R *
+      ###**Plot Name: Degree Centrality: dnkIng*
+######      
+      plot(smugNet, 
+           vertex.size = 8, 
+           vertex.label = NA,
+           vertex.color = "orange", 
+           edge.color = "blue",
+           edge.width = 2,
+           edge.arrow.size = 0.5,
+           edge.curved = 1)
+      
+      plot(smugNet, 
+           vertex.size = 4,
+           vertex.label.size = 1,
+           vertex.color = "gray",
+           edge.color = "blue",
+           edge.widtth = 2,
+           edge.arrow.size = 0.25)
+      
+      #####      
+######
+      ###
+######      
+      #####
+######
+      ###
+######
+      
+      
