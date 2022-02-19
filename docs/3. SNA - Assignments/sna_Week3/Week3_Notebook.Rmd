@@ -166,8 +166,9 @@ colnames(smugCovIdx)
   Network Objects: EDGE LIST
                   STATNET: smugEL_sn
                   IGRAPH: smugEL_ig
+                          ingTypeEL_Dig 
           
-```{r EDGELIST: Network Objects: statnet & igraph, include=FALSE}
+```{r EDGELIST: UNDIRECTED Network Objects: statnet & igraph, include=FALSE}
 
 #Lets make some network objects
 
@@ -248,6 +249,54 @@ summary(network_statnet)
   
 ```
 
+          
+```{r EDGELIST: IGRAPH: DIRECTED Network: ingType, include=FALSE}
+
+#Lets make some network objects
+
+colnames(smugCovIdx) 
+# tell R data should be understood as a matrix
+smug_matrix = as.matrix(smugCovIdx,
+                        matrix.type="edgelist",
+                        directed=FALSE) 
+head.matrix(smug_matrix)
+
+network_edgelist <- smug_matrix
+
+  nodes_ingType <- smugCovIdx 
+    nodes_ingType<- 
+      select(nodes_ingType,ingType)
+view(nodes_ingType)
+        ### View(nodes_ingType)
+    
+######
+      ######**igraph** 
+######
+        #igraph object: ingType
+d_network_ig <- 
+  graph.edgelist(
+    as.matrix(
+      smugCovIdx[2:3]), 
+    directed=T)
+
+
+vertex.attributes(d_network_ig)
+                ## create new edge attribute
+  E(d_network_ig)$dnkIng<-smugCovIdx$dnkIng
+  E(d_network_ig)$dnkName<-smugCovIdx$dnkName
+ 
+  #create vertex attributes in igraph
+ V(d_network_ig)[match(V(d_network_ig)$ingType,nodes_ingType$ingType)]$ingType<- nodes_ingType$ingType
+  
+   View(d_network_ig)
+   head(d_network_ig)
+  summary(d_network_ig)
+  summary(edge_attr(d_network_ig))
+  summary(vertex.attributes(d_network_ig))
+    
+   ingTypeEL_Dig <- d_network_ig
+```
+
 ## Smuggler's Cove Index- NETWORK: EDGELIST: Features & Descriptions
 
 ```{r STATNET: Network Description, include=FALSE}
@@ -305,11 +354,91 @@ Network attributes:
  Edge attribute names: 
     dnkIng ingType 
     
+
+```{r STATNET: functions that calculate network-level descriptives}
+library(statnet)
+library(sna)
+
+    #summary of network object, also provides an edge list
+summary(smugEL_sn)$no
+
+    #number of nodes in the network
+network.size(smugEL_sn)
+
+    #number dyads that exist in network (n*(n-1))
+network.dyadcount( smugEL_sn) 
+
+    #number of edges present in the network
+network.edgecount( smugEL_sn)
+
+    #network density (edge count/dyad count)
+gden(smugEL_sn)
+  gden(smugEL_sn,
+       diag = T,
+       mode = "graph") 
+
+    ##**diag=* 
+    ##boolean indicating whether or not the diagonal should be treated as valid data. 
+        ##*Set this true if and only if the data can contain loops. 
+        ##*diag is FALSE by default.
+    ##**mode="digraph"*
+    ##* string indicating the type of graph being evaluated. 
+    ##* "digraph" indicates that edges should be interpreted as directed; 
+    ##* "graph" indicates that edges are undirected. mode is set to "digraph" by default.
+
+  # grecip calculates the dyadic reciprocity 
+grecip(smugEL_sn) 
+      #proportion of symmetric dyads
+  grecip(smugEL_sn, measure = "dyadic") 
+      # returns the ratio of mutuals to non-null dyads.
+  grecip(smugEL_sn, measure = "dyadic.nonnull") 
+      # the proportion of edges which are reciprocated
+  grecip(smugEL_sn, measure = "edgewise") 
+      # returns the log of the ratio of the edgewise reciprocity to the density
+  grecip(smugEL_sn, measure = "edgewise.lrr") 
+      # The correlation measure may be interpreted as the net tendency for edges of similar relative value (with respect to the mean edge value) to occur within the same dyads. 
+  grecip(smugEL_sn, measure = "correlation") 
+
+      # k-path or k-cycle  compute census statistics (respectively) on one or more input graphs
+      ## In addition to aggregate counts of paths or cycles, results may be disaggregated by vertex and co-membership information may be computed.
+
+Usage
+  
+  #**kpath* Count paths of length <=3
+kpath.census(smugEL_sn, maxlen=3,
+             tabulate.by.vertex=FALSE) 
+View(kpath.census(smugEL_sn, tabulate.by.vertex=T))
+
+#**kcycle*Count cycles of length <=3
+kcycle.census(smugEL_sn, maxlen=3, tabulate.by.vertex=FALSE) 
+  View(kcycle.census(smugEL_sn, maxlen=3,tabulate.by.vertex=T))
+
+# counts of cliques by size
+clique.census(smugEL_sn, tabulate.by.vertex=F, enumerate=F)
+view(clique.census(smugEL_sn, tabulate.by.vertex=TRUE, enumerate=TRUE))
+
+```
+
+gtrans(smugEL_sn)
+proportion of transitive triads
+
+symmetrize( smugEL_sn, rule = "weak") 
+symmetrize so i<->j iff i->j OR i<-j 
+
+symmetrize( smugEL_sn, rule = "strong") 
+symmetrize so i<->j iff i->j OR i<-j 
+
+dyad.census(smugEL_sn) 
+MAN dyad census
+
+triad.census(smugEL_sn) 
+standard directed triad census
+
     
 ```{r igraph: Network Description, echo=TRUE}
-  
+library(igraph)
       # class of an object
-    class(smugEL_ig )
+    class(smugEL_ig)
     
 ## Network Size
       
@@ -380,36 +509,99 @@ Network attributes:
  Edge attribute names: 
     dnkIng ingType 
     
+```{r IGRAPH: DIRECTED Network: ingType, echo=TRUE}
+  
+      # class of an object
+    class(ingTypeEL_Dig)
+    
+## Network Size
+      
+      # Count Vertices
+    vcount(ingTypeEL_Dig)
+    
+      # Count Edges
+    ecount(ingTypeEL_Dig)
 
+## Network Mode
+    # Bipartitie / Unimodal
+    is_bipartite(ingTypeEL_Dig)
 
+## Edges    
+    # Un/directed 
+    is_directed(ingTypeEL_Dig)
 
+    # weighted or unweighted?
+    is_weighted(ingTypeEL_Dig)      
+    
+    # edge weights
+    E(ingTypeEL_Dig)$weight
 
+## access vertex attributes
+    
+    # Generate a list the names of vertex attributes
+  V(ingTypeEL_Dig)$name
 
+    # access edge attribute  names
+  igraph::vertex_attr_names(ingTypeEL_Dig)
 
-## igraph: Exploring Network
+    # Generate a list the names of edge attributes  
+  igraph::edge_attr_names(ingTypeEL_Dig)
+  
 
-```{r}
-library("igraph")        
- 
+## Network Attributes
+ summary(ingTypeEL_Dig)
+          # Vertices =  
+          # Directed = 
+          # hyper = 
+          # loops = 
+          # multiple = 
+          # bipartite = 
+          # total edges = 
+                # missing edges =
+                # non-missing edges = 
+          # Vertex attribute names:
+          # Edge Attribute Names: 
+
 
 
 
 ```
-IGRAPH 574c3d4 UN-- 274 672 -- 
-+ attr: name (v/c), 
-        dnkName (v/c), 
-        dnkIng (e/c),
-      | ingType (e/c)
-+ edges from 574c3d4 (vertex names):
-
+       
+  # class of an object
+[1] "igraph"
+     
+      ## Network Size
+       
+  # Count Vertices
+[1] 201
+     
+  # Count Edges
+[1] 672
+ 
+      ## Network Mode
+  # Bipartitie / Unimodal
+     is_bipartite
+[1] FALSE
+ 
+    ## Edges    
+   # Un/directed 
+     is_directed
+[1] TRUE
+ 
+  # weighted or unweighted?
+     is_weighted
+[1] FALSE
+     
+   # edge weights
+NULL
 
 #   Week 2: Basic Network Structure: Smuggler's Cove Drink Index
-We can break large social networks down into their constituent parts. These constituent parts are referred to as “motifs”. The most basic motif consists of two nodes and is called a dyad. Edges in a network signify the presence or absence of dyadic relations. It follows that a dyad in an undirected network can have two unique configurations: connected or disconnected; and three unique configurations in a directed network (mutual, assymetric, and null)
+)
 
 ## Path Length and Geodesic
 
-
-```{r iGraph:Network: Path: Shortest, echo=TRUE}
+### Igraph: Undirected
+```{r iGraph: Undirected: Path: Shortest, echo=TRUE}
 
 #     find average shortest path for network
     average.path.length(smugEL_ig,directed=F)    
@@ -417,7 +609,7 @@ We can break large social networks down into their constituent parts. These cons
 ```   
   
 
-```{r iGraph: Specific Nodes: Path: Shortest, echo=TRUE}
+```{r iGraph: Undirected: Specific Nodes: Path: Shortest, echo=TRUE}
     
 #     isolating the distances between specific node
     all_shortest_paths(smugEL_ig,"Strozzi","Tornabuoni", weights=NA)$res
@@ -425,7 +617,7 @@ We can break large social networks down into their constituent parts. These cons
 ```   
     
     
-```{r iGraph: Specific Nodes: Path: Length, echo=TRUE}
+```{r iGraph: Undirected: Specific Nodes: Path: Length, echo=TRUE}
 
 #     Calculate distances between two nodes
     distances(smugEL_ig,"Bischeri","Ridolfi")
@@ -434,10 +626,36 @@ We can break large social networks down into their constituent parts. These cons
     distances(smugEL_ig,"Bischeri", "Castellani",weights=NA)
     
 ```
+### Igraph: Directed
+```{r iGraph: Directed: Path: Shortest, echo=TRUE}
 
+#     find average shortest path for network
+    average.path.length(ingTypeEL_Dig,directed=T)    
+  
+```   
+  
+
+```{r iGraph: Directed:Specific Nodes: Path: Shortest, echo=TRUE}
+    
+#     isolating the distances between specific node
+    all_shortest_paths(ingTypeEL_Dig,
+                       "Strozzi","Tornabuoni", 
+                       weights=NA)$res
+## Note: manually tell igraph to ignore edge weights.
+```   
+    
+    
+```{r iGraph: Directed: Specific Nodes: Path: Length, echo=TRUE}
+
+#     Calculate distances between two nodes
+    distances(ingTypeEL_Dig,"Bischeri","Ridolfi")
+
+#     Calculate distance between two nodes using unweighted edges
+    distances(ingTypeEL_Dig,"Bischeri", "Castellani",weights=NA)
+    
+```
 
 ## Dyad Census
-
 
 Classifies all dyads in the network as: - 
 Reciprocal (mutual), 
@@ -450,9 +668,9 @@ and - Absent, or null
     sna::dyad.census(smugEL_sn)
 
 ```
-
-```{r iGraph: Dyad Census, echo=TRUE}
-
+plot(sna::dyad.census(smugEL_sn))
+```{r iGraph: Undirected: GRAPH: Dyad Census, echo=TRUE}
+library(igraph)
 graph.density(smugEL_ig)
     ## Density captures, at the macro-level, the proportion of dyads that are present over the possible total number of dyads in the network
 
@@ -485,11 +703,6 @@ smugEL_igRandoG <-
 ```
 
 
-
-
-
-
-
 ## Triad Census
 
 Classifies all triads in the network. 
@@ -505,22 +718,34 @@ The triad census provides a fundamental descriptive insight into the types of tr
    
    
 ```
+plot(sna::triad.census(smugEL_sn, mode="graph"))
+plot(sum(sna::triad.census(smugEL_sn, mode="graph")))
 
-```{r iGraph: Triad Census, echo=TRUE}
+```{r iGraph: Undirected: Triad Census: Calculating a triad census, echo=TRUE}
 #Classify all Triad in the network
-     igraph::triad_census(smugEL_ig)
+   igraph::triad_census(smugEL_ig)
 
 ```
 
+ plot(igraph::triad_census(smugEL_ig))
+
+```{r iGraph: Undirected:TRIDADS: Banning triads}
+
+
+
+
+```
 
 ## Transitivity or Global Clustering
 
-```{r iGraph: weighted/ network transitivity, echo=TRUE}
+```{r iGraph: Undirected: weighted/ network transitivity, echo=TRUE}
 
 #     network transitivity:
     transitivity(smugEL_ig)
 
 ```
+
+
 
 ```{r statnet: weighted/ directed network transitivity, echo=TRUE}
 
@@ -535,7 +760,7 @@ The triad census provides a fundamental descriptive insight into the types of tr
 
 ## Local Transivity or Clustering
 `Local transitivity` (local clustering coefficient), is a technical description of the density of an ego network.
-```{r iGraph: Transitivity: Network}
+```{r iGraph: Undirected: Transitivity: Network}
 #     get global clustering cofficient
   transitivity(smugEL_ig, type="global")
 
@@ -545,7 +770,7 @@ The triad census provides a fundamental descriptive insight into the types of tr
 ```
 
 
-```{r iGraph:Local transitivity: Node List & Ego Network, echo=TRUE}
+```{r iGraph: Undirected: Local transitivity: Node List & Ego Network, echo=TRUE}
 
 #     Retrive a list of the vertices we are interested
     V(smugEL_ig)[c("Bischeri" ,
@@ -583,12 +808,12 @@ transitivity(smugEL_ig,
   
 ```
 
-```{r igraph: Component Structure, echo=TRUE}
+```{r iGraph: Undirected: Component Structure, echo=TRUE}
                 ## Component Structure: 
  
     # Number of components
  igraph::components(smugEL_ig)$no 
-      ##**NOTE:** $no prevents a list of comonents from being printed
+      ##**NOTE:** $no prevents a list of components from being printed
   
 # Size of each component
  igraph::components(smugEL_ig)$csize 
@@ -626,7 +851,7 @@ transitivity(smugEL_ig,
  
  Therefore, the default calculation includes the loops in the numerator but not the denominator of the density calculation.
 
-```{r igraph: network density, echo=TRUE}
+```{r iGraph: Undirected: network density, echo=TRUE}
 
     #get network density **with** loops
  network.density(smugEL_ig)
@@ -661,7 +886,7 @@ transitivity(smugEL_ig,
 
 ```
 
-```{r igraph: Vertex Degree, echo=TRUE}
+```{r iGraph: Undirected: Vertex Degree, echo=TRUE}
 # igraph: Calculate average network degree
  # provides node name along with node degree
  
@@ -677,7 +902,7 @@ transitivity(smugEL_ig,
 
 ```{r Statnet: , echo=TRUE}
       # Basic R: get summary statistics for node attributes
- summary(network_nodes)
+ summary(nodes_ingTypes)
       # provides range, mean, median and standard deviation of a vector.
 
  # get summary statistics for node degree for the binary network degree
@@ -691,19 +916,86 @@ transitivity(smugEL_ig,
   
 ```
 
-#Visualizations
 
-## igraph Visualizations
-igraph provides three different ways for visualization.
-```{r igraph: , echo=TRUE}
+# Centrilization 
 
-plot.igraph(smugEL_ig)
+```{r iGraph: Undirected: DEGREE CENTRALITY: dnkIng}
+library(igraph)
+library(tidyverse)
 
- # uses regular R graphics and can be used with any R device.
+# graph the SMUG network 
 
-#  (Tk is quite resource hungry, so don't try this for very large graphs.)
- 
- tkplot(smugEL_ig)
+smug_attributes <- smugCovIdx
+smug_edj <- smugCovIdx[2:3]
+View(smug_edj)
+#V1: dnkIng
+#V2: ingType
+
+smugNet <- 
+  graph.edgelist(as.matrix(smug_edj), directed = T)
+
+V(smugNet)$dnkIng <- 
+  smug_attributes$dnkIng[match(V(smugNet)$name, smug_attributes$ingType)]
+
+V(smugNet)$dnkName <- 
+  smug_attributes$dnkName[
+    match(V(
+      smugNet)$name,
+      smug_attributes$dnkIng)
+    ]
+summary(smugNet)
+
+###**PLOT** in .R Doc
+
+```
+
+```{r iGraph: Undirected: DEGREE CENTRALITY: dnkIng}
+library(igraph)
+library(tidyverse)
+
+# graph the SMUG network 
+
+smug_attributes <- smugCovIdx
+smug_edj <- smugCovIdx[2:3]
+View(smug_edj)
+#V1: dnkIng
+#V2: ingType
+
+smugNet <- 
+  graph.edgelist(as.matrix(smug_edj), directed = T)
+
+V(smugNet)$ingType <- 
+  smug_attributes$ingType[match(V(smugNet)$name, smug_attributes$ingType)]
+
+V(smugNet)$dnkName <-
+  smug_attributes$dnkName[match(V(smugNet)$name, smug_attributes$dnkName)]
+
+summary(smugNet)
+
+###**PLOT** in .R Doc
+
+```
+
+```{r iGraph: Undirected: DEGREE CENTRALITY: ingType, echo=TRUE}
+# graph the SMUG network 
+
+smug_attributes <- smugCovIdx
+smug_edj <- smugCovIdx[2:3]
+View(smug_edj)
+#V1: dnkIng
+#V2: ingType
+
+
+smugNet <- 
+  graph.edgelist(as.matrix(smug_edj), directed = T)
+
+V(smugNet)$dnkName <-
+  smug_attributes$dnkName[match(V(smugNet)$name, smug_attributes$dnkIng)]
+
+summary(smugNet)
+View(smugNet)
+
+###**PLOT** in .R Doc
 
 ```
 
@@ -796,6 +1088,213 @@ library(threejs)
 
 Distill is a publication format for scientific
 and technical writing, native to the web.
->
+
 Learn more about using Distill for R Markdown at
-<https://rstudio.github.io/distill>. ##
+<https://rstudio.github.io/distill. ##
+
+
+
+
+# iGraph Directed Network Object
+
+## Degree Centrality
+We can break large social networks down into their constituent parts. These constituent parts are referred to as “motifs”. The most basic motif consists of two nodes and is called a dyad. Edges in a network signify the presence or absence of dyadic relations. It follows that a dyad in an undirected network can have two unique configurations: connected or disconnected; and three unique configurations in a directed network (mutual, assymetric, and null
+
+```{r iGraph: Directed: GRAPH: Dyad Census, echo=TRUE}
+
+graph.density(ingTypeEL_Dig)
+    ## Density captures, at the macro-level, the proportion of dyads that are present over the possible total number of dyads in the network
+
+      # Generating a random graph for comparison
+# ?erdos.renyi.game
+      ## In an erdos.renyi.graph, each edge has the same probability of being created. We determine the probability and it returns a random graph with a density that equals (in expectation) this probability.
+
+ingTypeEL_DigNod <- vcount(ingTypeEL_Dig)
+
+ingTypeEL_DigDen <- graph.density(ingTypeEL_Dig)
+
+smugEL_DigRandoG <- 
+  erdos.renyi.game(
+    n = smugEL_igNod, 
+    p.or.m = smugEL_igDen, 
+    directed = T) 
+      # where n is the number of nodes, 
+      # p.or.m is the probability of drawing an edge, 
+      #directed is whether the network is directed or not
+
+#**plot(smugEL_DigRandoG, ...** in .R notebook  
+     # vertex.size = 5, 
+     # vertex.label = 1, 
+     # edge.curved = .1, 
+     # vertex.color = "tomato", 
+     # edge.arrow.size = .1, 
+     # edge.width = .5, 
+     # edge.color = "grey60")
+
+```
+
+
+```{r iGraph: Directed: Degree Centrality}
+# Degree centrality is calculated using the degree function in R. It returns how many edges each node has.
+view(degree(ingTypeEL_Dig))
+
+ingT_deg <- ingTypeEL_Dig
+V(ingT_deg)$degree <- degree(ingT_deg) # assignment
+
+# plot(ingT_deg, 
+#     vertex.label.cex = .6, 
+#     vertex.label.color = "black", 
+#     vertex.size = V(ingTypeEL_Dig)$degree, 
+#     vertex.label.cex = .2) # sized by degree
+
+```
+
+
+```{r iGraph: Directed: Betweenness Centrality}
+
+view(betweenness(ingTypeEL_Dig, directed = FALSE))
+
+# view(betweenness(ingTypeEL_Dig, directed = TRUE))
+              # Yeilds 0
+
+ingTypeEL_Between <- ingTypeEL_Dig
+# We can again assign the output of betweenness() to a variable in the network and size the nodes according to it.
+
+V(ingTypeEL_Between)$betweenness <- 
+  betweenness(ingTypeEL_Between, 
+              directed = F)
+
+# plot(ingTypeEL_Between, 
+#     vertex.label.cex = .6, 
+#     vertex.label.color = "black", 
+#     vertex.size = V(ingTypeEL_Between)$betweenness) # sized by betweenness
+
+
+```
+
+With closeness centrality we again make use of the shortest paths between nodes. We measure the distance between two nodes as the length of the shortest path between them. Farness, for a given node, is the average distance from that node to all other nodes. Closeness is then the reciprocal of farness (1/farness).
+```{r iGraph: UnDirected:  Closeness Centrality}
+
+view(closeness(smugEL_ig))
+  
+  # We assign it to a node variable and plot the network, adjusting node size by closeness.
+ingTyp_Cent <- smugEL_ig #**UNDIRECTED **
+
+V(ingTyp_Cent)$closeness <- closeness(ingTyp_Cent)
+
+View(ingTyp_Cent)
+
+# plot(ingTyp_Cent,
+#     vertex.label.cex = .6, 
+#     vertex.label.color = "black", 
+#     vertex.size = V(ingTyp_Cent)$closeness/max(V(ingTyp_Cent)$closeness) * 20)
+
+
+```
+
+
+Degree centrality only takes into account the number of edges for each node, but it leaves out information about ego’s alters
+```{r iGraph: Directed: Eigenvector Centrality}
+
+view(evcent(ingTypeEL_Dig)$vector)
+# view(evcent(smugEL_ig)$vector)
+ingTyp_Vector <- ingTypeEL_Dig
+V(ingTyp_Vector)$eigenvector <- evcent(ingTyp_Vector)$vector
+
+# plot(ingTyp_Vector,
+#     vertex.label.cex = .6, 
+#     vertex.label.color = "black", 
+#     vertex.size = V(ingTyp_Vector)$eigenvector/max(V(ingTyp_Vector)$eigenvector) * 20)
+```
+
+
+ “Interpretively, the Bonacich power measure corresponds to the notion that the power of a vertex is recursively defined by the sum of the power of its alters. The nature of the recursion involved is then controlled by the power exponent: positive values imply that vertices become more powerful as their alters become more powerful (as occurs in cooperative relations), while negative values imply that vertices become more powerful only as their alters become weaker (as occurs in competitive or antagonistic relations).”
+```{r iGraph: Directed: Bonacich Centrality}
+
+ingTyp_Cent <- ingTypeEL_Dig
+
+V(ingTyp_Cent)$bonacich <- 
+  power_centrality(ingTyp_Cent, exponent = -2, rescale = T)
+
+V(ingTyp_Cent)$bonacich <- 
+  ifelse(V(ingTyp_Cent)$bonacich < 0, 0, V(ingTyp_Cent)$bonacich)
+```
+
+
+
+```{r iGraph: Directed: Page Rank}
+
+ingTyp_Cent <- ingTypeEL_Dig
+
+V(ingTyp_Cent)$page_rank <- page_rank(ingTyp_Cent, directed = TRUE)$vector
+
+```
+
+ plot(ingTyp_Cent,
+     vertex.label.cex = .6, 
+     vertex.label.color = "black", 
+     vertex.size = V(ingTyp_Cent)$page_rank/max(V(ingTyp_Cent)$page_rank) * 20)
+
+
+```{r FUCK IT: Measure Correlations, eval=FALSE, include=FALSE}
+# extract all the vertex attributes
+all_atts <- 
+  lapply(list.vertex.attributes(ingTyp_Cent),function(x) get.vertex.attribute(ingTyp_Cent,x))
+
+# bind them into a matrix
+all_atts <- 
+  do.call("cbind", all_atts)
+
+# add column nams
+colnames(all_atts) <- 
+  list.vertex.attributes(ingTyp_Cent)
+
+# drop the family variable
+all_atts <- 
+  data.frame(all_atts[,2:ncol(all_atts)])
+
+# convert all to numeric
+all_atts <- 
+  sapply(all_atts, as.numeric)
+
+# produce a correlation matrix
+cormat <- 
+  cor(all_atts)
+
+# melt it using reshape to function melt() to prepare it for ggplot which requires long form data
+setDT(as.data.frame(cormat))
+melted_cormat <- melt(cormat)
+
+ggplot(data = melted_cormat, aes(x=Var1, y=Var2, fill=value)) + 
+  geom_tile() +
+  scale_fill_distiller(palette = "Spectral", direction=-2) +
+  xlab("") +
+  ylab("")
+```
+
+```{r FUCKIT : Centralization and Degree Distributions, eval=FALSE, include=FALSE}
+# extract all the vertex attributes
+all_atts <- lapply(list.vertex.attributes(ingTyp_Cent),function(x) get.vertex.attribute(ingTyp_Cent,x))
+# bind them into a matrix
+all_atts <- do.call("cbind", all_atts)
+# add column nams
+colnames(all_atts) <- list.vertex.attributes(ingTyp_Cent)
+# drop the family variable
+all_atts <- data.frame(all_atts[,2:ncol(all_atts)])
+# convert all to numeric
+all_atts <- sapply(all_atts, as.numeric)
+# produce a correlation matrix
+cormat <- cor(all_atts)
+
+as.data.table(cormat)
+
+view()
+# melt it using reshape to function melt() to prepare it for ggplot which requires long form data
+melted_cormat <- melt(cormat)
+ggplot(data = melted_cormat, aes(x=Var1, y=Var2, fill=value)) + 
+  geom_tile() +
+  scale_fill_distiller(palette = "Spectral", direction=-2) +
+  xlab("") +
+  ylab("")
+```
+
