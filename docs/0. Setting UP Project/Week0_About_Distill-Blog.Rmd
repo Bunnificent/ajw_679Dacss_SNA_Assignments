@@ -1,0 +1,272 @@
+---
+title: "Social Network Analysis: Week 0: About this dataset"
+description: " "
+author:
+  - name: "Audra Jamai White" 
+    url: 
+    affiliation: "UMass Amherst: DACSS 679: Social Network Analysis: Assignments"
+    affiliation_url: 
+date: "`r Sys.Date()`"
+output: distill::distill_article
+---
+
+```{r setup, Libraries, include=FALSE}
+knitr::opts_chunk$set(include = FALSE)
+# Document Creation
+library(knitr)
+library(markdown)
+library(yaml)
+library(distill)
+library(blogdown)
+```
+
+## *About the Smuggler's Cove Drink Index dataset:*
+
+[Smuggler's Cove](https://www.smugglerscovesf.com/#about-section)
+
+:   is a legendary cocktail bar in San Francisco.
+    Since opening in 2009, this Tiki Bar has
+    developed a dedicated following, received many
+    awards, and is high-key famous among cocktail
+    corps d'elite.
+
+![](https://media.giphy.com/media/l2JJIQmEvS4hBbnjO/giphy.gif)
+
+[Exotic Cocktails, Rum, and the Cult of Tiki](https://www.smugglerscovesf.com/#book-section)
+
+:   What do people in the restaurant industry do
+    when they receive any modicum of celebrity?
+
+    *Release a recipe book - of course !*
+
+    It's not like a bar boasting about" featuring
+    the largest rum selection in the United
+    States, and cocktails from over three
+    centuries of rum history" has to worry about
+    one of their customers (or competitors) being
+    able to replicate their [highly specialized
+    bar
+    menu](https://www.smugglerscovesf.com/menu).
+
+    The [Smuggler's Cove: Exotic Cocktails, Rum,
+    and the Cult of
+    Tiki](https://www.smugglerscovesf.com/#book-section)
+    book does provide cocktail aficionados and
+    home-mixologists with an education in the
+    history of rum and "tiki drinks"; along with
+    over 80 recipes to inspire our #HomeBarGoals
+
+[Smuggler's Cove Recipe Book Index](https://docs.google.com/spreadsheets/d/1W5eaejaZ9MOu3I36R9TZIus7xlHhkX7JonmBzGHXnTI/edit#gid=942764477)
+
+:   The overlap between [(tech-bros /
+    data-nerds) + ((Eldrich) Millennials,
+    X-ennials)) + (high class bar flies) ] isn't a
+    perfect circle; But it is a very enmeshed Venn
+    Diagram!
+
+    Like, any other group creating a 21st social
+    nice by relying on pretentiously inaccessible
+    hobbies as the basis of social capitol to
+    create a hobby to base one's social identity
+    on -- there's a sub reddit to share pictures,
+    memes, and datasets with like-minded folks.
+
+    [Thanks
+    el_joker1](https://www.reddit.com/r/cocktails/comments/5um8zh/smugglers_cove_tiki_cocktail_book_index/)
+    !!! I wonder how many other cocktail+data
+    geeks have played around with this CVS?
+
+[Network Dataset: Smuggler's Cove Index](https://docs.google.com/spreadsheets/d/1W5eaejaZ9MOu3I36R9TZIus7xlHhkX7JonmBzGHXnTI/edit#gid=942764477)
+
+:   The CSV is a pretty small data set. The
+    source.csv contains 6 columns and hundreds of
+    rows.
+
+    My network dataset contains 3 columns: Drink
+    Name, Drink Ingredient, and Ingredient Type
+    (Juice, Rum, Bitters, Fruit, ect).
+
+    These three categories are used to develop and
+    Edge list with a small number of redundant
+    edge attributes.
+
+# Does a Recipe Book Contain Network Data?
+
+I like to think so.
+
+Every time-period has it's own "cocktail culture",
+which can be viewed as a network of period-related
+products, technological practices, and culinary
+aesthetics manifesting in each element of a
+cocktail recipe.
+
+Converting the data and metadata in recipe book
+into network data could serve as a proxy to
+reflect on more conventional network datasets.
+Researchers into business and profitability could
+recipe books cum network data to perform
+historical market research - but all of those
+people are not me.
+
+![](https://media.giphy.com/media/3o7TKJhutMCl75fkLm/giphy.gif)
+
+Recipes (and recipe meta data) are all a part of
+the the larger super-structure of "things humans
+eat". Recipe books can be viewed as a codex of
+specific elements of specific food cultures[^1].
+The elements of recipes in a cookbook have a
+relationship to each other because they're are a
+part of a curated collection - but that
+relationship is defined more by the social facts
+of the author's food culture(s) than the
+individual decisions.
+
+How do the social facts of and author's food culture shape their recipe selection?
+
+:   The author's of[Smuggler's
+    Cove](https://www.smugglerscovesf.com/#about-section)
+    could not have opened their bar in a place
+    where the community's alcohol food taboo is
+    codified in the law, which could be many
+    places - all of which are not San Francisco.
+    Since the authors did live in California
+    during the early 21st century they were
+    exposed to the 21st century cocktail culture
+    revival. The ability for the authors to write
+    about [Exotic Cocktails, Rum, and the Cult of
+    Tiki](https://www.amazon.com/Smugglers-Cove-Exotic-Cocktails-Cult/dp/1607747324)
+    is wholly contingent upon recreational
+    consumption of the alcohol being a deeply
+    ingrained element of San Francisco's food
+    culture - which developed a cocktail focused
+    sub-culture.
+
+    When "Prohibition" was a social fact in the
+    early 20th century U.S.A. the legally codified
+    alcohol taboo was an element of the larger
+    culture's class stratification and racial cast
+    system. The perpetrators of Temperance
+    Movement restricted alcohol access as a means
+    of social control - specifically, the socially
+    undesirable. While their social betters
+    enjoyed the privileged of maintaining
+    (extra)legal access to alcohol. This period's
+    cocktail culture being determined by access to
+    alcohol could be used as a proxy for examining
+    proximity to political power during the
+    Temperance Movement. Besides the venn diagram
+    of communities target by the Temperance
+    Movement and the target populations of nascent
+    eugenics movement quite possibly being just
+    one circle - elements of cocktail culture can
+    serve as a proxy to explore network dynamics
+    of early 20th pre-globalized international
+    markets, in addition to agricultural products
+    immediately before The Dust Bowl and advent of
+    refrigeration.
+
+# So What ?
+
+Cocktails are build with specific ingredients,
+methods, and presentations to fit contemporary
+cocktail culture aesthetics.
+
+![](https://media3.giphy.com/media/zbW5zoQetefZwdBR6Z/200w.webp?cid=ecf05e477of2cy4i1vdat12zy8n4ufrcuuikyv6qxkmwe1z2&rid=200w.webp&ct=g){width="400"}
+
+There is not an organization with the self-imposed
+responsibility and authority to standardize the
+recopies and classification of cocktails while
+maintain records attributing a drinks development
+to a specific bar or bartender. Can we use SNA
+methods to suss out anecdotal aspects of
+contemporary cocktail culture?
+
+To start: I'm curious to see what sort of
+relationships exists between Tiki Cocktail
+Ingredients? Cocktails are build with specific
+ingredients, methods, and presentations to fit
+contemporary cocktail culture aesthetics.
+
+*For example:* "gin goes with lime (not lemon);"
+but why is that? *Short answer:* European
+imperialism and systematic wealth extraction of
+the global south. It's the same reason why my
+Jamaican Grandmother said "kidney beans go in rice
+& peas (not English peas)"
+
+*Another example:* The fictional James Bond being
+cited as an authoritative voice on whether a
+proper Martini's should be shaken or stirred.
+*Short answer:* Cocktails with eggs and milk are
+shaken to create foam. Spirit forward drinks tend
+to be stirred to limit dilution. *You can shake a
+drink with carbonated ingredients if you want to.*
+
+# What makes a Tiki Drink a "Tiki Drink?"
+
+This isn't the "ask 10 people and get 10 different
+answers" sort of question, but all of the answers
+are based on each person's professionally
+(un)informed opinion. As a former bartender - I
+believe in the authority of the published opinions
+of professional bartenders and [cocktail
+historians](https://www.theatlantic.com/health/archive/2010/06/how-to-be-a-drink-historian/58724/).
+
+Their opinion is based in direct experience and
+observation of the subject in question. Which is
+the sort of thing empiricists do, but since they
+are building cocktails instead of a dataset, their
+answers are given the same consideration of
+qualitative research.
+
+## To start:
+
+I'm curious to see what sort of relationships
+exists between cocktail ingredients?
+
+![](C:/Users/white/AppData/Local/RStudio/tmp/paste-FF879F11.png){width="500"}
+
+> `D`istill is a publication format for scientific
+> and technical writing, native to the web.
+>
+> Learn more about using Distill for R Markdown at
+> <https://rstudio.github.io/distill>.
+
+[^1]: *sFood Culture?*
+
+    The differentiating elements between food
+    cultures are what a community eats, how food
+    is prepared, when food is prepared, why it's
+    prepared a certain way, who prepares the food,
+    and who consumes the food. All of which
+    combine to create food taboos and culinary
+    traditions - the social facts informing a
+    foundational aspect of daily life.
+
+    Humans are wild! Throughout time and space we
+    have integrated an assortment of plants,
+    animals, insects, fungi, and minerals into
+    idiosyncratic food cultures. The consumables
+    in food culture are particular while the
+    technological methods of preparation and
+    preservation are shared. Foods are consumed
+    raw or cook. Cooked foods can be boiled,
+    roasted, baked, or fried. Food preservation
+    methods are equally limited. Perishables are
+    dried, cured (salt, smoke, sugar, acid, ect.),
+    and fermented.[We love to ferment
+    things!](https://fermentationassociation.org/fermentation-in-anthropology/)
+
+    Most of my favorite foods are fermented-
+    bread, cheese, pickles, booze. Anything can be
+    fermented, but fermenting liquids - grain
+    mash, plant juice, milk, honey- into beverages
+    seems to be universal. The wildest thing and
+    our love of fermentation liquids is that the
+    end product usually contains a toxin -
+    alcohol!
+
+    I'm sure several someone's have researched why
+    humans love to create and imbibe intoxicants
+    a.k.a poison -[at least we're not the only
+    ones.](https://youtu.be/A0Xsqo-n_AE)

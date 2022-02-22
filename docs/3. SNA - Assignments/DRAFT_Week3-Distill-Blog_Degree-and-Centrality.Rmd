@@ -1,0 +1,431 @@
+---
+title: "Social Network Analysis: Week 3: Degree and Centrality"
+description: " "
+author:
+  - name: "Audra Jamai White" 
+    url: 
+    affiliation: "Umass Amherst - DACSS 679: Social Network Analysis"
+    affiliation_url: 
+date: "`r Sys.Date()`"
+output: distill::distill_article
+---
+
+```{r setup, Libraries, include=FALSE}
+knitr::opts_chunk$set(include = FALSE)
+# Document Creation
+library(knitr)
+library(markdown)
+library(yaml)
+library(distill)
+library(blogdown)
+```
+
+![](https://media.giphy.com/media/3ornkcUTDQyU4E6kRa/giphy.gif)
+
+![](https://media.giphy.com/media/3ornjK3aalyWAEhxDi/giphy.gif)
+
+![](https://media.giphy.com/media/3o6Yg4Hgd2bt4802xW/giphy.gif)
+
+![](https://media.giphy.com/media/l2JJzfwyTZYUbjQn6/giphy.gif)
+
+# [Research Question:]{.smallcaps}
+
+## Can we use SNA methods to suss out anecdotal aspects of contemporary cocktail culture?
+
+Probably!
+
+The difficulty lies in finding the right type of
+data and formatting it in such a way to answer
+meaningful questions.
+
+![](https://media.giphy.com/media/l44QthVdK0aN0h0BO/giphy.gif)
+
+[#ButAlso]{.smallcaps} Determining what those
+*meaningful questions* are*.*
+
+### Does a Recipe Book Contain Network Data?
+
+The elements of recipes in a cookbook have a
+relationship to each other because they're are a
+part of a curated collection - but that
+relationship is defined more by the social facts
+of the author's food culture(s) than the
+individual decisions.
+
+![](https://c.tenor.com/lNr4hoGtM3cAAAAC/thomas-jane-josephus-miller.gif)
+
+Recipes (and recipe meta data) are all a part of
+the the larger super-structure of "things humans
+eat". Each recipe book can serve as a topical
+codex for author's food cultures[^1].
+
+[Smuggler's Cove](https://www.smugglerscovesf.com/#about-section)
+
+:   is a legendary cocktail bar in San Francisco.
+    Since opening in 2009, this Tiki Bar has
+    developed a dedicated following and received
+    many awards.
+
+Source Text: [Smuggler's Cove: Exotic Cocktails, Rum, and the Cult of Tiki](https://www.smugglerscovesf.com/#book-section)
+
+:   Fatures 80 cocktail recipes accompanied by the
+    history of rum and tiki drinks.
+
+Source Data: [Smuggler's Cove: Recipe Book Index](https://docs.google.com/spreadsheets/d/1W5eaejaZ9MOu3I36R9TZIus7xlHhkX7JonmBzGHXnTI/edit#gid=942764477)
+
+:   [Thanks
+    el_joker1](https://www.reddit.com/r/cocktails/comments/5um8zh/smugglers_cove_tiki_cocktail_book_index/)
+    for converting the index into a CSV and
+    posting on Reddit
+
+    Smuggler's Cove CSV is a pretty small data
+    set. The source.csv contains 6 columns and
+    several hundred rows.
+
+Network Data: Smuggler's Cove Index
+
+:   My network dataset contains 3 columns:
+
+    -   [Drink Name]{.smallcaps}
+
+    -   [Drink Ingredient]{.smallcaps}
+        ^Lime Juice/Rye/Orgeat/Lime Wedge^
+
+    -   [Ingredient Type]{.smallcaps}
+        ^Juice/ Whiskey/ Syrup/Fruit^
+
+    These three categories are used to develop and
+    Edge list with a small number of redundant
+    edge attributes.
+
+# What makes a Tiki Drink a "Tiki Drink?"
+
+This isn't the "ask 10 people and get 10 different
+answers" sort of question - but all of the answers
+are based on each person's (un)informed opinion
+and not a professional organization [issuing
+product
+standards](https://www.gayot.com/wine/wine-map/france.html)
+or establishing professional standards with
+data-driven research.
+
+![](https://media.giphy.com/media/3oz8xxBsDMZWcMCHoQ/giphy.gif)
+
+## To start:
+
+### I'm curious to see what sort of relationships exist between the components of [Smuggler's Cove](https://www.smugglerscovesf.com/#about-section) Tiki Cocktail Recipies?
+
+# ## \*Write up your results briefly: \*
+
+\* focus on interpretation of the results.
+
+\* Don't list statistics or provide code,
+
+\* \*\*the goal is to choose a few interesting
+results and provide an interpretation.\*\*
+
+## \*Briefly describe the dataset:\*
+
+## \*Provide at least two or three noteworthy
+
+results\*, including:
+
+1\. the relevant statistics and interpretation.
+
+For example, explaining which node(s) are most
+central and which are least central.
+
+2\. Discuss (with any related evidence) whether or
+not the node(s) behavior is in line with or
+violates expectations based on the degree
+centrality measure.
+
+3\. What do you make of network density and
+centralization measures?
+
+4\. What about differences in the binary 100
+million threshold network vs valued trade flows
+network.
+
+5.  Check tutorial for other ideas of results to
+    discuss.
+
+    *Provide at least two or three noteworthy
+    results*, including:
+
+<!-- -->
+
+1.  the relevant statistics and interpretation.
+
+    -   For example, explaining which **node(s)
+        are most central and which are least
+        central.**
+
+2.  Discuss (with any related evidence) whether or
+    not the **node(s) behavior is in line with or
+    violates expectations based on the degree
+    centrality measure.**
+
+    1.  **What do you make of network density and
+        centralization measures?\
+        **
+
+        +---+---+---+---+
+        | A | s | i | P |
+        | n | t | g | l |
+        | a | a | r | o |
+        | l | t | a | t |
+        | y | n | p |   |
+        | s | e | h |   |
+        | i | t |   |   |
+        h       | s|    |   |  |
+        +====+===+===+===+
+        | D | M | 0 | y |
+        | y | u | . | e |
+        | a | t |   | s |
+        | d | u | 0 |   |
+      |  yC | a | 1 |  |
+        | e n| l | 7 |   |
+        | n | : | 9 |   |
+        | s | 1 |   |  | 
+        |       | u |
+  |   |   |           s | A |   |   |
+          | | s |1 7| 9  
+        |
+  | y |   |   |           | | m |s y| m m
+        |   |     | |   |
+        |
+  | e |   |   |           | | t |t r| i c
+        |   | r |     | |
+        |
+  | i |   |   |           | | c |   |   |
+        |   | a |   |   |
+        |   | l |     | |
+        |
+  | : |   |   |           | | 6 |   |    
+        |   | 7 |     | |
+        |
+  | 0 |   |   |           | |   |   |   |
+ |      |     N |   |   |
+        |
+  | u |   |   |           | | l |u l| l :
+        |   | l |     | |
+        |
+  | : |   |   |           | | 3 |6 7| 3 0
+        |   | 6 |   |   |
+        |   | 7 |   |   |
+        |   | 3 |     | |
+        |
+  | 0 |   |   +-----------+-+---+---+---+
+        | T | 0 | \ |   |
+        | r | : | | |   |
+        | C e n s i | 3 | l |   |
+        | a | 2 |   |   |
+        | d | 1 |       |
+|
+        C | 6 |   |       |       e | 3 |   |    
+        |       | n | 9 |   |   |
+     |    s | 1 |   |  | 1 : 7 8   |u |   |   |    
+        | s | 1 |   |   |
+        | : | : |  |
+   |
+     | A    | 7 |   | |  \|        |  | 8 |   |    
+        |   | \ |  |
+   |
+     +------| | |   |--+-----------+--+---+---+| \| l \| l \| 9 \| \| \| \| T \|
+        0 \| \| \| \|\|\| r \| \| \|\
+        \| \| i \| 2 \| \| 2 \| a \| : \| \| \| \|
+        d \| 1 \| \| \| \| \|\| \| s \| \| \| \|
+        \| \|i\| 6 \| i 4 \|n 7\|\| \| \|
+
+|    \|\| N \| \| \| N
+|  \| \| e \| 4 \| 4 e \| \|\| t \| \| \| \| \| w \| \| 3 \| \|\| \| \| oo \| \| \|\| \| \|r\| r \| \| \|
+|      \|\| k \| \| \| \| k +---+---+-----+ \| T \|-- \| ( \| y \| \| r \| 3 \| u \| e \| \| i \| 9 \| n \| s \| \| a \| 1 \| d \| \| \| d \| 0 \| i \| \| \| C \| 2 \| r \| \| \| e \| 4 \| e \| \| \| \| cn \| \| \| \| n \| \|\|d g\| ss s t \| \| u \| \| e \| \| \| s \| \| d \| \| \| : \| \| g \| \| \| \|aph r \| t\| \| \| at \| \| \| \| \| \|\|\| \| \| \| p \| \| \| t \| t\| h \| \| \| )a \| \| \| l \| \| \| \| \| n \| \| [ \| \| \| u \| \| 1 \| \| mber \| m \| \| 2 \|
+
+] \| \| b \| \| 3 \| \|\| \|\|\
+\| e e 2 \| \| \| r \| \| 1 \|665\| 9 \| 6\| o \|
+\| \| \|\
+\| f\| \| 6 \| \| riad t \| \| \| a \|a \| 5 \| l
+\| \| 9\
+\| \| l \|\| \| \| ypes \| \| [ \| f \| [] \| \|
+\|\| 16\| o o \| 2 \| \| \| u \| \| ] \| \| \| r
+\| \| 1 \| \| \| t \| \| 6 \| \| \| r \| \| 6 \|
+\| \| i \| \| 4 \| \| \| a \| \| 8 \| \| \| d \|
+\| \| \| \|6 6 6 \| \|\| t \| t \|\
+\| y \| \| [ \| \| \| p \| \| 1 \| \| \| e \| \| 1
+\| \| \| s \| \| ] \| \| \| \| \|\| \| \|\
+\| [\|11]\| 8 \| \| 8 \| \| \| 7 \|\
+\| +-\|- \| \| \| \| +-- -+---+---+---+ \| T \| u
+\| U \| \| \| r \| n \| n \| \| \| a \| d \| d \|
+\| \| n \| i \| i \| \| \| s \| r \| r \| \| \| i
+\| e \| \|\
+e e \| e \| \| c t c \| t \| i \| t \| t \| \| \|
+v \| e \| e \| \| \| i \| d \| d \| \| \| t \|
+\|\| \|--\|\| \| y \|\| \| \|\| +---+---+---+L oal
+---+ \| L \|L \| \| \| \| o \| \| \| c \| \| \| \|
+\| a \| \| \| \| \| \| \|l \| l \| \| \|t \| \| \|
+\| r \| \| \|ran s \| \| \| a \| \| a \| n \|\| \|
+\| \| \| \| \| \| \| \| i \| \| \| \| \| t \| \|
+\| \| \| i \| \| \| \| \| v \| \| \| \| \| i \| \|
+\| \| \| t \| \| \| \| \|\| \| \| \| \|\| \| \| \|
+: \| \| \| \| \| N \| \| \| \| \| o \| \| \| \| \|
+d \| \| \| \| \| e \| \| \| \| \| L \| \| \| \| \|
+i \| \| \|\
+\| \| \| \|\|\| s s \| s\
+&\| Eg\| t \| \| \| \|
+
+    & &  |
+
+& \| \|E\| \| \|\| \| \| g \| \| \| \| \| o \| \|
+\| \| \| N \| \| \| \| \| \| \| e \| \| \| w\|ork
+\| \| \| \| \| \|\| w \| \| w \| o \| \|\| \| \|
+\|\| \| \| r \| r\| \|\
+\|k \| \| \| \| +---+---+---+---+ \| I \| n \| \|
+\| \| s \| o \| \| \| \| o \| \| \| \| \| l \| \|
+\| \| \| a \| \| \| \| \| t \| \| \| \| \| e \|---
+\|\|---\| \| \| \| \| s\| \| \| +---+---+---+---+
+\| U \| \| n \| \| \| n \| \| u \| \| \| d \| \| m
+\| \| \| i \| \| b \| \| \| r \| \| e \| \| \| e
+\| \| r \| \| \| c \| \| : \| \| \| t \| \| 1 \|
+\| \| e \| \| \| \| \| d \| \| s \| \| \| : \| \|
+i \| \| \| \| \| zC \|C \| C \| \|\| \| o \|\| \|
+\|\| \| m \| \| : \| \| \| p \| \| 2 \| \| \| o \|
+\| 7 \| \| \| n \| \| 4 \| \| \| e \| \| \| \| n
+\|\| S \|\|tru\| \| \| \| t \|\| \| S \| \| \| \|
+\| t \| \| \| \| \| r \| \| \| \| \| u \| \|274 \|
+\| c \| \| c \| \| c \| \|
+
+    |t |   ||t
+    |    |        ||
+
+\| \| +- r \|\| \| \| \|\| e \| \| \| \|
++---+---+rec + \| D \| \| i \| 0 \| y \| \| . \| e
+\|\| \| r \| \| 0 \| s \| \| e \| \| 1 \| \| \|
+6\|7 \| 6 c \| c \|\| \| d \| \| t \| \| 7 \| \|
+\|e e \| \| d \| 6 \| \| \| : \| \| 4 \| \| \| \|
+\| \| 2 G \| G 2 \| \|\| 2 R\| \|\| \| \| A \| \|
+\| \| \| P \| \| \| \| \| H \| \| \| \| \| : \| \|
+\| \| \| D \| \| \| \| \| y \| \| \| \| \| a \| \|
+\| \| \|\
+d \| C \| \| \| \| \| \| \|\| \| C \| \|\
+\| \|\| \| e \| \| \| \| \| \|\| \| s \| \| \| \|
+\| \| \| \| \| u \|\| \| s \| \| \| \|
++---+---+---+---+ \| D \| \| \| y \| \| i \| \| \|
+e \| \| r \| \| \| s \| \| e \| \| \| \| \| \| \|
+c \| \|cy\| cs \|\| \| t \| \| \| t \|\
+\| \| \| \| d \| \| \| \| \| : \| \| \| \| \| D \|
+\| \| \| \| \| \| \|ee \| e\| \| g \| \| \| \| \|
+\| \| r \| \| e \| \| \| \| \| e \| \| \| \| \| C
+\| \| \| \| \| e \| \| \| \| \| n \| \| \| \| \| t
+\| \| \| \| \| r \| \| \| \| \| a \| \| \| \| \| l
+\| \| \| \| \| i \| \| \| \| \| \| \| --- \| t \|
+\| \| \| y \| \| \|\| \| +---+---+rec + \| D \| \|
+i \| \| y \| \| \| e \|\| \| r \| \| \| s \| \| e
+\| \| \| \| \| \| \| c \| \|cy\| cs \|\| t \| \|
+\| \| e\
+\| \| \| \| d \| \| \| \| \| : \| \| \| \| \| B \|
+\| \| \| \| e \| \| \| \| \| t \| \| \| \|
+
+     w |       | | |
+
+\| \|\| \| \| \| \| e \| \| e \| \| \| \| \| n \|
+\| \| \| \| n \| \| \| \| \| e \| \| \| \|
+
+     s |       ||  |
+
+\| s \| \| \|\| \| \| C \| \| \| \| \| e \| \| \|
+\| \| n \| \| \| \| \| t \| \| \| \| \| \| \| \|\|
+rr \| \| \| a \| \| \| \| \| l \| \| \| \| \| i \|
+\| \| \| \| \|\| t +-\| --\|-\| \| yy \|\| \|+---
++--+ ----+ --+---+ \| D \| \| y \| \| \| e \| \|
+\| r \| \| \| s \| \| e \| \| \| \| \| c \| \| \|
+y\| s \| \| \| tedt \| \| \| e \| \|\|\| \|\| \|
+\| \| \| \| d \|\
+d \| : \| \| \| \| \| E \| \| \| \| \| i \| \| \|
+\| \| g \| \| \| \| \| e \| \| \|\| \| \|\| n\| \|
+\| \| \| \| v \| \| \| \| \| e \| \| \| \| \| c \|
+\| \| \| \| t \| \| \| \|
+
+       o |   C||e |n||
+
+\| \| \| \|\| r \| \| C \| \| \| \| \| e \| \| \|
+\| \| n \| \| \| \| \| t \| \| \| \| \| r \| \| \|
+\| \| \| a \|\| \|\| \| \| \| \| \| l \| \| \|
+\|\| i \| i \| \|t + \|\|\| \|\|\| \| y \| \| \|
+\| +---+---+---+---+ \| D \| \| \| \| \| i \| \|
+\| \| \| r \| \| \| \| \| \| e \| e\| \| \| \| c
+\| \| \|\| \| t \| \| \| \| \| e \| \| \| \| \| d
+\| \| \| \| \| : \| \| \| \| \| B \| \| \| \| \| o
+\| \| \| \| \| n \| \| \| \| \| a \| \| \| \| \| c
+\| \| \| \| \| i \| \| \| \| \| c \| \| \| \| \| h
+\| \| \| \| \| C \| \| \| \| \| e \| \| \| \| \| n
+\| \| \| \| \| t \| \| \|\| \| \|\| r\| \| \| \|
+\| \| a \| \| \| \| \| l \| \| \| \| \| i \| \| \|
+\| \| t \| \| \| \|
+
+       y |    ||  | ||
+          | 
+          |   |   |
+
+} +---+---+---+ \| ------+ +--+ \|\| D \| \|\| i
+\| \| \|\| \| \| \| r \| \| \| \| \| \| \| \|\| e
+\| \| \| \| \| \| c \|c \|\| c \| \| \|t \| k \|t
+\| t \| \| \| \|e \| \| \| \| \| \| \| \| \| \|\|:
+\| \| \| \| \| P \| \| \| \| \| \| \| \|\
+a \| \| g \|\| \| \| \| \| \| e \| \| \| \| \| R
+\| \| \| \| \|a
+
+          | a |   || a||  |
+
+| \| n\| n\| \|n \| \| \| \| \|----- --+ \|
+
+-   
+
+    -   ++ + +-+---+ \|+- \| \| +-+ +> Dist+ill+
+        \| \| + is+ a publ+ic\| \| \|
+        +---+---+---+---+
+
+> Distill is a publicacien is a p ublicanttecnical
+> witing, native to the web.
+>
+> Learn more about using Distill for R Markdown at
+> <https://rstudio.github.io/distill>.
+
+[^1]: *sFood Culture?*
+
+    The differentiating elements between food
+    cultures are what a community eats, how food
+    is prepared, when food is prepared, why it's
+    prepared a certain way, who prepares the food,
+    and who consumes the food. All of which
+    combine to create food taboos and culinary
+    traditions - the social facts informing a
+    foundational aspect of daily life.
+
+    Humans are wild! Throughout time and space we
+    have integrated an assortment of plants,
+    animals, insects, fungi, and minerals into
+    idiosyncratic food cultures. The consumables
+    in food culture are particular while the
+    technological methods of preparation and
+    preservation are shared. Foods are consumed
+    raw or cook. Cooked foods can be boiled,
+    roasted, baked, or fried. Food preservation
+    methods are equally limited. Perishables are
+    dried, cured (salt, smoke, sugar, acid, ect.),
+    and fermented.[We love to ferment
+    things!](https://fermentationassociation.org/fermentation-in-anthropology/)
+
+    Most of my favorite foods are fermented-
+    bread, cheese, pickles, booze. Anything can be
+    fermented, but fermenting liquids - grain
+    mash, plant juice, milk, honey- into beverages
+    seems to be universal. The wildest thing and
+    our love of fermentation liquids is that the
+    end product usually contains a toxin -
+    alcohol!
+
+    I'm sure several someone's have researched why
+    humans love to create and imbibe intoxicants
+    a.k.a poison -[at least we're not the only
+    ones.](https://youtu.be/A0Xsqo-n_AE)

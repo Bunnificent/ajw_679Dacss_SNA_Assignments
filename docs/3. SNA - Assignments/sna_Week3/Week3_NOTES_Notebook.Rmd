@@ -1,0 +1,204 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+# Meta Data: smugEL_ig
+Name: smugEL-ig
+Type: List [10](s3: igraph)
+Value: List Length 10
+
+**List Class**
+[1] 
+smugEL_ig[[1]]
+    Type: Double [1]
+    Value: 274
+[2] 
+smugEL_ig[[2]]
+    Type: Logical [1]
+    Value: False
+
+    *?* Adjacency List *?*
+[3]
+smugEL_ig[[3]]
+    Type: double [672]
+    Value: 1 2 3 ... 273 237 273
+[4]
+smugEL_ig[[4]]
+    Type:  double [672]
+    Value: 0 0 0 ... 18 13 37
+[5]
+smugEL_ig[[5]]
+    Type:  double [672]
+    Value: 0 1 2  ... 664 665 671
+[6]
+smugEL_ig[[6]]
+    Type:  double [672]
+    Value: 0 1 2  ... 617 630 636
+[7]
+smugEL_ig[[7]]
+    Type:  double [275]
+    Value: 0 0 1 ... 655 661 672
+[8]
+smugEL_ig[[8]]
+    Type:  double [275]
+    Value: 0 6 7 ... 672 672 672
+
+[9]
+smugEL_ig[[9]]
+    Type: List [4]
+    Value: 
+  
+  [[9]][[1]]
+      Type: Double [3]
+      Value: 1 0 1
+  
+  [[9]][[2]]     
+      Type: List [0]
+      Value: named list()
+
+**[[9]][[3]]**
+      name: Name
+          Type: charachter [274]
+          Value: "drink names"
+      name: Dnk Name
+          Type: charachter [274]
+          **Value: NA**
+
+  [[9]][[4]]       
+        Name: dnkIng
+            Type: Character [672]
+            Value:  "Drink Ingredients"
+        Name: ingType
+            Type: Character [672]
+            Value: "Ingredient Types"
+
+[10]
+smugEL_ig[[10]]
+        Type: environment [3]
+        Value: <environment: 0x000001f362d1cad8>
+
+  [[10]][[".__igraph_version__."]]
+            Type: character [1]
+            Value: '0.8.0'
+
+  [[10]][["me"]]    
+        Replica of Name: smugEL-ig [1:10] with corresponding sub-sets
+
+  [[10]][["myid"]]       
+        Type: character [1]
+        Value: "8d6f6c3c-903b-11ec-9ddd-db50f5a64f06"
+        
+        
+
+```{r}
+
+
+```
+
+
+
+
+# Meta Data: smugEL_sn
+View(smugEL_sn)
+
+smugEL_sn 
+        Type: list [5] (s3: network)
+        Value: List Lenth 5
+
+[["mel"]]
+        Type: list[6720]
+        Value: list length 672
+      
+      [["mel"]][[1]]
+$inl
+[1] 115
+$outl
+[1] 1
+
+$atl
+$atl$ingType
+[1] "FRUIT"
+
+$atl$na
+[1] FALSE
+
+$atl$dnkIng
+[1] "(1-INCH-SQUARE) CHUNKS PINEAPPLE"        
+        
+        
+      [["mel"]][[511]]
+$inl
+[1] 126
+
+$outl
+[1] 91
+
+$atl
+$atl$ingType
+[1] "BITTERS"
+
+$atl$na
+[1] FALSE
+
+$atl$dnkIng
+[1] "ANGOSTURA BITTERS"
+        
+
+
+[["gal"]]        
+        Type: list[7]
+        Value: list length 7
+
+    smugEL_sn[["gal"]]
+$n
+[1] 274
+
+$mnext
+[1] 673
+
+$directed
+[1] TRUE
+
+$hyper
+[1] FALSE
+
+$loops
+[1] FALSE
+
+$multiple
+[1] TRUE
+
+$bipartite
+[1] FALSE
+
+
+[["val"]]
+        Type: list[274]
+        Value: list length274
+
+  [["val"]][[1]]
+      Name: NA
+        Type: logical[1]
+        Value: False
+      Name: vertex.names
+        Type: character [1]
+        Value: List Lenth 3
+      Name: dnkNames
+        Type: character [1]
+        Value: List Lenth 3
+
+**[["iel"]]**
+        Type: List [274]
+        Value: List Length 274
+
+    [["iel"]][[1:114]]
+    **integer(0)**
+
+
+**[["oel"]]**
+       Type: List [274]
+        Value: List Length 274
+
+    [["oel"]][[115:274]]
+    **integer(0)**
