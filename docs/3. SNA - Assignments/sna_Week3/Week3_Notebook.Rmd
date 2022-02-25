@@ -1,7 +1,159 @@
 ---
 title: "Week 3 Notebook"
 output: html_notebook
+---
 
+```{r setup, Libraries, include=FALSE}
+
+knitr::opts_chunk$set(echo = FALSE)
+
+# Document Creation
+library(knitr)
+library(markdown)
+library(yaml)
+library(distill)
+library(blogdown)
+
+# Basic Analysis
+library(ggplot2)
+library(tidyverse)
+library(clipr)
+library(dbplyr)
+library(data.table)
+library(stringr)
+library(stringi)
+library(tibble)
+library(tidyr)
+
+# SNA - Social Network Analysis
+
+library(tergm)
+library(ergm)
+library(network)
+library(networkDynamic)
+library(networkDynamicData)
+
+library(statnet)
+library(igraph)
+library(igraphdata)
+library(tsna)
+library(sna)
+
+```
+
+```{r Set Working Directory, include=FALSE}
+getwd()
+
+setwd("C:/Users/white/iCloudDrive/Documents/1_DACSS_UMassAmherst/Dacss_RProjects/3. Sp22_rProjects/Dacss_679- Coursework/GIT-ajw_Learning-SocialNetworkAnalysis/docs/3. SNA - Assignments/sna_Week3")
+
+
+```
+
+
+## Basic R: Import & Clean Data
+
+```{r Read raw data into R}
+
+library(readr)
+
+indx_SmugglerCove_recip <- read_csv("C:/Users/white/iCloudDrive/Documents/1_DACSS_UMassAmherst/Dacss_RProjects/3. Sp22_rProjects/Dacss_679- Coursework/GIT-ajw_Learning-SocialNetworkAnalysis/docs/3. SNA-Data/index-by_name-Smuggler_Cove-cocktail_recipies.csv", 
+    col_names = FALSE, 
+    col_types = cols(X1 = col_skip(),
+                     X4 = col_skip()), 
+                    na = "empty")
+
+View(indx_SmugglerCove_recip)
+summary(indx_SmugglerCove_recip)
+
+ # Smuggler's Cove
+
+smugCovIdx <- indx_SmugglerCove_recip
+
+```
+
+```{r Getting Information on a Dataset:, echo=FALSE}
+
+# list the structure of smugCovIdx
+str(smugCovIdx)
+
+# class of an object (numeric, matrix, data frame, etc)
+class(smugCovIdx)
+
+# list the variables in smugCovIdx
+names(smugCovIdx)
+
+# dimensions of an object
+dim(smugCovIdx)
+```
+
+```{r & Clean Data}
+
+  library(stringr)
+# DATA Cleaning
+
+      # Drop NA rows
+smugCovIdx <- na.omit(smugCovIdx) 
+
+#####
+#     Drop it like...
+#####
+      # DROP COLUMNS FROM DATA FRAME
+                      
+smugCovIdx = subset(smugCovIdx, 
+                       select = -c(4)
+                       )
+
+#####
+
+#     Extract variables
+#####
+
+          # extract first word of the column, adds values in new Column at the end of DF
+
+                    #1st pastIt
+passIt <- smugCovIdx      
+
+colnames(passIt)
+                    #2nd passIt
+passIt$substring_first <- str_extract(passIt$X5,"(\\w+)") 
+
+#####
+
+#####
+#     Give Variables a human name
+#####
+
+# rename column names with human language
+
+                      # Return it
+colnames(passIt)
+smugCovIdx <- passIt
+
+colnames(smugCovIdx)
+names(smugCovIdx )[1] <- "dnkNam"
+names(smugCovIdx )[2] <- "ingNam"
+names(smugCovIdx )[3] <- "dnkIng"
+names(smugCovIdx )[4] <- "ingTyp"
+colnames(smugCovIdx)
+```
+
+
+#   Project Varriables
+    
+    Raw Data:
+  indx_SmugglerCove_recip
+
+    DataFrame:
+  smugCovIdx
+            "dnkNam" "ingNam" "dnkIng" "ingTyp"
+  network_nodes <- smugCovIdx << "dnkNam"
+    
+    Matrix:
+ 
+        
+    Network Objects: EDGE LIST
+  
+              
 
 
 
@@ -42,7 +194,26 @@ output: html_notebook
 # str(smugEL_sn)
 ```
 
+smugEL_sn
 
+[1] "network"
+
+Network attributes:
+  vertices = 274 
+  directed = TRUE 
+  hyper = FALSE 
+  loops = FALSE 
+  multiple = TRUE 
+  bipartite = FALSE 
+  total edges= 672 
+    missing edges= 0 
+    non-missing edges= 672 
+
+ Vertex attribute names: 
+    dnkNam vertex.names 
+
+ Edge attribute names: 
+    dnkIng ingTyp 
     
 
 ```{r STATNET: functions that calculate network-level descriptives}
@@ -109,7 +280,20 @@ view(clique.census(smugEL_sn, tabulate.by.vertex=TRUE, enumerate=TRUE))
 
 ```
 
+gtrans(smugEL_sn)
+proportion of transitive triads
 
+symmetrize( smugEL_sn, rule = "weak") 
+symmetrize so i<->j iff i->j OR i<-j 
+
+symmetrize( smugEL_sn, rule = "strong") 
+symmetrize so i<->j iff i->j OR i<-j 
+
+dyad.census(smugEL_sn) 
+MAN dyad census
+
+triad.census(smugEL_sn) 
+standard directed triad census
 
     
 ```{r igraph: Network Description, echo=TRUE}
@@ -165,8 +349,26 @@ library(igraph)
           # Vertex attribute names:
           # Edge Attribute Names: 
 ```
+smugEL_ig
 
- 
+[1] "igraph"
+
+Network attributes:
+  vertices = 274 
+  directed = FALSE
+  hyper = FALSE 
+  loops = FALSE 
+  multiple = TRUE 
+  bipartite = FALSE 
+  total edges= 672 
+    missing edges= 0 
+    non-missing edges= 672 
+
+ Vertex attribute names: 
+    dnkNam vertex.names 
+
+ Edge attribute names: 
+    dnkIng ingTyp 
     
 ```{r IGRAPH: DIRECTED Network: ingTyp, echo=TRUE}
   

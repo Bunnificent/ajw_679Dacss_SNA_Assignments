@@ -3,9 +3,6 @@ title: "R Notebook"
 output: html_notebook
 ---
  
-# $vertex.names is NA because dnkNam and dnkType were fed into the "To" column
-
-
           
 ```{r EDGELIST: UNDIRECTED Network Objects: statnet & igraph, eval=FALSE, include=FALSE}
 
@@ -144,6 +141,10 @@ edge_attr(d_network_ig)
     
    ingTypEL_Dig <- d_network_ig
 ```
+
+
+# $vertex.names is NA because dnkNam and dnkType were fed into the "To" column
+
 
 
 # Meta Data: smugEL_ig

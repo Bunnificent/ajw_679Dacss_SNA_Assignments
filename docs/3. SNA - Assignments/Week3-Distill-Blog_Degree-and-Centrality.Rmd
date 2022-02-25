@@ -256,8 +256,9 @@ qualitative research.
 >
 >     -   edge attributes that might be used to:
 >
+>     ```{=html}
 >     <!-- -->
->
+>     ```
 >         -   subset data, or
 >         -   stack multiple networks.
 
@@ -285,7 +286,8 @@ qualitative research.
         +============+============+============+======+
         | Dyad       | Mutual: 1  | 0.0179     | yes  |
         | Census     |            |            |      |
-        |            | A sy       |            |      |
+        |            | A          |            |      |
+        |            | sy         |            |      |
         |            | mmetrical: |            |      |
         |            | 670        |            |      |
         |            |            |            |      |

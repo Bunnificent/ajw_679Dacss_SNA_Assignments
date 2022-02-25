@@ -179,8 +179,8 @@ snEL <-
                   
 #**Assign:**VERTICES atributes <aka colnames>
  
- snEL%v%"dNam"<- sourceEL$dnkNam
- snEL%v%"iNam"<- sourceEL$ingNam
+#  snEL%v%"dNam"<- sourceEL$dnkNam
+# snEL%v%"iNam"<- sourceEL$ingNam
         
               
 #**Assign:** edge atributes <aka colnames>        
@@ -226,7 +226,7 @@ library(igraph)
 
 sourceEL_mx = 
             as.matrix(source_df[1:2],
-                      matrix.type = "edgelist",
+                      matrix.type = "edgelist")
     ##**Note** Var 1 is empty, Var 2 Contains edgelist          
           
           
@@ -240,19 +240,7 @@ igEL <- graph.edgelist(sourceEL_mx,
 E(igEL)$ingTyp<-source_df$ingTyp
 
 
-   #**create vertex attributes** in igraph
  
-set_vertex_attr(igEL,
-                name = "dNam",
-                value = source_df[c("dnkNam")])
-V(igEL)$dNam<-source_df$dnkNam
-
-
-
-set_vertex_attr(igEL,
-                name = "iNam",
-                value = source_df[c("ingNam")])
-V(igEL)$iNam<-source_df$ingNam       
  
 ```
 
