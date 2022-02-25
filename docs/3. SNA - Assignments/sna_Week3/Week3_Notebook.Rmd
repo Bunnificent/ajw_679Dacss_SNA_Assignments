@@ -1,302 +1,11 @@
 ---
-title: "R Notebook"
+title: "Week 3 Notebook"
 output: html_notebook
----
-
-```{r setup, Libraries, include=FALSE}
-
-knitr::opts_chunk$set(echo = FALSE)
-
-# Document Creation
-library(knitr)
-library(markdown)
-library(yaml)
-library(distill)
-library(blogdown)
-
-# Basic Analysis
-library(ggplot2)
-library(tidyverse)
-library(clipr)
-library(dbplyr)
-library(data.table)
-library(stringr)
-library(stringi)
-library(tibble)
-library(tidyr)
-
-# SNA - Social Network Analysis
-
-library(tergm)
-library(ergm)
-library(network)
-library(networkDynamic)
-library(networkDynamicData)
-
-library(statnet)
-library(igraph)
-library(igraphdata)
-library(tsna)
-library(sna)
-
-```
-
-```{r Set Working Directory, include=FALSE}
-getwd()
-
-setwd("C:/Users/white/iCloudDrive/Documents/1_DACSS_UMassAmherst/Dacss_RProjects/3. Sp22_rProjects/Dacss_679- Coursework/GIT-ajw_Learning-SocialNetworkAnalysis/docs/3. SNA - Assignments/sna_Week3")
 
 
-```
 
-
-## Basic R: Import & Clean Data
-
-```{r Read raw data into R}
-
-library(readr)
-
-indx_SmugglerCove_recip <- read_csv("C:/Users/white/iCloudDrive/Documents/1_DACSS_UMassAmherst/Dacss_RProjects/3. Sp22_rProjects/Dacss_679- Coursework/GIT-ajw_Learning-SocialNetworkAnalysis/docs/3. SNA-Data/index-by_name-Smuggler_Cove-cocktail_recipies.csv", 
-    col_names = FALSE, 
-    col_types = cols(X1 = col_skip(),
-                     X4 = col_skip()), 
-                    na = "empty")
-
-View(indx_SmugglerCove_recip)
-summary(indx_SmugglerCove_recip)
-
- # Smuggler's Cove
-
-smugCovIdx <- indx_SmugglerCove_recip
-
-```
-
-```{r Getting Information on a Dataset:, echo=FALSE}
-
-# list the structure of smugCovIdx
-str(smugCovIdx)
-
-# class of an object (numeric, matrix, data frame, etc)
-class(smugCovIdx)
-
-# list the variables in smugCovIdx
-names(smugCovIdx)
-
-# dimensions of an object
-dim(smugCovIdx)
-```
-
-```{r & Clean Data}
-
-  library(stringr)
-      # Drop NA rows
-smugCovIdx <- na.omit(smugCovIdx) 
-
-# DATA Cleaning
-
-
-#     Extract variables
-#####
-
-          # extract first word of the column, adds values in new Column at the end of DF
-
-                    #1st pastIt
-passIt <- smugCovIdx      
-
-colnames(passIt)
-                    #2nd passIt
-passIt$substring_first <- str_extract(passIt$X5,"(\\w+)") 
-
-#####
-
-#####
-#     Drop it like...
-#####
-      # DROP COLUMNS FROM DATA FRAME
-                      
-                      #3rd PassIt
-passIt = subset(passIt, 
-                       select = -c(3)
-                       )
-colnames(passIt)
-#####
-
-#####
-#     Give Variables a human name
-#####
-
-# rename column names with human language
-
-                      # Return it
-smugCovIdx <- passIt
-
-names(smugCovIdx )[1] <- "dnkName"
-names(smugCovIdx )[2] <- "dnkIng"
-names(smugCovIdx )[3] <- "ingType"
-
-colnames(smugCovIdx)
-```
-
-#   Project Varriables
-    
-    Raw Data:
-  indx_SmugglerCove_recip
-
-    DataFrame:
-  smugCovIdx
-            colname: "dnkName" "dnkIng"  "ingType"
-  network_nodes <- smugCovIdx << "dnkName"
-    
-    Matrix:
-  smug_matrix
-  network_edgelist <- smug_matrix
-        
-    Network Objects: EDGE LIST
-  STATNET: smugEL_sn
-  IGRAPH: smugEL_ig
-  
-  Edge Vetex:
-              dnkName
-  Edge Attributes:
-                  dnkIng
-                  ingType
-              
 
 # Network Info
-  Network Objects: EDGE LIST
-                  STATNET: smugEL_sn
-                  IGRAPH: smugEL_ig
-                          ingTypeEL_Dig 
-          
-```{r EDGELIST: UNDIRECTED Network Objects: statnet & igraph, include=FALSE}
-
-#Lets make some network objects
-
-colnames(smugCovIdx) 
-# tell R data should be understood as a matrix
-smug_matrix = as.matrix(smugCovIdx,
-                        matrix.type="edgelist",
-                        directed=FALSE) 
-head.matrix(smug_matrix)
-
-network_edgelist <- smug_matrix
-
-  network_nodes <- smugCovIdx 
-    network_nodes<- 
-      select(network_nodes,
-             dnkName)
-
-        ### View(network_nodes)
-    
-######
-      ######**igraph** 
-######
-        #igraph object 
-network_ig <- 
-  graph.edgelist(
-    as.matrix(
-      smugCovIdx[1:2]), 
-    directed=F)
-                ## create new edge attribute
-  E(network_ig)$dnkIng<-smugCovIdx$dnkIng
-  E(network_ig)$ingType<-smugCovIdx$ingType
-  #create vertex attributes in igraph
- V(network_ig)[match(V(network_ig)$dnkName,network_nodes$dnkName)]$dnkName<-
-   network_nodes$dnkName
-  
-      summary(edge_attr(network_ig))
-     
-  # head(network_ig)
-  # summary(network_ig)
-      ######
- 
-#####
-      #####**statnet** 
-#####    
-  network_edgelist <- smugCovIdx
- 
-  network_nodes <- smugCovIdx 
-  network_nodes<- 
-    select(network_nodes,
-           dnkName)
-summary(network_nodes)
-View(network_nodes)
-
-  #Now let's create a statnet object
-  network_statnet <- network(network_edgelist, 
-                             matrix.type = "edgelist",
-                             vertex.attr = network_nodes,
-                             multiple = T)
-  
-  network_statnet%e%'dnkIng'  <-
-    network_edgelist$dnkIng
-  
-  network_statnet%e%'ingType'<- 
-    network_edgelist$ingType
-
-       # list the names: vertex attributes
-  view(network_statnet%v% "vertex.names")
-  
-summary(network_statnet)
-        #####
-
- ## Network Objects: EDGE LIST
-              ##**STATNET:**
-  smugEL_sn <- network_statnet
-  
-                ##**IGRAPH:** 
-  smugEL_ig <- network_ig
-  
-```
-
-          
-```{r EDGELIST: IGRAPH: DIRECTED Network: ingType, include=FALSE}
-
-#Lets make some network objects
-
-colnames(smugCovIdx) 
-# tell R data should be understood as a matrix
-smug_matrix = as.matrix(smugCovIdx,
-                        matrix.type="edgelist",
-                        directed=FALSE) 
-head.matrix(smug_matrix)
-
-network_edgelist <- smug_matrix
-
-  nodes_ingType <- smugCovIdx 
-    nodes_ingType<- 
-      select(nodes_ingType,ingType)
-view(nodes_ingType)
-        ### View(nodes_ingType)
-    
-######
-      ######**igraph** 
-######
-        #igraph object: ingType
-d_network_ig <- 
-  graph.edgelist(
-    as.matrix(
-      smugCovIdx[2:3]), 
-    directed=T)
-
-
-vertex.attributes(d_network_ig)
-                ## create new edge attribute
-  E(d_network_ig)$dnkIng<-smugCovIdx$dnkIng
-  E(d_network_ig)$dnkName<-smugCovIdx$dnkName
- 
-  #create vertex attributes in igraph
- V(d_network_ig)[match(V(d_network_ig)$ingType,nodes_ingType$ingType)]$ingType<- nodes_ingType$ingType
-  
-   View(d_network_ig)
-   head(d_network_ig)
-  summary(d_network_ig)
-  summary(edge_attr(d_network_ig))
-  summary(vertex.attributes(d_network_ig))
-    
-   ingTypeEL_Dig <- d_network_ig
-```
-
 ## Smuggler's Cove Index- NETWORK: EDGELIST: Features & Descriptions
 
 ```{r STATNET: Network Description, include=FALSE}
@@ -311,7 +20,7 @@ vertex.attributes(d_network_ig)
             # list the names:  edge attributes
   network::list.edge.attributes(smugEL_sn)
       #   summarize: numeric network attribute
-  summary(smugEL_sn%v%"dnkName")
+  summary(smugEL_sn%v%"dnkNam")
 
 ## Network Attributes
  print(smugEL_sn)
@@ -333,26 +42,7 @@ vertex.attributes(d_network_ig)
 # str(smugEL_sn)
 ```
 
-smugEL_sn
 
-[1] "network"
-
-Network attributes:
-  vertices = 274 
-  directed = TRUE 
-  hyper = FALSE 
-  loops = FALSE 
-  multiple = TRUE 
-  bipartite = FALSE 
-  total edges= 672 
-    missing edges= 0 
-    non-missing edges= 672 
-
- Vertex attribute names: 
-    dnkName vertex.names 
-
- Edge attribute names: 
-    dnkIng ingType 
     
 
 ```{r STATNET: functions that calculate network-level descriptives}
@@ -419,20 +109,7 @@ view(clique.census(smugEL_sn, tabulate.by.vertex=TRUE, enumerate=TRUE))
 
 ```
 
-gtrans(smugEL_sn)
-proportion of transitive triads
 
-symmetrize( smugEL_sn, rule = "weak") 
-symmetrize so i<->j iff i->j OR i<-j 
-
-symmetrize( smugEL_sn, rule = "strong") 
-symmetrize so i<->j iff i->j OR i<-j 
-
-dyad.census(smugEL_sn) 
-MAN dyad census
-
-triad.census(smugEL_sn) 
-standard directed triad census
 
     
 ```{r igraph: Network Description, echo=TRUE}
@@ -465,13 +142,13 @@ library(igraph)
 ## access vertex attributes
     
     # Generate a list the names of vertex attributes
-  V(smugEL_ig)$name
+  view(V(smugEL_ig)$name)
 
     # access edge attribute  names
-  igraph::vertex_attr_names(smugEL_ig)
+  view(igraph::vertex_attr_names(smugEL_ig))
 
     # Generate a list the names of edge attributes  
-  igraph::edge_attr_names(smugEL_ig)
+  view(igraph::edge_attr_names(smugEL_ig))
   
 
 ## Network Attributes
@@ -488,68 +165,50 @@ library(igraph)
           # Vertex attribute names:
           # Edge Attribute Names: 
 ```
-smugEL_ig
 
-[1] "igraph"
-
-Network attributes:
-  vertices = 274 
-  directed = FALSE
-  hyper = FALSE 
-  loops = FALSE 
-  multiple = TRUE 
-  bipartite = FALSE 
-  total edges= 672 
-    missing edges= 0 
-    non-missing edges= 672 
-
- Vertex attribute names: 
-    dnkName vertex.names 
-
- Edge attribute names: 
-    dnkIng ingType 
+ 
     
-```{r IGRAPH: DIRECTED Network: ingType, echo=TRUE}
+```{r IGRAPH: DIRECTED Network: ingTyp, echo=TRUE}
   
       # class of an object
-    class(ingTypeEL_Dig)
+    class(ingTypEL_Dig)
     
 ## Network Size
       
       # Count Vertices
-    vcount(ingTypeEL_Dig)
+    vcount(ingTypEL_Dig)
     
       # Count Edges
-    ecount(ingTypeEL_Dig)
+    ecount(ingTypEL_Dig)
 
 ## Network Mode
     # Bipartitie / Unimodal
-    is_bipartite(ingTypeEL_Dig)
+    is_bipartite(ingTypEL_Dig)
 
 ## Edges    
     # Un/directed 
-    is_directed(ingTypeEL_Dig)
+    is_directed(ingTypEL_Dig)
 
     # weighted or unweighted?
-    is_weighted(ingTypeEL_Dig)      
+    is_weighted(ingTypEL_Dig)      
     
     # edge weights
-    E(ingTypeEL_Dig)$weight
+    E(ingTypEL_Dig)$weight
 
 ## access vertex attributes
     
     # Generate a list the names of vertex attributes
-  V(ingTypeEL_Dig)$name
+  V(ingTypEL_Dig)$name
 
     # access edge attribute  names
-  igraph::vertex_attr_names(ingTypeEL_Dig)
+  igraph::vertex_attr_names(ingTypEL_Dig)
 
     # Generate a list the names of edge attributes  
-  igraph::edge_attr_names(ingTypeEL_Dig)
+  igraph::edge_attr_names(ingTypEL_Dig)
   
 
 ## Network Attributes
- summary(ingTypeEL_Dig)
+ summary(ingTypEL_Dig)
           # Vertices =  
           # Directed = 
           # hyper = 
@@ -630,7 +289,7 @@ NULL
 ```{r iGraph: Directed: Path: Shortest, echo=TRUE}
 
 #     find average shortest path for network
-    average.path.length(ingTypeEL_Dig,directed=T)    
+    average.path.length(ingTypEL_Dig,directed=T)    
   
 ```   
   
@@ -638,7 +297,7 @@ NULL
 ```{r iGraph: Directed:Specific Nodes: Path: Shortest, echo=TRUE}
     
 #     isolating the distances between specific node
-    all_shortest_paths(ingTypeEL_Dig,
+    all_shortest_paths(ingTypEL_Dig,
                        "Strozzi","Tornabuoni", 
                        weights=NA)$res
 ## Note: manually tell igraph to ignore edge weights.
@@ -648,10 +307,10 @@ NULL
 ```{r iGraph: Directed: Specific Nodes: Path: Length, echo=TRUE}
 
 #     Calculate distances between two nodes
-    distances(ingTypeEL_Dig,"Bischeri","Ridolfi")
+    distances(ingTypEL_Dig,"Bischeri","Ridolfi")
 
 #     Calculate distance between two nodes using unweighted edges
-    distances(ingTypeEL_Dig,"Bischeri", "Castellani",weights=NA)
+    distances(ingTypEL_Dig,"Bischeri", "Castellani",weights=NA)
     
 ```
 
@@ -902,7 +561,7 @@ transitivity(smugEL_ig,
 
 ```{r Statnet: , echo=TRUE}
       # Basic R: get summary statistics for node attributes
- summary(nodes_ingTypes)
+ summary(nodes_ingTyps)
       # provides range, mean, median and standard deviation of a vector.
 
  # get summary statistics for node degree for the binary network degree
@@ -929,16 +588,16 @@ smug_attributes <- smugCovIdx
 smug_edj <- smugCovIdx[2:3]
 View(smug_edj)
 #V1: dnkIng
-#V2: ingType
+#V2: ingTyp
 
 smugNet <- 
   graph.edgelist(as.matrix(smug_edj), directed = T)
 
 V(smugNet)$dnkIng <- 
-  smug_attributes$dnkIng[match(V(smugNet)$name, smug_attributes$ingType)]
+  smug_attributes$dnkIng[match(V(smugNet)$name, smug_attributes$ingTyp)]
 
-V(smugNet)$dnkName <- 
-  smug_attributes$dnkName[
+V(smugNet)$dnkNam <- 
+  smug_attributes$dnkNam[
     match(V(
       smugNet)$name,
       smug_attributes$dnkIng)
@@ -959,16 +618,16 @@ smug_attributes <- smugCovIdx
 smug_edj <- smugCovIdx[2:3]
 View(smug_edj)
 #V1: dnkIng
-#V2: ingType
+#V2: ingTyp
 
 smugNet <- 
   graph.edgelist(as.matrix(smug_edj), directed = T)
 
-V(smugNet)$ingType <- 
-  smug_attributes$ingType[match(V(smugNet)$name, smug_attributes$ingType)]
+V(smugNet)$ingTyp <- 
+  smug_attributes$ingTyp[match(V(smugNet)$name, smug_attributes$ingTyp)]
 
-V(smugNet)$dnkName <-
-  smug_attributes$dnkName[match(V(smugNet)$name, smug_attributes$dnkName)]
+V(smugNet)$dnkNam <-
+  smug_attributes$dnkNam[match(V(smugNet)$name, smug_attributes$dnkNam)]
 
 summary(smugNet)
 
@@ -976,21 +635,21 @@ summary(smugNet)
 
 ```
 
-```{r iGraph: Undirected: DEGREE CENTRALITY: ingType, echo=TRUE}
+```{r iGraph: Undirected: DEGREE CENTRALITY: ingTyp, echo=TRUE}
 # graph the SMUG network 
 
 smug_attributes <- smugCovIdx
 smug_edj <- smugCovIdx[2:3]
 View(smug_edj)
 #V1: dnkIng
-#V2: ingType
+#V2: ingTyp
 
 
 smugNet <- 
   graph.edgelist(as.matrix(smug_edj), directed = T)
 
-V(smugNet)$dnkName <-
-  smug_attributes$dnkName[match(V(smugNet)$name, smug_attributes$dnkIng)]
+V(smugNet)$dnkNam <-
+  smug_attributes$dnkNam[match(V(smugNet)$name, smug_attributes$dnkIng)]
 
 summary(smugNet)
 View(smugNet)
@@ -1021,7 +680,7 @@ View(smugNet)
        displaylabels=TRUE,
        label.cex=.75,
        label.col="black",
-       vertex.col=att$dnkName
+       vertex.col=att$dnkNam
  )
  
  legend("bottomleft",
@@ -1102,16 +761,16 @@ We can break large social networks down into their constituent parts. These cons
 
 ```{r iGraph: Directed: GRAPH: Dyad Census, echo=TRUE}
 
-graph.density(ingTypeEL_Dig)
+graph.density(ingTypEL_Dig)
     ## Density captures, at the macro-level, the proportion of dyads that are present over the possible total number of dyads in the network
 
       # Generating a random graph for comparison
 # ?erdos.renyi.game
       ## In an erdos.renyi.graph, each edge has the same probability of being created. We determine the probability and it returns a random graph with a density that equals (in expectation) this probability.
 
-ingTypeEL_DigNod <- vcount(ingTypeEL_Dig)
+ingTypEL_DigNod <- vcount(ingTypEL_Dig)
 
-ingTypeEL_DigDen <- graph.density(ingTypeEL_Dig)
+ingTypEL_DigDen <- graph.density(ingTypEL_Dig)
 
 smugEL_DigRandoG <- 
   erdos.renyi.game(
@@ -1136,15 +795,15 @@ smugEL_DigRandoG <-
 
 ```{r iGraph: Directed: Degree Centrality}
 # Degree centrality is calculated using the degree function in R. It returns how many edges each node has.
-view(degree(ingTypeEL_Dig))
+view(degree(ingTypEL_Dig))
 
-ingT_deg <- ingTypeEL_Dig
+ingT_deg <- ingTypEL_Dig
 V(ingT_deg)$degree <- degree(ingT_deg) # assignment
 
 # plot(ingT_deg, 
 #     vertex.label.cex = .6, 
 #     vertex.label.color = "black", 
-#     vertex.size = V(ingTypeEL_Dig)$degree, 
+#     vertex.size = V(ingTypEL_Dig)$degree, 
 #     vertex.label.cex = .2) # sized by degree
 
 ```
@@ -1152,22 +811,22 @@ V(ingT_deg)$degree <- degree(ingT_deg) # assignment
 
 ```{r iGraph: Directed: Betweenness Centrality}
 
-view(betweenness(ingTypeEL_Dig, directed = FALSE))
+view(betweenness(ingTypEL_Dig, directed = FALSE))
 
-# view(betweenness(ingTypeEL_Dig, directed = TRUE))
+# view(betweenness(ingTypEL_Dig, directed = TRUE))
               # Yeilds 0
 
-ingTypeEL_Between <- ingTypeEL_Dig
+ingTypEL_Between <- ingTypEL_Dig
 # We can again assign the output of betweenness() to a variable in the network and size the nodes according to it.
 
-V(ingTypeEL_Between)$betweenness <- 
-  betweenness(ingTypeEL_Between, 
+V(ingTypEL_Between)$betweenness <- 
+  betweenness(ingTypEL_Between, 
               directed = F)
 
-# plot(ingTypeEL_Between, 
+# plot(ingTypEL_Between, 
 #     vertex.label.cex = .6, 
 #     vertex.label.color = "black", 
-#     vertex.size = V(ingTypeEL_Between)$betweenness) # sized by betweenness
+#     vertex.size = V(ingTypEL_Between)$betweenness) # sized by betweenness
 
 
 ```
@@ -1196,9 +855,9 @@ View(ingTyp_Cent)
 Degree centrality only takes into account the number of edges for each node, but it leaves out information about ego’s alters
 ```{r iGraph: Directed: Eigenvector Centrality}
 
-view(evcent(ingTypeEL_Dig)$vector)
+view(evcent(ingTypEL_Dig)$vector)
 # view(evcent(smugEL_ig)$vector)
-ingTyp_Vector <- ingTypeEL_Dig
+ingTyp_Vector <- ingTypEL_Dig
 V(ingTyp_Vector)$eigenvector <- evcent(ingTyp_Vector)$vector
 
 # plot(ingTyp_Vector,
@@ -1211,7 +870,7 @@ V(ingTyp_Vector)$eigenvector <- evcent(ingTyp_Vector)$vector
  “Interpretively, the Bonacich power measure corresponds to the notion that the power of a vertex is recursively defined by the sum of the power of its alters. The nature of the recursion involved is then controlled by the power exponent: positive values imply that vertices become more powerful as their alters become more powerful (as occurs in cooperative relations), while negative values imply that vertices become more powerful only as their alters become weaker (as occurs in competitive or antagonistic relations).”
 ```{r iGraph: Directed: Bonacich Centrality}
 
-ingTyp_Cent <- ingTypeEL_Dig
+ingTyp_Cent <- ingTypEL_Dig
 
 V(ingTyp_Cent)$bonacich <- 
   power_centrality(ingTyp_Cent, exponent = -2, rescale = T)
@@ -1224,7 +883,7 @@ V(ingTyp_Cent)$bonacich <-
 
 ```{r iGraph: Directed: Page Rank}
 
-ingTyp_Cent <- ingTypeEL_Dig
+ingTyp_Cent <- ingTypEL_Dig
 
 V(ingTyp_Cent)$page_rank <- page_rank(ingTyp_Cent, directed = TRUE)$vector
 

@@ -46,13 +46,8 @@ library(tsna)
 library(sna)
 
 ```
-## Working from the example R syntax:
-1.   calculate network density; 
-2.   degree centrality, and 
-3.   centralization measures for your network data. 
 
-
-##        *Write up your results briefly: *
+#        *Write up your results briefly: *
 *   focus on interpretation of the results. 
 *   Don’t list statistics or provide code, 
 *  **the goal is to choose a few interesting results and provide an interpretation.**
@@ -81,8 +76,19 @@ library(sna)
 4.   What about differences in the binary 100 million threshold network vs valued trade flows network. 
  5.  Check tutorial for other ideas of results to discuss.
 
+#  Working from the example R syntax:
+1.   calculate network density; 
+2.   degree centrality, and 
+3.   centralization measures for your network data. 
+# Import & Describe Network
 
- 
+
+
+# 1.   calculate network density
+# 2.   degree centrality
+# 3.   centralization measures for your network data. 
+
+# 
 > Distill is a publication format for scientific and technical writing, native to the web.
 >
 > Learn more about using Distill for R Markdown at <https://rstudio.github.io/distill>.

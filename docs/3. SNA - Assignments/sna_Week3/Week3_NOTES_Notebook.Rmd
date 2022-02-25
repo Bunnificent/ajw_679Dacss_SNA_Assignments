@@ -2,6 +2,149 @@
 title: "R Notebook"
 output: html_notebook
 ---
+ 
+# $vertex.names is NA because dnkNam and dnkType were fed into the "To" column
+
+
+          
+```{r EDGELIST: UNDIRECTED Network Objects: statnet & igraph, eval=FALSE, include=FALSE}
+
+#Lets make some network objects
+
+colnames(smugCovIdx) 
+# tell R data should be understood as a matrix
+smugEL_mx = as.matrix(smugCovIdx[c(4,3)],
+                        matrix.type="edgelist",
+                        directed=T) 
+  View(smugEL_mx)
+  class(smugEL_mx)
+  summary(smugEL_mx)
+  
+  # dnkIng             ingTyp         
+ #  Length:672         Length:672      
+
+network_edgelist <- smugEL_mx
+  class(network_edgelist)
+  summary(network_edgelist)
+
+        ### View(network_nodes)
+    
+######
+      ######**igraph** 
+######
+        #igraph object 
+network_ig <-
+    graph.edgelist(network_edgelist, 
+    directed=T)
+
+  summary(network_ig)
+  class(network_ig)
+  View(network_ig)
+  
+                ## create new edge attribute
+  E(network_ig)$dnkNam<-smugCovIdx$dnkNam
+  E(network_ig)$ingNam<-smugCovIdx$ingNam
+  V(network_ig)$ingType <- smugCovIdx$ingType
+  
+  #create vertex attributes in igraph
+ 
+summary(network_ig)
+
+  # head(network_ig)
+  # summary(network_ig)
+      ######
+ 
+#####
+      #####**statnet** 
+#####    
+  network_edgelist <- smugCovIdx
+ 
+  network_nodes <- smugCovIdx 
+  network_nodes<- 
+    select(network_nodes,
+           dnkNam)
+summary(network_nodes)
+View(network_nodes)
+
+  #Now let's create a statnet object
+  network_statnet <- network(smugEL_mx, 
+                             matrix.type = "edgelist",
+                             multiple = T)
+  
+  network_statnet%e%"dnkIng" <- network_edgelist$dnkIng
+  
+  network_statnet%e%'ingTyp'<- 
+    network_edgelist$ingTyp
+
+       # list the names: vertex attributes
+  view(network_statnet%v% "vertex.names")
+  
+summary()
+ network::list.vertex.attributes(network_statnet)
+  summary(network_statnet%v%"dnkNam")
+  print(network_statnet)
+        #####
+
+ ## Network Objects: EDGE LIST
+              ##**STATNET:**
+  smugEL_sn <- network_statnet
+  
+                ##**IGRAPH:** 
+  smugEL_ig <- network_ig
+  
+```
+
+          
+```{r EDGELIST: IGRAPH: DIRECTED Network: ingTyp, include=FALSE}
+
+#Lets make some network objects
+
+colnames(smugCovIdx) 
+
+
+#####
+# tell R data should be understood as a matrix
+smugEL_mx = as.matrix(smugCovIdx[(3:4)],
+                        matrix.type="edgelist",
+                        directed=T) 
+head.matrix(smugEL_mx)
+view(summary(smugEL_mx))
+
+networkEL_mx <- smugEL_mx
+
+
+        ### View(nodes_ingTyp)
+    
+######
+      ######**igraph** 
+######
+        #igraph object: ingTyp
+d_network_ig <- graph.edgelist(networkEL_mx, 
+                               directed = T)
+  summary(d_network_ig)    
+
+ #              [1] "dnkNam" "ingNam" "dnkIng" "ingTyp"
+     ## create new edge attribute
+  E(d_network_ig)$dnkIng<-smugCovIdx$ingNam
+  E(d_network_ig)$dnkNam<-smugCovIdx$dnkNam
+    
+  #create vertex attributes in igraph
+ V(d_network_ig)[match(V(d_network_ig)$ingTyp,nodes_ingTyp$ingTyp)]$ingTyp<- nodes_ingTyp$ingTyp
+
+ V(d_network_ig)[match(V(d_network_ig)$ingTyp,nodes_ingTyp$ingTyp)]$ingTyp<- nodes_ingTyp$ingTyp
+ ver
+  
+ vertex_attr_names()
+ 
+   View(d_network_ig)
+   head(d_network_ig)
+  summary(d_network_ig)
+edge_attr(d_network_ig)
+  summary(vertex.attributes(d_network_ig))
+    
+   ingTypEL_Dig <- d_network_ig
+```
+
 
 # Meta Data: smugEL_ig
 Name: smugEL-ig
@@ -202,3 +345,6 @@ $bipartite
 
     [["oel"]][[115:274]]
     **integer(0)**
+
+
+
