@@ -1,0 +1,130 @@
+
+# IGRAPH
+```{r igraph:}
+
+library(igraph)
+
+
+
+```
+
+# Plotting: network data
+
+###**Plot Name: smugIG_plot-R_blue-curved-small*
+```{r igraph:plot: basic R }
+
+library(igraph)
+plot(smugEL_ig, 
+     vertex.size=3,
+     vertex.color = "blue",
+     vertex.frame.color = NA,
+     vertex.label = NA,
+     edge.curved = 1.7,
+     edge.arrow.size = .3, 
+     edge.width = .5)
+
+
+```
+
+###**Plot: Kamada Kawai **
+    ###**Plot Name** igraph_kamadaLayout_smug
+```{r igraph: Plot: Kamada Kawai}
+
+library(igraph)
+
+ # run the layout function on our graph
+ 
+ kamadaLayout <-
+   layout.kamada.kawai(smugEL_ig)
+ 
+# change the default layout setting to equal the layout we generated above
+ plot(smugEL_ig, 
+      layout = kamadaLayout, 
+      vertex.size = 3, 
+      vertex.color = "black", 
+      vertex.frame.color = NA, 
+      vertex.label.cex = .7,  
+      vertex.label = NA, 
+      edge.curved = .3, 
+      edge.arrow.size = .1, 
+      edge.width = .5)
+```
+
+###**Plot: Frucherman-Reingold **
+   ###**Plot Name** igrap-smugEL_Frucherman-Reingold
+```{r igraph:}
+
+library(igraph)
+ 
+# run the layout function on our graph
+ fruchtermanLayout <- 
+   layout.fruchterman.reingold(smugEL_ig)
+ 
+ # and then we change the default layout setting to equal the layout we generated above
+ 
+ plot(smugNet, 
+      vertex.size = 6, 
+      vertex.color= "orange",
+      vertex.label.cex = .5, 
+      vertex.label.color = "black", 
+      edge.with = .5,
+      edge.curved = 5,
+      edge.arrow.size = 0.1)
+
+```
+
+# Plotting: attribute data
+###**Plot: Color & Attribute**
+              ###**Plot Name: $Vertex Naame and $color **
+
+```{r igraph:}
+
+library(igraph)
+ V(smugEL_ig)$color <- ifelse(V(smugEL_ig)$name == "PUKA PUNCH", "red", "yellow")
+  V(smugEL_ig)$color <- NA
+  V(smugEL_ig)$color <- ifelse(V(smugEL_ig)$name == "RUMBUSTION PUNCH", "red","yellow")
+  V(smugEL_ig)$color <- ifelse(V(smugEL_ig)$name == "TRIUMVIRATE PUNCH", "red", V(smugEL_ig)$color)
+  V(smugEL_ig)$color <- ifelse(V(smugEL_ig)$name == "KAHIKO PUNCH", "red", V(smugEL_ig)$color)
+  V(smugEL_ig)$color <- ifelse(V(smugEL_ig)$name == , "black", V(smugEL_ig)$color)
+  V(smugEL_ig)$color <- ifelse(V(smugEL_ig)$name ==  "DOCTOR FUNK" , "green",V(smugEL_ig)$color)
+  V(smugEL_ig)$color <- ifelse(V(smugEL_ig)$name ==  "AKU AKU", "green",V(smugEL_ig)$color)
+  V(smugEL_ig)$color <- ifelse(V(smugEL_ig)$name ==  "JET PILOT" , "green",V(smugEL_ig)$color)
+  V(smugEL_ig)$color <- ifelse(V(smugEL_ig)$name == "SINGAPORE SLING", "purple", V(smugEL_ig)$color)
+  V(smugEL_ig)$color <- ifelse(V(smugEL_ig)$name ==  "SCORPION", "purple", V(smugEL_ig)$color)
+  V(smugEL_ig)$color <- ifelse(V(smugEL_ig)$name == "MAI TAI", "purple", V(smugEL_ig)$color)
+  V(smugEL_ig)$color <- ifelse(V(smugEL_ig)$name == "MEXICAN EL DIABLO", "black", V(smugEL_ig)$color)
+  
+ 
+      plot(smugEL_ig, 
+           vertex.size = 3, 
+           vertex.frame.color =  "black", 
+           vertex.label.cex = .7, 
+           vertex.label = NA, 
+           edge.curved = .5, 
+           edge.arrow.size = .3)
+
+
+```
+
+
+```{r igraph:}
+
+library(igraph)
+
+
+
+```
+
+# Statnet
+```{r STATNET:}
+
+library(statnet)
+library(sna)
+
+
+
+
+```
+
+# Plotting: network data
+# Plotting: attribute data

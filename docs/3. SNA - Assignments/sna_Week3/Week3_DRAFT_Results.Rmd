@@ -135,7 +135,7 @@ library(sna)
 
 ## 2. Discuss (with any related evidence) whether or not the node(s) behavior is in line with or violates expectations based on the degree centrality measure.
 
-## 3.What do you make of network density and centralization measures? 
+## 3.What do you make of network density and centralization measures?
 
 ## 4. What about differences in the binary 100 million threshold network vs valued trade flows network.
 

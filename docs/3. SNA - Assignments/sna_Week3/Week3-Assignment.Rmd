@@ -68,25 +68,25 @@ library(sna)
             *   subset data, or 
             *   stack multiple networks. 
 
-##        *Provide at least two or three noteworthy results*, including:
-1.   the relevant statistics and interpretation. 
+#        *Provide at least two or three noteworthy results*, including:
+
+## 1.   the relevant statistics and interpretation. 
         For example, explaining which node(s) are most central and which are least central. 
-2.   Discuss (with any related evidence) whether or not the node(s) behavior is in line with or violates expectations based on the degree centrality measure. 
-3.   What do you make of network density and centralization measures?  
-4.   What about differences in the binary 100 million threshold network vs valued trade flows network. 
- 5.  Check tutorial for other ideas of results to discuss.
+## 2.   Discuss (with any related evidence) whether or not the node(s) behavior is in line with or violates expectations based on the degree centrality measure. 
+## 3.   What do you make of network density and centralization measures?  
+## 4.   What about differences in the binary 100 million threshold network vs valued trade flows network. 
+
+## 5.  Check tutorial for other ideas of results to discuss.
 
 #  Working from the example R syntax:
 1.   calculate network density; 
+
 2.   degree centrality, and 
+
 3.   centralization measures for your network data. 
-# Import & Describe Network
 
 
 
-# 1.   calculate network density
-# 2.   degree centrality
-# 3.   centralization measures for your network data. 
 
 # 
 > Distill is a publication format for scientific and technical writing, native to the web.

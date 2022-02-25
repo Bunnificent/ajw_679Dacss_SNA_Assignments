@@ -349,7 +349,6 @@ Classifies all triads in the network. The triad census provides a fundamental de
                 "Castellani", 
                 "Medici",
                 "Ridolfi")]
-
 #     check ego network transitivity
 transitivity(flo.ig,
              type="local", 
