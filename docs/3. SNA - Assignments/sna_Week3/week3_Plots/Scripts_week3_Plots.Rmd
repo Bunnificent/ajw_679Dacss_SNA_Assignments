@@ -1,3 +1,54 @@
+
+#: Visualization: ggplot2
+```{r Visualization: ggplot2}
+
+# Dependencies
+ library(network)
+ library(sna)
+ library(ggplot2)
+ 
+library(visNetwork)
+library(threejs)
+ library(networkD3)
+ library(ndtv)
+ # ggnetwork - This package allows to pass network objects to ggplot2 and provides geometries to plot their elements.
+ 
+ library(ggnetwork)
+ 
+  # visualize your network graphs 
+ library(GGally)
+
+## [network visualization with ggplot2]
+
+
+
+
+```
+
+# graph the SMUG network 
+
+smug_attributes <- smugCovIdx
+smug_edj <- smugCovIdx[2:3]
+View(smug_edj)
+#V1: dnkIng
+#V2: ingTyp
+
+smugNet <- 
+  graph.edgelist(as.matrix(smug_edj), directed = T)
+
+V(smugNet)$dnkIng <- 
+  smug_attributes$dnkIng[match(V(smugNet)$name, smug_attributes$ingTyp)]
+
+V(smugNet)$dnkNam <- 
+  smug_attributes$dnkNam[
+    match(V(
+      smugNet)$name,
+      smug_attributes$dnkIng)
+    ]
+summary(smugNet)
+
+###**PLOT** in .R Doc
+
 # IGRAPH
 
 ```{r igraph:}
@@ -27,7 +78,7 @@ plot(smugEL_ig,
 
 ```
 
-### **Plot: Kamada Kawai** 
+### **Plot: Kamada Kawai**
 
 **Plot Name** igraph_kamadaLayout_smug
 
@@ -53,7 +104,7 @@ library(igraph)
       edge.width = .5)
 ```
 
-### **Plot: Frucherman-Reingold** 
+### **Plot: Frucherman-Reingold**
 
 **Plot Name** igrap-smugEL_Frucherman-Reingold
 
@@ -80,7 +131,7 @@ library(igraph)
 
 ## Plotting: attribute data
 
-### **Plot: Color & Attribute** 
+### **Plot: Color & Attribute**
 
 **Plot Name: \$Vertex Naame and \$color**
 
@@ -187,7 +238,7 @@ gplot(component.largest(snEL,connected="weak",result="graph"))
 
 ## Plotting: attribute data
 
-## Plotting:  Path Length and Geodesic Distance
+## Plotting: Path Length and Geodesic Distance
 
 ```{r STATNET:Path: Geodesic number & lengths}
 library(statnet)
