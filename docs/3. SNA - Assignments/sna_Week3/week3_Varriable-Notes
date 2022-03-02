@@ -1,0 +1,109 @@
+
+
+Attribute summary:
+
+the 10 most common values are:
+  JUICE     RUM   SYRUP LIQUEUR BITTERS    SODA   SPICE     GIN  BRANDY   FRUIT 
+    135     125     115      84      54      28      19      12       9       7 
+
+
+   >head(snEL %v% "vertex.names")
+   
+[1] "(1-INCH-SQUARE) CHUNKS PINEAPPLE" 
+    "(1-INCH-SQUARE) PINEAPPLE CHUNKS" 
+    "2:1 SIMPLE SYRUP"                
+[4] "A WISH FOR GRACE"                 
+    "ABRICOT VIEUX"                    
+    "ABSINTHE BLANC"          
+
+
+# 20 Vertex Names 
+
+-  distance between two nodes
+    "AKU AKU" : "PUKA PUNCH"  
+      
+      
+      Head, 10 + Tail, 10
+ [1] "AKU AKU" 
+      
+ [2] "(1-INCH-SQUARE) CHUNKS PINEAPPLE"    
+ [3] "MINT LEAVES"                
+ [4] "LIME JUICE"    
+ [5] "DEMERARA SYRUP"             
+ [6] "PEACH LIQUEUR (SUCH AS MATHILDE, COMBIER, OR GIFFARD)"
+ [7] "BLENDED LIGHTLY AGED RUM"   
+ [8] "PUPULE" 
+ [9] "ORANGE JUICE"               
+ [10] "CINNAMON SYRUP"
+ [1] "SINGAPORE SLING"                     
+      "BENEDICTINE"
+      "HONDO HATTIE'S JUNGLE PUNCH!"    
+  [4] "KAHIKO PUNCH"
+      "PASSION FRUIT HONEY"                 
+      "TRIUMVIRATE PUNCH"   
+  [7] "EUREKA PUNCH"                         
+      "YULETIDAL WAVE"
+      "RUMBUSTION PUNCH"                
+ [10] "PUKA PUNCH" 
+ 
+
+
+Network attributes:
+  vertices = 274
+  directed = TRUE
+  hyper = FALSE
+  loops = FALSE
+  multiple = FALSE
+  bipartite = FALSE
+ total edges = 671 
+   missing edges = 0 
+   non-missing edges = 671 
+ density = 0.008970348 
+  
+
+Vertex attributes:
+
+ dNam:
+   character valued attribute
+   attribute summary:
+   the 10 most common values are:
+            CAPTAIN'S GROG          FORMIDABLE DRAGON 
+                        11                          9 
+            DON'S OWN GROG                  JET PILOT 
+                         8                          8 
+     SHUDDERS IN A WHISPER THE TWENTY SEVENTY SWIZZLE 
+                         8                          8 
+      TREE DOTS AND A DASH         DEMERARA DRY FLOAT 
+                         8                          7 
+                GOLDEN GUN        HALEKULANI COCKTAIL 
+                         7                          7 
+
+  iNam:
+   character valued attribute
+   attribute summary:
+   the 10 most common values are:
+              LIME JUICE              LEMON JUICE 
+                      30                       16 
+        BLENDED AGED RUM           DEMERARA SYRUP 
+                      14                       13 
+       ANGOSTURA BITTERS        BLACK BLENDED RUM 
+                      12                       12 
+BLENDED LIGHTLY AGED RUM      PASSION FRUIT SYRUP 
+                      10                        9 
+                 SELTZER              HONEY SYRUP 
+                       9                        8 
+  vertex.names:
+   character valued attribute
+   274 valid vertex names
+
+Edge attributes:
+
+ ingTyp:
+   character valued attribute
+   attribute summary:
+   the 10 most common values are:
+  JUICE     RUM   SYRUP LIQUEUR BITTERS    SODA   SPICE     GIN 
+    135     125     115      84      54      28      19      12 
+ BRANDY   FRUIT 
+      9       7 
+ 

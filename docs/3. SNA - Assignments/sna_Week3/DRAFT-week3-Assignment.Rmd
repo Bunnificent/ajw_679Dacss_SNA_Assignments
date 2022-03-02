@@ -191,6 +191,34 @@ print(snEL)
 ```
 
 
+```{r STATNET: Component Size Distribution}
+library(statnet)
+library(sna)
+
+component.dist(
+  snEL, 
+  connected= c("unilateral")) # c("strong","weak","unilateral","recursive"))
+
+component.largest(
+  snEL, 
+  connected = c("unilateral"), #=c("strong","weak","unilateral" "recursive")
+  result = c("graph"), #c("membership", "graph") 
+  return.as.edgelist = FALSE)
+
+```
+
+##### Details: Component Size Distribution 
+Components are maximal sets of mutually connected vertices; depending on the definition of “connected” one employs, one can arrive at several types of components. Those supported here are as follows (in increasing order of restrictiveness):
+
+weak: v_1 is connected to v_2 iff there exists a semi-path from v_1 to v_2 (i.e., a path in the weakly symmetrized graph)
+
+unilateral: v_1 is connected to v_2 iff there exists a directed path from v_1 to v_2 or a directed path from v_2 to v_1
+
+strong: v_1 is connected to v_2 iff there exists a directed path from v_1 to v_2 and a directed path from v_2 to v_1
+
+recursive: v_1 is connected to v_2 iff there exists a vertex sequence v_a,...,v_z such that v_1,v_a,...,v_z,v_2 and v_2,v_z,...,v_a,v_1 are directed paths
+
+
 
 ##  Path Length and Geodesic Distance
 
@@ -202,27 +230,52 @@ print(snEL)
 
 ###  Statnet:   Path Length and Geodesic Distance
  
-    Attribute summary:
-  the 10 most common values are:
-  JUICE     RUM   SYRUP LIQUEUR BITTERS    SODA   SPICE     GIN  BRANDY   FRUIT 
-    135     125     115      84      54      28      19      12       9       7 
-```{r STATNET:Path: Length}
+```{r STATNET:Path: Reachability}
 library(statnet)
-
+library(sna)
 
 
 
 ```
 
- >head(snEL%e% "ingTyp")
-   
-[1] "FRUIT"   "LEAVES"  "JUICE"   "SYRUP"   "LIQUEUR" "RUM"    
 
-   >head(snEL %v% "vertex.names")
-   
-[1] "(1-INCH-SQUARE) CHUNKS PINEAPPLE" "(1-INCH-SQUARE) PINEAPPLE CHUNKS" "2:1 SIMPLE SYRUP"                
-[4] "A WISH FOR GRACE"                 "ABRICOT VIEUX"                    "ABSINTHE BLANC"          
+```{r STATNET:Path: Geodesic number & lengths}
+library(statnet)
+library(sna)
 
+summary(geodist(snEL, 
+        inf.replace=Inf, 
+        count.paths=TRUE, # include geodesics 
+        predecessors=FALSE,# include predecessor list
+        ignore.eval=FALSE, # ignore edge values
+        na.omit=FALSE) # remove NA-values edges
+        )
+```
+
+```{r STATNET:Path: k Path Census}
+library(statnet)
+library(sna)
+
+summary(kpath.census(snEL, 
+             maxlen = 5, 
+             mode = "graph",
+             tabulate.by.vertex = TRUE, 
+             path.comembership = c("none"), # c("none", "sum","bylength"), 
+             dyadic.tabulation = c("none") # c("none", "sum", "bylength"))
+))
+              ##**"sum"* returns a vertex by vertex matrix of source/destination path counts
+             ##**"bylength"* disaggregates these counts by path length. 
+             ##**"none"* disables this computation.
+
+
+```
+- Aggregate counts of paths/cycles by length (i.e., k).
+
+- Counts of paths/cycles to which each vertex belongs (when tabulate.byvertex==TRUE).
+
+- Counts of path/cycle co-memberships, potentially disaggregated by length (when the appropriate co-membership argument is set to bylength).
+
+- For path.census, counts of the total number of paths from each vertex to each other vertex, possibly disaggregated by length (if dyadic.tabulation=="bylength").
 
 
 ###  IGRAPH:   Path Length and Geodesic Distance

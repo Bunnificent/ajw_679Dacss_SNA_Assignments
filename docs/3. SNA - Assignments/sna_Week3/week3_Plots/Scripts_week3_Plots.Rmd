@@ -1,5 +1,5 @@
-
 # IGRAPH
+
 ```{r igraph:}
 
 library(igraph)
@@ -8,9 +8,10 @@ library(igraph)
 
 ```
 
-# Plotting: network data
+## Plotting: network data
 
-###**Plot Name: smugIG_plot-R_blue-curved-small*
+### Plot Name: smugIG_plot-R_blue-curved-small\*
+
 ```{r igraph:plot: basic R }
 
 library(igraph)
@@ -26,8 +27,10 @@ plot(smugEL_ig,
 
 ```
 
-###**Plot: Kamada Kawai **
-    ###**Plot Name** igraph_kamadaLayout_smug
+### **Plot: Kamada Kawai** 
+
+**Plot Name** igraph_kamadaLayout_smug
+
 ```{r igraph: Plot: Kamada Kawai}
 
 library(igraph)
@@ -50,8 +53,10 @@ library(igraph)
       edge.width = .5)
 ```
 
-###**Plot: Frucherman-Reingold **
-   ###**Plot Name** igrap-smugEL_Frucherman-Reingold
+### **Plot: Frucherman-Reingold** 
+
+**Plot Name** igrap-smugEL_Frucherman-Reingold
+
 ```{r igraph:}
 
 library(igraph)
@@ -73,9 +78,11 @@ library(igraph)
 
 ```
 
-# Plotting: attribute data
-###**Plot: Color & Attribute**
-              ###**Plot Name: $Vertex Naame and $color **
+## Plotting: attribute data
+
+### **Plot: Color & Attribute** 
+
+**Plot Name: \$Vertex Naame and \$color**
 
 ```{r igraph:}
 
@@ -106,7 +113,6 @@ library(igraph)
 
 ```
 
-
 ```{r igraph:}
 
 library(igraph)
@@ -116,6 +122,7 @@ library(igraph)
 ```
 
 # Statnet
+
 ```{r STATNET:}
 
 library(statnet)
@@ -126,5 +133,71 @@ library(sna)
 
 ```
 
-# Plotting: network data
-# Plotting: attribute data
+## Plotting: network data
+
+```{r PLOT: Find strong components}
+library(statnet)
+library(sna)
+cd <- component.dist(
+  snEL,
+  connected="strong")
+cd$membership              #Who's in what component?
+cd$csize                   #What are the component sizes?
+                           #Plot the size distribution
+plot(1:length(cd$cdist),
+     cd$cdist/sum(cd$cdist),
+     ylim=c(0,1),
+     type="h")
+
+lgc<- #Get largest component
+  component.largest(snEL,
+                    connected="strong")  
+
+#Plot g, with component membership
+gplot(snEL,
+      vertex.col=2+lgc)  
+      
+#Plot largest component itself 
+gplot(component.largest(
+  snEL,
+  connected="strong",
+  result="graph"))
+
+
+```
+
+```{r STATNET: PLOT: Find weak components}
+
+library(statnet)
+library(sna)
+cd<-component.dist(snEL,connected="weak")
+cd$membership              #Who's in what component?
+cd$csize                   #What are the component sizes?
+                           #Plot the size distribution
+plot(1:length(cd$cdist),cd$cdist/sum(cd$cdist),ylim=c(0,1),type="h")  
+lgc<-component.largest(snEL,connected="weak")  #Get largest component
+gplot(snEL,vertex.col=2+lgc)  #Plot g, with component membership
+                           #Plot largest component itself 
+gplot(component.largest(snEL,connected="weak",result="graph"))
+```
+
+```{r}
+
+```
+
+## Plotting: attribute data
+
+## Plotting:  Path Length and Geodesic Distance
+
+```{r STATNET:Path: Geodesic number & lengths}
+library(statnet)
+library(sna)
+
+gplot(geodist(snEL, 
+        inf.replace=Inf, 
+        count.paths=TRUE, 
+        predecessors=FALSE,
+        ignore.eval=FALSE, 
+        na.omit=FALSE)
+        )
+```
