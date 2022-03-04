@@ -162,8 +162,8 @@ snEL <-
                   
 #**Assign:**VERTICES atributes <aka colnames>
  
- snEL%v%"dNam"<- sourceEL$dnkNam
- snEL%v%"iNam"<- sourceEL$ingNam
+# snEL%v%"dNam"<- sourceEL$dnkNam
+# snEL%v%"iNam"<- sourceEL$ingNam
         
               
 #**Assign:** edge atributes <aka colnames>        

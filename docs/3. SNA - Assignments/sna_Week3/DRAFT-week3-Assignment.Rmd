@@ -64,6 +64,7 @@ library(sna)
             *   stack multiple networks. 
 
 # Week 2: Scripts
+
 ## Smuggler's Index: Network Attributes 
 ```{r Network Size}
 
@@ -158,6 +159,465 @@ print(summary(snEL))
   
 ```
 
+
+## Dyad Census
+
+Classifies all dyads in the network as:
+- Mutual - Reciprocal (mutual) 
+- Asymmetric -  (non-mutual), 
+- Null - Absent
+
+
+```{r iGraph: Dyad Census, echo=TRUE}
+library(igraph)
+
+dyad.census(igEL)
+print("Undirected graph, $asym is 0")
+
+```
+
+```{r iGraph: Dyad: Graph Density / Edge Density, echo=TRUE}
+library(igraph)
+
+  graph.density(igEL)
+
+summary(
+  graph.density(igEL)
+)
+ 
+    ## Density captures, at the macro-level, the proportion of dyads that are present over the possible total number of dyads in the network
+  
+  edge_density(igEL)
+  
+summary(
+   edge_density(igEL)
+)
+
+      # Generating a random graph for comparison
+# erdos.renyi.game
+      ## In an erdos.renyi.graph, each edge has the same probability of being created. We determine the probability and it returns a random graph with a density that equals (in expectation) this probability.
+
+igEL_Nod <- vcount(igEL)
+
+igEL_Den <- graph.density(igEL)
+
+ igEL_randoGraph <- erdos.renyi.game(
+    n = igEL_Nod, 
+    p.or.m = igEL_Den, 
+    directed = T) 
+      # where n is the number of nodes, 
+      # p.or.m is the probability of drawing an edge, 
+      #directed is whether the network is directed or not
+ class(igEL_randoGraph)
+ summary(igEL_randoGraph)
+ 
+ 
+ print_all(igEL_randoGraph)
+
+```
+
+plot(igEL_randoGraph,
+      vertex.size = 5, 
+      vertex.label = NA, 
+      edge.curved = .1, 
+      vertex.color = "tomato", 
+      edge.arrow.size = .1, 
+      edge.width = .5, 
+     edge.color = "grey60")
+
+```{r statnet: Dyad Count / Dyad Census , echo=TRUE}
+library(statnet)
+library(sna)
+
+ network.dyadcount(snEL)
+ sna::dyad.census(snEL)
+ 
+     print("statnet thinks it's a directed network, so there are no mutual ties because it's an undirected network and the 'names' and 'ingredients' in a recipie do not have a reciprocal relationship. If anything the 'flow of info' moves from 'Drink Name' to 'Drink Ingredient' to 'Ingredient type'. The Drink name determines the recipie ingredients, but we're unable to identify a drink by calling on individual ingredients in a recipie")  
+  
+```
+
+gplot(sna::dyad.census(snEL))
+
+```{r statnet: GRecip / Mutuality, echo=TRUE}
+library(statnet)
+library(sna)
+  
+#  the number of complete dyads (i.e., i<->j)
+mutuality(snEL)
+
+
+  grecip(snEL) 
+  
+    #proportion of symmetric dyads
+  grecip(snEL, 
+         measure = "dyadic") 
+  
+      # returns the ratio of mutuals to non-null dyads.
+  grecip(snEL, 
+         measure = "dyadic.nonnull") 
+  
+      # the proportion of edges which are reciprocated
+  grecip(snEL, 
+         measure = "edgewise") 
+  
+      # returns the log of the ratio of the edgewise reciprocity to the density
+  grecip(snEL, 
+         measure = "edgewise.lrr") 
+      
+  # The correlation measure may be interpreted as the net tendency for edges of similar relative value (with respect to the mean edge value) to occur within the same dyads. 
+
+    grecip(snEL, 
+         measure = "correlation") 
+```
+
+
+
+## Triad Census
+
+Classifies all triads in the network. 
+
+
+```{r iGraph: Triad Census, echo=TRUE}
+library(igraph)
+#Classify all Triad in the network
+
+sum(
+  triad_census(igEL)
+)
+
+list(
+  triad_census(igEL)
+)
+
+
+
+```
+plot(
+  triad_census(igEL)
+)
+
+```{r statnet: Triad Census / Triad Classify, echo=TRUE}
+library(sna)
+
+#     total number of all four triad types returned by triad census
+sum(
+  sna::triad.census(
+    snEL,
+    mode="graph"))
+
+
+#     Classify all Triad in the network: Undirected Network
+ sna::triad.census(
+     snEL,
+     mode="graph")
+
+  
+#Davis and Leinhardt classification of the triad classification scheme 
+   # describes each triad by a string of four elements: 
+   # the number of mutual (complete) dyads within the triad; 
+   # the number of asymmetric dyads within the triad; 
+   # the number of null (empty) dyads within the triad; 
+   #and a configuration code for the triads which are not uniquely distinguished by the first three distinctions.
+   
+sna::triad.classify(
+     snEL,
+     tri=c(1,2,3),
+     mode==c("graph")
+   )
+
+```
+
+
+
+## Transitivity or Global Clustering
+
+Perportion of connected triads to complete triads
+
+```{r iGraph: Transitivity Network, echo=TRUE}
+library(igraph)
+
+# Calculate the maximal (weakly or strongly) connected components of a graph
+igraph::cluster.distribution()
+
+#     network transitivity:
+ transitivity(igEL)
+
+ summary(  
+  transitivity(
+   igEL,
+   type = c("undirected"),
+   vids = NULL, #  all vertices are considered.
+   weights = NULL,
+   isolates = c("NaN", "zero"))
+)
+
+summary( 
+ transitivity(igEL,
+             type = c("globalundirected"),
+             vids = NULL, #  all vertices are considered.
+             weights = NULL,
+             isolates = c("NaN", "zero"))
+)
+
+summary(
+  transitivity(igEL,
+             type = c("localundirected"),
+             vids = NULL, #  all vertices are considered.
+             weights = NULL,
+              isolates = c("NaN", "zero"))
+)
+#   c("undirected", "global", "globalundirected", "localundirected", "local","average", "localaverage","localaverageundirected", "barrat", "weighted")
+
+```
+plot(
+  transitivity(igEL,
+             type = c("localundirected"),
+             vids = NULL, #  all vertices are considered.
+             weights = NULL,
+              isolates = c("NaN", "zero"))
+)
+```{r statnet: Transitivity:, echo=FALSE}
+library(statnet)
+library(sna)
+
+#   Networks transitivity:
+print("Networks transitivity:")  
+print("Note: where missing values prevent the assessment of whether a triple is transitive, that triple is omitted.")
+
+print("use.adjacency=FALSE -> 0: completely intransitive ")        
+  gtrans(snEL,
+         mode="digraph", #"digraph" for triads 
+         use.adjacency=FALSE)
+
+print("use.adjacency=TRUE -> 1: completely transitive")
+  gtrans(snEL, 
+         mode="graph", # No triads
+         use.adjacency=TRUE)
+
+# Unaffected by mode=digrag/graph, diag(nal)=F/T
+      
+#   measure = 
+  ## c("weak", "strong", "weakcensus", "strongcensus", "rank", "correlation"), 
+
+print("Weak Ties: fraction of potentially intransitive triads returned")
+  ## Weak Ties
+  gtrans(
+    snEL,
+    g=NULL,
+    mode="graph", 
+    measure = c("weak"),
+    use.adjacency=FALSE)
+    
+  gtrans(
+    snEL,
+    g=NULL,
+    mode="graph", 
+    measure = c("weak"),
+     use.adjacency=TRUE)
+   
+print("weak census: total number of transitive triads is computed")  
+  ## "weakcensus"
+  gtrans(
+    snEL,
+    g=NULL,
+    mode="graph", 
+    measure = c("weakcensus"),
+    use.adjacency=TRUE)
+
+  gtrans(
+    snEL,
+    g=NULL,
+    mode="graph", 
+    measure = c("weakcensus"),
+    use.adjacency=FALSE)
+
+  
+print("strong ties")  
+  ## Strong Ties
+  gtrans(
+    snEL,
+    g=NULL,
+    mode="graph", 
+    measure = c("strong"),
+    use.adjacency=TRUE)
+
+  gtrans(
+    snEL,
+    g=NULL,
+    mode="graph", 
+    measure = c("strong"),
+    use.adjacency=FALSE)
+  
+print("strongcensus: total number of all (in/transitive) triad sets considered")
+  ## "strongcensus"
+gtrans(
+    snEL,
+    g=NULL,
+    mode="graph", 
+    measure = c("strongcensus"),
+    use.adjacency=FALSE)
+
+  gtrans(
+    snEL,
+    g=NULL,
+    mode="graph", 
+    measure = c("strongcensus"),
+    use.adjacency=TRUE)
+  
+print("rank")  
+  ##  "rank"
+gtrans(
+    snEL,
+    g=NULL,
+    mode="graph", 
+    measure = c( "rank"),
+    use.adjacency=FALSE)
+  
+  gtrans(
+    snEL,
+    g=NULL,
+    mode="graph", 
+    measure = c( "rank"),
+    use.adjacency=TRUE)
+  
+  
+  ## "correlation"
+print("correlation: the matrix correlation of the valued adjacency matrix A with its second power (i.e., A^2), omitting diagonal entries where inapplicable.")
+  
+  gtrans(
+    snEL,
+    g=NULL,
+    mode="graph", 
+    measure = c("correlation"),
+    use.adjacency=TRUE)
+
+```
+
+
+
+## Ego Network Transivity or Local Clustering
+
+`Local transitivity` (local clustering coefficient), is a technical description of the density of an ego network.
+
+```{r iGraph: Local / Ego Network Transitivity, echo=TRUE}
+#     get global clustering cofficient
+  transitivity(igEL,
+               type="global")
+
+#     get average local clustering coefficient
+  transitivity(igEL,
+               type="average")
+
+
+#     check ego network transitivity
+transitivity(igEL,
+             type="undirected",
+             vids=V(igEL)[c(
+               "AKU AKU", 
+               "SINGAPORE SLING",
+               "HONDO HATTIE'S JUNGLE PUNCH!")])
+
+```
+
+```{r statnet: Local / Ego Network Transitivity}
+library(statnet)
+library(sna)
+print("Ego Network Transitivity")
+
+print("use.adjacency=TRUE -> 1: completely transitive")
+gtrans(
+    snEL,
+    g=snEL%v%"AKU AKU",
+    use.adjacency=T)
+
+gtrans(
+    snEL,
+    g=snEL%v%"LIME JUICE",
+    use.adjacency=T)
+
+print("use.adjacency=FALSE -> 0: completely intransitive ")        
+gtrans(
+    snEL,
+    g=snEL%v%"AKU AKU",
+    use.adjacency=FALSE)
+
+gtrans(
+    snEL,
+    g=snEL%v%"LIME JUICE",
+    use.adjacency=FALSE)
+
+#   measure = 
+  ## c("weak", "strong", "weakcensus", "strongcensus", "rank", "correlation"), 
+
+
+print("strong ties")  
+  ## Strong Ties
+  gtrans(
+    snEL,
+      g=snEL%v%"AKU AKU",
+    mode="digraph", 
+    measure = c("strong"),
+    use.adjacency=FALSE)
+
+  gtrans(
+    snEL,
+    g=snEL[c(
+      "AKU AKU,KAHIKO PUNCH", "TRIUMVIRATE PUNCH", "EUREKA PUNCH",
+      "YULETIDAL WAVE","RUMBUSTION PUNCH", "PUKA PUNCH")],
+    mode="graph", 
+    measure = c("strong"),
+    use.adjacency=FALSE)
+  
+  gtrans(
+    snEL,
+    g=snEL%v%"LIME JUICE",
+    mode="graph", 
+    measure = c("strong"),
+    use.adjacency=F)
+  
+ gtrans(
+    snEL,
+     g=snEL[c(
+       "LIME JUICE","2:1 SIMPLE SYRUP","ALLSPICE BERRIES",
+       "APPLE BRANDY"  ,"ABSINTHE BLANC","AQUAVIT","AMARO AVERNA")],
+    mode="graph", 
+    measure = c("strong"),
+    use.adjacency=F)
+ 
+  
+print("strongcensus: total number of all (in/transitive) triad sets considered")
+  
+print("strongcensus")
+    ## "strongcensus"
+  gtrans(
+    snEL,
+      g=snEL%v%"AKU AKU",
+    mode="graph", 
+    measure = c("strongcensus"))
+
+gtrans(
+    snEL,
+    g=snEL[c(
+      "AKU AKU,KAHIKO PUNCH", "TRIUMVIRATE PUNCH", "EUREKA PUNCH",
+      "YULETIDAL WAVE","RUMBUSTION PUNCH", "PUKA PUNCH")],
+    mode="graph", 
+    measure = c("strongcensus"))
+
+gtrans(
+    snEL,
+   g=snEL%v%"LIME JUICE",
+    mode="graph", 
+    measure = c("strongcensus"))
+
+  gtrans(
+    snEL,
+     g=snEL[c("LIME JUICE","2:1 SIMPLE SYRUP","ALLSPICE BERRIES","APPLE BRANDY"  ,"ABSINTHE BLANC","AQUAVIT","AMARO AVERNA")],
+    mode="graph", 
+    measure = c("strongcensus"))
+
+```
+
+
 ##  Path Length and Geodesic Distance
 
 - Nodes: 
@@ -172,16 +632,20 @@ print(summary(snEL))
 library(statnet)
 library(sna)
 
-  gd_snEL <- geodist(
-    snEL, 
-    inf.replace=Inf, 
-    count.paths=TRUE, 
-    predecessors=FALSE,
-    ignore.eval=TRUE, 
-    na.omit=TRUE)
+#uses a BFS to find the number and lengths of geodesics between all nodes 
 
-   summary(gd_snEL)
-  gplot(gd_snEL)
+
+ gd_snEL <- geodist(
+    snEL, 
+    inf.replace=.5, #geodesics do not exist, substitute value
+    count.paths=TRUE, 
+    predecessors=T, # return predecessor list
+    ignore.eval=F, # ignore edge values
+    na.omit=F) # remove NA values
+
+summary(gd_snEL)
+view(
+  list(gd_snEL))
   
   #Examine the number of geodesics
 snEL_gdCounts <- gd_snEL$counts
@@ -190,20 +654,23 @@ snEL_gdCounts <- gd_snEL$counts
 #Examine the geodesic distances
 snEL_gdist  <- gd_snEL$gdist
   
- 
-  
 ```
+gplot(gd_snEL)
+gplot(snEL_gdist)
+
+
 
 ```{r STATNET:Path: Reachability}
 library(statnet)
 library(sna)
 
+summary(
   reachability(
     snEL,
     geodist.precomp=NULL,
     return.as.edgelist=FALSE,
     na.omit=FALSE)
-
+)
 ```
 
 
@@ -277,6 +744,7 @@ library(igraph)
   
 
 ```{r iGraph:Nodes: Path: Length, echo=TRUE}
+
 library(igraph)
 # Head
 list(
@@ -353,219 +821,6 @@ aku_Puka <-   all_shortest_paths(igEL,
                      weights=NA)$res
 ```   
 
-## Dyad Census
-
-Classifies all dyads in the network as:
-- Mutual - Reciprocal (mutual) 
-- Asymmetric -  (non-mutual), 
-- Null - Absent
-
-
-```{r iGraph: Dyad Census, echo=TRUE}
-library(igraph)
-  
-dyad.census(igEL)
-print("Undirected graph, $asym is 0")
-
-```
-
-```{r iGraph: Directed: GRAPH: Dyad Census, echo=TRUE}
-
-graph.density(igEL)
-    ## Density captures, at the macro-level, the proportion of dyads that are present over the possible total number of dyads in the network
-
-      # Generating a random graph for comparison
-# ?erdos.renyi.game
-      ## In an erdos.renyi.graph, each edge has the same probability of being created. We determine the probability and it returns a random graph with a density that equals (in expectation) this probability.
-
-igELNod <- vcount(igEL)
-
-igELDen <- graph.density(igEL)
-
-smugEL_DigRandoG <- 
-  erdos.renyi.game(
-    n = igELNod, 
-    p.or.m = igELDen, 
-    directed = T) 
-      # where n is the number of nodes, 
-      # p.or.m is the probability of drawing an edge, 
-      #directed is whether the network is directed or not
-
-#**plot(smugEL_DigRandoG, ...** in .R notebook  
-     # vertex.size = 5, 
-     # vertex.label = 1, 
-     # edge.curved = .1, 
-     # vertex.color = "tomato", 
-     # edge.arrow.size = .1, 
-     # edge.width = .5, 
-     # edge.color = "grey60")
-
-```
-
-```{r statnet: Dyad Census , echo=TRUE}
-library(statnet)
-library(sna)
-  
-    sna::dyad.census(snEL)
-  print("statnet thinks it's an undirected network, so there are no mutual ties because it's an undirected network and the 'names' and 'ingredients' in a recipie do not have a reciprocal relationship. If anything the 'flow of info' moves from 'Drink Name' to 'Drink Ingredient' to 'Ingredient type'. The Drink name determines the recipie ingredients, but we're unable to identify a drink by calling on individual ingredients in a recipie")  
-  
-    network.dyadcount(snEL)
-
-```
-
-gplot(sna::dyad.census(snEL))
-
-```{r statnet: grecip: dyadic reciprocity & Mutuality, echo=TRUE}
-library(statnet)
-library(sna)
-  
-#  the number of complete dyads (i.e., i<->j)
-mutuality(snEL)
-
-
-  grecip(snEL) 
-  
-    #proportion of symmetric dyads
-  grecip(snEL, 
-         measure = "dyadic") 
-  
-      # returns the ratio of mutuals to non-null dyads.
-  grecip(snEL, 
-         measure = "dyadic.nonnull") 
-  
-      # the proportion of edges which are reciprocated
-  grecip(snEL, 
-         measure = "edgewise") 
-  
-      # returns the log of the ratio of the edgewise reciprocity to the density
-  grecip(snEL, 
-         measure = "edgewise.lrr") 
-      
-  # The correlation measure may be interpreted as the net tendency for edges of similar relative value (with respect to the mean edge value) to occur within the same dyads. 
-
-  grecip(snEL, 
-         measure = "correlation") 
-
-
-```
-
-## Triad Census
-
-Classifies all triads in the network. 
-
-
-```{r statnet: Triad Census, echo=TRUE}
-library(sna)
-#     Classify all Triad in the network: 
-
-#Directed Network
-#**triad.census(snEL, mode="digraph")*
-
-#     Classify all Triad in the network: Undirected Network
- sna::triad.census(
-     snEL,
-     mode="graph")
-     
-
-#     total number of all four triad types returned by triad census
-snEL_sumTCensus  <- sum(
-  sna::triad.census(
-    snEL,
-    mode="graph"))
-  
-#Davis and Leinhardt classification of the triad classification scheme 
-   # describes each triad by a string of four elements: 
-   # the number of mutual (complete) dyads within the triad; 
-   # the number of asymmetric dyads within the triad; 
-   # the number of null (empty) dyads within the triad; 
-   #and a configuration code for the triads which are not uniquely distinguished by the first three distinctions.
-   
-list(   sna::triad.classify(
-     snEL,
-     tri=c(1,2,3),
-     mode==c("digraph")
-   ))
-  #Classify the triads (1,2,3) and (2,3,4)
-
-   triad.classify(snEL,tri=c(1:5))
-   gplot(snEL,c[1:5])
-   
-```
-
-```{r iGraph: Triad Census, echo=TRUE}
-library(igraph)
-#Classify all Triad in the network
-list(igraph::triad_census(igEL))
-
-```
-
-
-## Transitivity or Global Clustering
-
-```{r iGraph: weighted/ network transitivity, echo=TRUE}
-
-#     network transitivity:
-summary(
-  transitivity(igEL)
-)
-
-summary(
-igEL_guTrans <- transitivity(igEL,
-             type = c("globalundirected"),
-             vids = NULL, #  all vertices are considered.
-             weights = NULL,
-             isolates = c("NaN", "zero"))
-)
-
-summary(
-  transitivity(igEL,
-             type = c(
-               "average"),
-             vids = NULL, #  all vertices are considered.
-             weights = NULL,
-             isolates = c("NaN", "zero"))
-)
-
-#   c("undirected", "global", "globalundirected", "localundirected", "local","average", "localaverage","localaverageundirected", "barrat", "weighted")
-
-```
-
-```{r statnet: weighted/ directed network transitivity, echo=TRUE}
-
-#     Directed Networks transitivity:
-  gtrans(snEL)
-
-#   methods for weighted networks, rank and correlation, along with the relevant references.
-#  sna::gtrans()
-  
-```
-
-
-## Ego Network Transivity or Clustering
-`Local transitivity` (local clustering coefficient), is a technical description of the density of an ego network.
-
-, "KAHIKO PUNCH", "TRIUMVIRATE PUNCH", "EUREKA PUNCH", 
-                "YULETIDAL WAVE",
-                "RUMBUSTION PUNCH",
-                "PUKA PUNCH"
-```{r iGraph:Local transitivity, echo=TRUE}
-#     get global clustering cofficient
-  transitivity(igEL, type="global")
-
-#     get average local clustering coefficient
-  transitivity(igEL, type="average")
-
-
-#     check ego network transitivity
-transitivity(igEL,
-             type="local", 
-             vids=V(igEL)[c(
-               "AKU AKU", "SINGAPORE SLING", "HONDO HATTIE'S JUNGLE PUNCH!")]
-               )
-```
-
-## Component Structure and Membership
-
 ### Statnet: Component STructure, Isolates, Density
 ```{r Statnet: Isolates, echo=TRUE}
 
@@ -624,6 +879,12 @@ transitivity(igEL,
  **Igraph** provides an incorrect density calculation as the default assumes  that loops are not included but does not remove them. 
  
  Therefore, the default calculation includes the loops in the numerator but not the denominator of the density calculation.
+
+
+
+
+
+## Component Structure and Membership
 
 
 # Week 3: 
