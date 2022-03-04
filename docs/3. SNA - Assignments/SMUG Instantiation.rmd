@@ -46,23 +46,7 @@ library(sna)
 ```{r Set Working Directory, include=FALSE}
 
 setwd("C:/Users/white/iCloudDrive/Documents/1_DACSS_UMassAmherst/Dacss_RProjects/3. Sp22_rProjects/Dacss_679- Coursework/GIT-ajw_Learning-SocialNetworkAnalysis/docs/3. SNA - Assignments/sna_Week3")
-
-
 ```
-##   Project Varriables
-    
-    Raw Data:
-  indx_SmugglerCove_recip
-
-    DataFrame:
-  smugCovIdx
-            "dnkNam" "ingNam" "dnkIng" "ingTyp"
- 
-    Matrix:
- 
-        
-    Network Objects: EDGE LIST
-  
 
 ## Basic R: Import & Clean Data
 
@@ -76,7 +60,7 @@ indx_SmugglerCove_recip <- read_csv("C:/Users/white/iCloudDrive/Documents/1_DACS
                      X4 = col_skip()), 
                     na = "empty")
 
-View(indx_SmugglerCove_recip)
+
 summary(indx_SmugglerCove_recip)
 
  # Smuggler's Cove
@@ -173,12 +157,13 @@ library(statnet)
 snEL <- 
   network(as.matrix
           (sourceEL[1:2], 
-            matrix.type = 'edgelist'))
+            matrix.type = 'edgelist',
+            ))
                   
 #**Assign:**VERTICES atributes <aka colnames>
  
-#  snEL%v%"dNam"<- sourceEL$dnkNam
-# snEL%v%"iNam"<- sourceEL$ingNam
+ snEL%v%"dNam"<- sourceEL$dnkNam
+ snEL%v%"iNam"<- sourceEL$ingNam
         
               
 #**Assign:** edge atributes <aka colnames>        
@@ -222,7 +207,7 @@ library(igraph)
 
 sourceEL_mx = 
             as.matrix(source_df[1:2],
-                      matrix.type = "edgelist")
+                      matrix.type = "edgelist",)
     ##**Note** Var 1 is empty, Var 2 Contains edgelist          
           
           
@@ -238,5 +223,14 @@ E(igEL)$ingTyp<-source_df$ingTyp
 
  
  
+```
+
+
+##   Project Varriables
+```{r}
+class(snEL)
+
+class(igEL)
+
 ```
 

@@ -64,8 +64,17 @@ library(sna)
             *   stack multiple networks. 
 
 # Week 2: Scripts
-## Smuggler's Index: Network Attributes  
+## Smuggler's Index: Network Attributes 
+```{r Network Size}
+
+  print(snEL)
+  print(igEL)
   
+  summary(snEL)
+  summary(igEL)
+
+```
+
 ###   IGRAPH:   Network Description
 *igraph*
 - Network Size
@@ -80,15 +89,16 @@ library(sna)
 Names
 - Vertex Names: view
 - Edge Attribute Names: [1] "ingTyp"
-```{r igraph: Network Description, echo=TRUE} 
+```{r igraph: Network & Attribute Descripions, echo=TRUE} 
 
-summary(igEL)
+## Network Size
 #     Count Vertices
     vcount(igEL)
-
 #     Count Edges
     ecount(igEL)
 
+## Network Attributes
+    
 # Is this a Bipartite or single mode network?
     is_bipartite(igEL)
 
@@ -98,24 +108,26 @@ summary(igEL)
 #Are edges weighted or unweighted?
     is_weighted(igEL)        
     
-```
+# vertex attribute names
+  igraph::vertex_attr_names(igEL)
 
-```{r igraph: Vertex & Attribute info, echo=TRUE}
-library(igraph)
-
-#     access vertex attribute 
-  head(V(igEL)$name,20)
-#     Generate a list the names of vertex attributes
-  print(igraph::vertex_attr_names(igEL))
-
-#     access edge attribute
-  head(E(igEL)$ingTyp, 20)
-
-#   Generate a list the names of edge attributes  
+#   edge attributes  names
   igraph::edge_attr_names(igEL)
 
 #   summarize numeric network attribute
-  summary(E(igEL)$weight)  
+#**summary(E(igEL)$weight)*
+
+```
+
+```{r igraph: Vetex & Edge Names, echo=TRUE}
+library(igraph)
+
+#     access vertex attribute 
+  head(
+    V(igEL)$name,20)
+
+#     access edge attribute
+  head(E(igEL)$ingTyp, 20)
 
 ```
 
@@ -123,65 +135,28 @@ library(igraph)
 ###   STATNET:   Network Description 
 
 ```{r statnet: Network Summary & Attribute info, echo=TRUE}
-
-summary(snEL)
 print(snEL)
-#     access vertex attributes
- head(snEL %v% "vertex.names")
+
+print(summary(snEL))
 
 #      list the names of vertex attributes
   network::list.vertex.attributes(snEL)
-
-#     access edge attribute
-  head(snEL%e% "ingTyp")
-
 #  Generate a list the names of edge attributes
   network::list.edge.attributes(snEL)
  
 #   summarize numeric network attribute
-  summary(snEL  %v% "name")
+  summary(snEL%v%"name")
+  summary(snEL%v%"ingNam")
+  summary(snEL%v%"dnkNam")
+  summary(snEL%e%"ingTyp")
+  
+  
+#     access vertex & edge attribute names
+ head(snEL %v% "vertex.names")
+#     access edge attribute
+  head(snEL%e%"ingTyp")
   
 ```
-
-
-```{r STATNET: Component Size Distribution}
-library(statnet)
-library(sna)
-
-cd_snEL<- component.dist(
-  snEL, 
-  connected= c("strong")) # c("strong","weak","unilateral","recursive"))
-  summary(cd_snEL)    
-  View(cd_snEL)
-  
-  gplot.layout.circle(cd_snEL)
-  
-  
-cl_snEL <- component.largest(
-  snEL, 
-  connected = c("strong"), #=c("strong","weak","unilateral" "recursive")
-  result = c("graph"), #c("membership", "graph") 
-  return.as.edgelist = FALSE)
-    
-  view(summary(cl_snEL))
-  View(cl_snEL)
-
-gplot(cl_snEL)
-
-```
-
-##### Details: Component Size Distribution 
-Components are maximal sets of mutually connected vertices; depending on the definition of “connected” one employs, one can arrive at several types of components. Those supported here are as follows (in increasing order of restrictiveness):
-
-weak: v_1 is connected to v_2 iff there exists a semi-path from v_1 to v_2 (i.e., a path in the weakly symmetrized graph)
-
-unilateral: v_1 is connected to v_2 iff there exists a directed path from v_1 to v_2 or a directed path from v_2 to v_1
-
-strong: v_1 is connected to v_2 iff there exists a directed path from v_1 to v_2 and a directed path from v_2 to v_1
-
-recursive: v_1 is connected to v_2 iff there exists a vertex sequence v_a,...,v_z such that v_1,v_a,...,v_z,v_2 and v_2,v_z,...,v_a,v_1 are directed paths
-
-
 
 ##  Path Length and Geodesic Distance
 
@@ -390,6 +365,7 @@ Classifies all dyads in the network as:
 library(igraph)
   
 dyad.census(igEL)
+print("Undirected graph, $asym is 0")
 
 ```
 
@@ -428,12 +404,16 @@ smugEL_DigRandoG <-
 
 ```{r statnet: Dyad Census , echo=TRUE}
 library(statnet)
-    
-  sna::dyad.census(snEL)
-    
-  network.dyadcount(snEL)
+library(sna)
+  
+    sna::dyad.census(snEL)
+  print("statnet thinks it's an undirected network, so there are no mutual ties because it's an undirected network and the 'names' and 'ingredients' in a recipie do not have a reciprocal relationship. If anything the 'flow of info' moves from 'Drink Name' to 'Drink Ingredient' to 'Ingredient type'. The Drink name determines the recipie ingredients, but we're unable to identify a drink by calling on individual ingredients in a recipie")  
+  
+    network.dyadcount(snEL)
 
 ```
+
+gplot(sna::dyad.census(snEL))
 
 ```{r statnet: grecip: dyadic reciprocity & Mutuality, echo=TRUE}
 library(statnet)
@@ -645,7 +625,45 @@ transitivity(igEL,
  
  Therefore, the default calculation includes the loops in the numerator but not the denominator of the density calculation.
 
+
 # Week 3: 
+
+```{r STATNET: Component Size Distribution}
+library(statnet)
+library(sna)
+
+cd_snEL<- component.dist(
+  snEL, 
+  connected= c("strong")) # c("strong","weak","unilateral","recursive"))
+  summary(cd_snEL)    
+  View(cd_snEL)
+  
+  gplot.layout.circle(cd_snEL)
+  
+  
+cl_snEL <- component.largest(
+  snEL, 
+  connected = c("strong"), #=c("strong","weak","unilateral" "recursive")
+  result = c("graph"), #c("membership", "graph") 
+  return.as.edgelist = FALSE)
+    
+  view(summary(cl_snEL))
+  View(cl_snEL)
+
+gplot(cl_snEL)
+
+```
+
+##### Details: Component Size Distribution 
+Components are maximal sets of mutually connected vertices; depending on the definition of “connected” one employs, one can arrive at several types of components. Those supported here are as follows (in increasing order of restrictiveness):
+
+weak: v_1 is connected to v_2 iff there exists a semi-path from v_1 to v_2 (i.e., a path in the weakly symmetrized graph)
+
+unilateral: v_1 is connected to v_2 iff there exists a directed path from v_1 to v_2 or a directed path from v_2 to v_1
+
+strong: v_1 is connected to v_2 iff there exists a directed path from v_1 to v_2 and a directed path from v_2 to v_1
+
+recursive: v_1 is connected to v_2 iff there exists a vertex sequence v_a,...,v_z such that v_1,v_a,...,v_z,v_2 and v_2,v_z,...,v_a,v_1 are directed paths
 
 ## Network Density
  
