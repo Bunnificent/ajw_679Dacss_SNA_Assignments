@@ -66,6 +66,7 @@ library(sna)
 # Week 2: Scripts
 
 ## Smuggler's Index: Network Attributes 
+
 ```{r Network Size}
 
   print(snEL)
@@ -75,6 +76,8 @@ library(sna)
   summary(igEL)
 
 ```
+plot.network(snEL)
+igraph::plot.igraph(igEL)
 
 ###   IGRAPH:   Network Description
 *igraph*
@@ -132,8 +135,29 @@ library(igraph)
 
 ```
 
+```{r iGraph: Undirected: network density, echo=TRUE}
+
+    #get network density **with** loops
+ igraph::graph.density(igEL)
+ edge_density(igEL)
+          ##**NOTE** provides an incorrect density calculation 
+          ## as the default assumes that loops are not included but does not remove them
+ 
+```
  
 ###   STATNET:   Network Description 
+
+```{r Statnet: Network Density, echo=TRUE}
+
+            # get network density: with possible loops
+   network.density(snEL)
+          ##**WARNING: Network is multiplex - no general way to define density.** 
+
+ # get network density **with** loops: statnet
+ gden(snEL, diag=F)
+ 
+ 
+```
 
 ```{r statnet: Network Summary & Attribute info, echo=TRUE}
 print(snEL)
@@ -285,32 +309,30 @@ sum(
   triad_census(igEL)
 )
 
-list(
+igEL_triList <- 
   triad_census(igEL)
-)
 
 
 
 ```
-plot(
-  triad_census(igEL)
-)
+plot(igEL_triList)
 
 ```{r statnet: Triad Census / Triad Classify, echo=TRUE}
 library(sna)
 
 #     total number of all four triad types returned by triad census
-sum(
+
+#     Classify all Triad in the network
+
   sna::triad.census(
     snEL,
-    mode="graph"))
+    mode="graph")
 
-
-#     Classify all Triad in the network: Undirected Network
+view(
  sna::triad.census(
      snEL,
-     mode="graph")
-
+     mode="digraph")
+))
   
 #Davis and Leinhardt classification of the triad classification scheme 
    # describes each triad by a string of four elements: 
@@ -322,11 +344,22 @@ sum(
 sna::triad.classify(
      snEL,
      tri=c(1,2,3),
-     mode==c("graph")
-   )
+     mode==c("graph"))
+
+sna::triad.classify(
+     snEL,
+     tri=c(1:16),
+     mode==c("digraph"))
 
 ```
+plot(view(
+ sna::triad.census(
+     snEL,
+     mode="digraph")
+))
 
+plot(view(
+sna::triad.census(snEL,mode="graph")))
 
 
 ## Transitivity or Global Clustering
@@ -348,7 +381,7 @@ igraph::cluster.distribution()
    type = c("undirected"),
    vids = NULL, #  all vertices are considered.
    weights = NULL,
-   isolates = c("NaN", "zero"))
+   isolates = c("zero"))
 )
 
 summary( 
@@ -356,7 +389,7 @@ summary(
              type = c("globalundirected"),
              vids = NULL, #  all vertices are considered.
              weights = NULL,
-             isolates = c("NaN", "zero"))
+             isolates = c("zero"))
 )
 
 summary(
@@ -364,19 +397,13 @@ summary(
              type = c("localundirected"),
              vids = NULL, #  all vertices are considered.
              weights = NULL,
-              isolates = c("NaN", "zero"))
+              isolates = c("zero"))
 )
 #   c("undirected", "global", "globalundirected", "localundirected", "local","average", "localaverage","localaverageundirected", "barrat", "weighted")
 
 ```
-plot(
-  transitivity(igEL,
-             type = c("localundirected"),
-             vids = NULL, #  all vertices are considered.
-             weights = NULL,
-              isolates = c("NaN", "zero"))
-)
-```{r statnet: Transitivity:, echo=FALSE}
+
+```{r statnet: PLOT: Transitivity:, echo=FALSE}
 library(statnet)
 library(sna)
 
@@ -618,6 +645,7 @@ gtrans(
 ```
 
 
+
 ##  Path Length and Geodesic Distance
 
 - Nodes: 
@@ -626,7 +654,7 @@ gtrans(
 - Links: 
   - (e/c)  Ingredient Type
 
-###  Statnet:   Path Length and Geodesic Distance
+###  Statnet:   Path Length and Geodesic Distance: Networks
  
 ```{r STATNET: Plot: Geodesic: Numbers and Lengths }
 library(statnet)
@@ -634,31 +662,34 @@ library(sna)
 
 #uses a BFS to find the number and lengths of geodesics between all nodes 
 
+View(
+geodist(snEL))
 
  gd_snEL <- geodist(
     snEL, 
-    inf.replace=.5, #geodesics do not exist, substitute value
+    inf.replace=.25, #geodesics do not exist, substitute value
     count.paths=TRUE, 
-    predecessors=T, # return predecessor list
-    ignore.eval=F, # ignore edge values
-    na.omit=F) # remove NA values
+    predecessors=F, # return predecessor list
+    ignore.eval=T, # ignore edge values
+    na.omit=T) # remove NA values
 
-summary(gd_snEL)
-view(
-  list(gd_snEL))
-  
   #Examine the number of geodesics
 snEL_gdCounts <- gd_snEL$counts
+  sum(snEL_gdCounts)
+  log_mean_exp(snEL_gdCounts)
+  log_sum_exp(snEL_gdCounts)
 
 
 #Examine the geodesic distances
-snEL_gdist  <- gd_snEL$gdist
-  
+ snEL_gdist  <- gd_snEL$gdist
+
+  sum(snEL_gdist)
+  log_mean_exp(snEL_gdist)
+  log_sum_exp(snEL_gdist)
+
 ```
-gplot(gd_snEL)
+gplot(gd_snEL) in 
 gplot(snEL_gdist)
-
-
 
 ```{r STATNET:Path: Reachability}
 library(statnet)
@@ -667,53 +698,26 @@ library(sna)
 summary(
   reachability(
     snEL,
-    geodist.precomp=NULL,
-    return.as.edgelist=FALSE,
-    na.omit=FALSE)
+    geodist.precomp= gd_snEL,
+    return.as.edgelist=F,
+    na.omit=F)
 )
 ```
 
-
-```{r STATNET:Path: Geodesic number & lengths}
+```{r STATNET:PLOT: Reachability}
 library(statnet)
 library(sna)
 
-summary(geodist(snEL, 
-        inf.replace=Inf, 
-        count.paths=TRUE, # include geodesics 
-        predecessors=FALSE,# include predecessor list
-        ignore.eval=FALSE, # ignore edge values
-        na.omit=FALSE) # remove NA-values edges
-        )
-
-#Examine the number of geodesics
-gd_snEL$counts
-
-#Examine the geodesic distances
-gd_snEL$gdist
-
-  summary(gd_snEL)
-  gplot(gd_snEL)
-  
+gplot(
+  reachability(
+    snEL,
+    geodist.precomp= gd_snEL,
+    return.as.edgelist=F,
+    na.omit=F)
+)
 ```
 
-```{r STATNET:Path: k Path Census}
-library(statnet)
-library(sna)
-
-summary(kpath.census(snEL, 
-             maxlen = 5, 
-             mode = "graph",
-             tabulate.by.vertex = TRUE, 
-             path.comembership = c("none"), # c("none", "sum","bylength"), 
-             dyadic.tabulation = c("none") # c("none", "sum", "bylength"))
-))
-              ##**"sum"* returns a vertex by vertex matrix of source/destination path counts
-             ##**"bylength"* disaggregates these counts by path length. 
-             ##**"none"* disables this computation.
-
-
-```
+    K-Path Census
 - Aggregate counts of paths/cycles by length (i.e., k).
 
 - Counts of paths/cycles to which each vertex belongs (when tabulate.byvertex==TRUE).
@@ -722,42 +726,154 @@ summary(kpath.census(snEL,
 
 - For path.census, counts of the total number of paths from each vertex to each other vertex, possibly disaggregated by length (if dyadic.tabulation=="bylength").
 
+```{r STATNET:Path: k Path Census}
+library(statnet)
+library(sna)
 
-###  IGRAPH:   Path Length and Geodesic Distance
+summary(kpath.census(snEL, 
+             maxlen = 5, 
+             mode = "graph",
+             tabulate.by.vertex = T, 
+             path.comembership = c("sum"), # c("none", "sum","bylength"),
+             dyadic.tabulation = c("sum") # c("none", "sum", "bylength"))
+))
+              ##**"sum"* returns a vertex by vertex matrix of source/destination path counts
+             ##**"bylength"* disaggregates these counts by path length. 
+             ##**"none"* disables this computation.
+```
 
-```{r iGraph:Nodes: Path: Length, echo=TRUE}
-library(igraph)
+```{r STATNET: PLOT: k Path Census}
+library(statnet)
+library(sna)
+
+gplot(kpath.census(snEL, 
+             maxlen = 10, 
+             mode = "graph",
+             tabulate.by.vertex = T, 
+             path.comembership = c("bylength"), # c("none", "sum","bylength"),
+             dyadic.tabulation = c("sum") # c("none", "sum", "bylength"))
+))
+              ##**"sum"* returns a vertex by vertex matrix of source/destination path counts
+             ##**"bylength"* disaggregates these counts by path length. 
+             ##**"none"* disables this computation.
 
 
 
 ```
 
+###  IGRAPH:    Path Length and Geodesic Distance: Networks & Nodes
 
   The shortest path to describe the overall network structure 
-```{r iGraph:Network: Path: Shortest, echo=TRUE}
+```{r iGraph: Path: Network & Nodes, echo=TRUE}
+library(igraph)
 
 #     find average shortest path for network
-    average.path.length(igEL,directed=F)   
+    average.path.length(igEL,
+                        directed=F,
+                       ig_histPath)
 
+    igraph::path.length.hist(igEL)$no
+
+
+#  shortest_paths calculates one shortest path (the path itself, and not just its length) from or to the given vertex.    
+
+  shortest_paths(
+  igEL,
+  from=1,
+  to = V(igEL),
+  mode = c("all"),
+  weights = NULL,
+  output = c("epath"), #c("vpath", "epath", "both")
+  predecessors = FALSE,
+  inbound.edges = FALSE)$no
+
+    all_shortest_paths(
+      igEL,
+      from = 1, # Vertex ID: AkuAku
+      to = V(igEL),
+      mode = c("all"),
+      weights = NULL)$no
   
+##**From=(vertex id)*	
+    ##Numeric constant, the vertex from or to the shortest paths 
+
+##**mode=c("out", "all", "in")*
+
+##**output= *	
+    ## defines how to report the shortest paths. 
+  #**“vpath”* the vertices along the paths are reported, this form was used prior to igraph version 0.6. 
+  #**“epath”* edges along the paths are reported. 
+  #*“both”* both forms are returned, in a named list with components “vpath” and “epath”.
+    
 ```   
   
+```{r iGraph: PLOT: PATH: Network & Nodes, echo=TRUE}
+library(igraph)
 
-```{r iGraph:Nodes: Path: Length, echo=TRUE}
+ ig_histPath <-
+view(
+    igraph::path.length.hist(igEL)
+)
+#  shortest_paths calculates one shortest path (the path itself, and not just its length) from or to the given vertex.    
+
+
+ig_ShortPath <-
+  shortest_paths(
+  igEL,
+  from=1,
+  to = V(igEL),
+  mode = c("all"),
+  weights = NULL,
+  output = c("epath"), #c("vpath", "epath", "both")
+  predecessors = FALSE,
+  inbound.edges = FALSE)
+
+  
+ig_AllShort <- 
+    all_shortest_paths(
+      igEL,
+      from = 1, # Vertex ID: AkuAku
+      to = V(igEL),
+      mode = c("all"),
+      weights = NULL)$res
+
+##**From=(vertex id)*	
+    ##Numeric constant, the vertex from or to the shortest paths 
+
+##**mode=c("out", "all", "in")*
+
+##**output= *	
+    ## defines how to report the shortest paths. 
+  #**“vpath”* the vertices along the paths are reported, this form was used prior to igraph version 0.6. 
+  #**“epath”* edges along the paths are reported. 
+  #*“both”* both forms are returned, in a named list with components “vpath” and “epath”.
+    
+ class(ig_histPath)
+  class(ig_ShortPath)
+  class(ig_AllShort)
+```   
+  Distance between two or more Nodes
+```{r iGraph: Distances: Network & Nodes, echo=TRUE}
 
 library(igraph)
-# Head
-list(
-  head(V(igEL)$name,10),
-  tail(V(igEL)$name,10)
-  )
+# distances calculates the length of all the shortest paths from or to the vertices in the network. 
 
-#     Calculate distance between two nodes using unweighted edges
- 
+ mean_distance(igEL, directed = F, unconnected = TRUE)
+
+view(
+  distance_table(igEL, directed = F)
+)
+
+view(
+  igraph::distances(igEL)
+)
+
+### distances between specific nodes
+
     distances(igEL,"AKU AKU" ,  "SINGAPORE SLING",weights=NA)
     distances(igEL,"AKU AKU" ,  "HONDO HATTIE'S JUNGLE PUNCH!",weights=NA)
     distances(igEL,"AKU AKU" ,"KAHIKO PUNCH" ,weights=NA)
-    distances(igEL,"AKU AKU" , "PASSION FRUIT HONEY"   ,weights=NA)
+    distances(igEL,"AKU AKU" , "JET PILOT"   ,weights=NA)
     distances(igEL,"AKU AKU" , "TRIUMVIRATE PUNCH"   ,weights=NA)
     distances(igEL,"AKU AKU" ,"EUREKA PUNCH" ,weights=NA)
     distances(igEL,"AKU AKU" , "YULETIDAL WAVE" ,weights=NA)
@@ -766,12 +882,37 @@ list(
 
 ```
 
+```{r iGraph:Nodes: GRAPH:  Length between Nodes, echo=TRUE}
+library(igraph)
+
+class(aku_Puka)
+
+View(
+  list(
+    aku_Sing,
+    aku_Hondo,
+    aku_Kahiko,
+    aku_JetPilot,
+    aku_Trium,
+    aku_Eureka,
+    aku_YuleTide,
+    aku_Rumbustion,
+    aku_Puka)
+  )
+
+
+```
+
 Find *all* of the shortest paths between two specific nodes in this network.
 
-```{r iGraph:Nodes: Path: Shortest, echo=TRUE}
-    
-#     isolating the distances between specific node
+```{r iGraph:Nodes & Network: Path: Shortest , echo=TRUE}
+  
+# shortest_paths calculates one shortest path (the path itself, and not just its length) from or to the given vertex.
+view(
+  igraph::shortest.paths(igEL)
+  )
 
+#     isolating the distances between specific node
 ## Note: manually tell igraph to ignore edge weights.
 
 
@@ -792,9 +933,9 @@ aku_Kahiko <- all_shortest_paths(igEL,
                    "KAHIKO PUNCH",
                    weights=NA)
 
-aku_PFhoney <- all_shortest_paths(igEL,
+aku_JetPilot <- all_shortest_paths(igEL,
                      "AKU AKU", 
-                     "PASSION FRUIT HONEY",
+                     "JET PILOT",
                      weights=NA)$res
   
 aku_Trium <- all_shortest_paths(igEL,
@@ -819,11 +960,113 @@ aku_Puka <-   all_shortest_paths(igEL,
                      "AKU AKU" ,
                      "PUKA PUNCH",
                      weights=NA)$res
+
+View(list(
+  aku_Sing,
+  aku_Hondo,
+  aku_Kahiko,
+  aku_JetPilot,
+  aku_Trium,
+  aku_Eureka,
+  aku_YuleTide,
+  aku_Rumbustion,
+  aku_Puka)
+)
+
 ```   
 
-### Statnet: Component STructure, Isolates, Density
-```{r Statnet: Isolates, echo=TRUE}
+```{r iGraph:Nodes: GRAPH: Shortest between Nodes, echo=TRUE}
+library(igraph)
 
+class(aku_Puka)
+
+View(
+  list(
+    aku_Sing,
+    aku_Hondo,
+    aku_Kahiko,
+    aku_JetPilot,
+    aku_Trium,
+    aku_Eureka,
+    aku_YuleTide,
+    aku_Rumbustion,
+    aku_Puka)
+  )
+
+
+```
+
+  
+
+
+## Component Structure and Membership
+
+### Igraph: Component Structure, Isolates,
+
+```{r iGraph: network density, echo=TRUE}
+
+    #get network density **with** loops
+ igraph::graph.density(igEL)
+ edge_density(igEL)
+          ##**NOTE** provides an incorrect density calculation 
+          ## as the default assumes that loops are not included but does not remove them
+```
+
+```{r iGraph: Component Structure & Isolates, echo=TRUE}
+
+## Component Structure: 
+
+# Number of Components in a Graph
+  count_components(igEL)
+
+# Connected components ?
+ igraph::is_connected(igEL)
+
+# Calculate the maximal (weakly or strongly) connected components of a graph
+
+ component_distribution(igEL, 
+                       cumulative =F, # relative frequency) is calculated
+                       mul.size = F) # multiplied by cluster sizes
+                       #**mode= c("strong"/"weak"))*
+
+# a list with: membership by node, size of each component, and the total number of components.
+
+ 
+ igraph::components(igEL)$no # mode = c("weak", "strong"))
+      ##**NOTE:** $no prevents a list of components from being printed
+summary(
+  igraph::components(igEL,
+                     mode = c("weak"))
+)
+
+summary(
+  igraph::components(igEL,
+                     mode = c("strong"))
+)
+ # Size of each component
+
+
+ igraph::components(igEL)$csize 
+
+
+
+ # Membership of each component 
+summary(  
+igraph::components(igEL)$membership
+)
+
+
+
+ 
+ 
+```
+
+components are all the same size, so no interesting plots
+
+### Statnet: Isolates & Component Structure
+```{r Statnet: Isolates, echo=TRUE}
+library(statnet)
+library(sna)
               ## Isolates:
  
  #List the isolates
@@ -833,58 +1076,77 @@ aku_Puka <-   all_shortest_paths(igEL,
  isolates(snEL, diag=FALSE)
  
  # Is Ego an Isolate?
- is.isolate(snEL, ego_exp, g=1, diag=FALSE)
+ is.isolate(snEL,
+            1,# vertex index number (or a vector of vertices)
+            g=1, 
+            diag=FALSE) #diagonals (i.e., loops) contain meaningful data
  
  # Adds n isolates to the graph (or graphs)
- add.isolates(snEL, n_umber, return.as.edgelist = FALSE)
+ ##**add.isolates(snEL, n_umber, return.as.edgelist = FALSE)*
+ 
+ #subset vertex.names attribute to get names of isolates
+  ##**as.vector(SOURCE.stat%v%'vertex.names')[c(isolates(SOURCE.stat))]*
   
 ```
 
-```{r Statnet: Network Density, echo=TRUE}
+```{r Statnet: Component Structure: Component Size Distribution of a Graph, echo=TRUE}
+library(statnet)
+library(sna)
 
-            # get network density: with possible loops
-   network.density(snEL)
-          ##**WARNING: Network is multiplex - no general way to define density.** 
+# Number of Compnents
+sna::components(snEL)
 
- # get network density **with** loops: statnet
- gden(snEL, diag=F)
- 
- 
+
+# returns a list of vectors: the number of components of graph according to size, length, and membership
+summary(
+component.dist(snEL)
+)
+
+summary(
+component.dist(snEL,
+               connected=c("unilateral"))
+)
+
+summary(
+component.dist(
+ snEL,
+  connected=c("unilateral"))$csize
+)
+
+summary(
+component.dist(
+ snEL,
+  connected=c("unilateral"))$cdist 
+)
+
+
+
+# identifies the component(s) of maximum order within graph
+summary(
+component.largest(snEL)
+)
+
+summary(
+component.largest(
+ snEL, 
+  connected=c("weak"),
+  result = c("membership"), # "membership", "graph")
+  return.as.edgelist = T)
+)
+
+#  computes the component structure of the input network, and returns a vector 
+
+summary(
+component.size.byvertex(snEL)
+)
+
+summary(
+component.size.byvertex(
+ snEL, 
+  connected = c("unilateral")) # "strong", "weak", "unilateral", "recursive"
+)
+
 ```
-
-
-### Igraph: Component STructure, Isolates,
-```{r iGraph: Undirected: Component Structure, echo=TRUE}
-                ## Component Structure: 
- 
-    # Number of components
- igraph::components(igEL)$no 
-      ##**NOTE:** $no prevents a list of components from being printed
-  
-# Size of each component
- igraph::components(igEL)$csize 
-
- 
-```
-
-```{r iGraph: Undirected: network density, echo=TRUE}
-
-    #get network density **with** loops
- network.density(igEL)
- class(igEL)
-          ##**NOTE** provides an incorrect density calculation 
-          ## as the default assumes that loops are not included but does not remove them
- 
-```
- **Igraph** provides an incorrect density calculation as the default assumes  that loops are not included but does not remove them. 
- 
- Therefore, the default calculation includes the loops in the numerator but not the denominator of the density calculation.
-
-
-
-
-
-## Component Structure and Membership
 
 
 # Week 3: 
