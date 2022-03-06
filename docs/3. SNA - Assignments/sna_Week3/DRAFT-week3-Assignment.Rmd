@@ -46,54 +46,72 @@ library(tsna)
 library(sna)
 
 ```
-  
+
 ## Briefly describe the dataset:
-1.   identify initial network format; 
-2.   describe and identify the nodes 
-     including: 
-        *  how many nodes are in the dataset; 
-3.   what constitutes a tie or edge
-     including:
-        *  how many ties, 
-        *   whether ties are directed/undirected,
-        *   whether ties are weighted/binary, 
-        *   and how to interpret the value of the tie if any.
-        *   Whether or not there are edge attributes 
-            that might be used to:
-            *   subset data, or 
-            *   stack multiple networks. 
+
+1.  identify initial network format;
+
+2.  describe and identify the nodes including:
+
+    -   how many nodes are in the dataset;
+
+3.  what constitutes a tie or edge including:
+
+    -   how many ties,
+
+    -   whether ties are directed/undirected,
+
+    -   whether ties are weighted/binary,
+
+    -   and how to interpret the value of the tie
+        if any.
+
+    -   Whether or not there are edge attributes
+        that might be used to:
+
+        -   subset data, or
+        -   stack multiple networks.
 
 # Week 2: Scripts
 
-## Smuggler's Index: Network Attributes 
+## Smuggler's Index: Network Attributes
 
-```{r Network Size}
+```{r Network Size & Info}
 
-  print(snEL)
-  print(igEL)
   
+  print(snEL)
   summary(snEL)
+  network::has.loops(snEL)
+  network::is.directed(snEL)
+  network::is.bipartite(snEL)
+  network::is.hyper(snEL) # hypergraphic edges allowed
+  network::is.multiplex(snEL) # multiplex edges allowed
+  
+  print_all(igEL)
   summary(igEL)
+  igraph::is_directed(igEL)
+  summary(
+  igraph::is.loop(igEL))
+
+
+
+
 
 ```
-plot.network(snEL)
-igraph::plot.igraph(igEL)
 
-###   IGRAPH:   Network Description
-*igraph*
-- Network Size
-  - Number Vertex: 274
-    - attr: name (v/c)
-  - Number Edges: 672
-    - attr: ingTyp (e/c)
-- Bipartite: FALSE
-- Directed: FALSE
+plot.network(snEL) igraph::plot.igraph(igEL)
+
+### IGRAPH: Network Description
+
+*igraph* - Network Size - Number Vertex: 274 -
+attr: name (v/c) - Number Edges: 672 - attr:
+ingTyp (e/c) - Bipartite: FALSE - Directed: FALSE
 - Weighted: FALSE
 
-Names
-- Vertex Names: view
-- Edge Attribute Names: [1] "ingTyp"
-```{r igraph: Network & Attribute Descripions, echo=TRUE} 
+Names - Vertex Names: view - Edge Attribute Names:
+[1] "ingTyp"
+
+```{r igraph: Network & Attribute Descripions, echo=TRUE}
 
 ## Network Size
 #     Count Vertices
@@ -135,35 +153,13 @@ library(igraph)
 
 ```
 
-```{r iGraph: Undirected: network density, echo=TRUE}
-
-    #get network density **with** loops
- igraph::graph.density(igEL)
- edge_density(igEL)
-          ##**NOTE** provides an incorrect density calculation 
-          ## as the default assumes that loops are not included but does not remove them
- 
-```
- 
-###   STATNET:   Network Description 
-
-```{r Statnet: Network Density, echo=TRUE}
-
-            # get network density: with possible loops
-   network.density(snEL)
-          ##**WARNING: Network is multiplex - no general way to define density.** 
-
- # get network density **with** loops: statnet
- gden(snEL, diag=F)
- 
- 
-```
+### STATNET: Network Description
 
 ```{r statnet: Network Summary & Attribute info, echo=TRUE}
-print(snEL)
 
 print(summary(snEL))
 
+  network::list.network.attributes(snEL)
 #      list the names of vertex attributes
   network::list.vertex.attributes(snEL)
 #  Generate a list the names of edge attributes
@@ -183,14 +179,11 @@ print(summary(snEL))
   
 ```
 
-
 ## Dyad Census
 
-Classifies all dyads in the network as:
-- Mutual - Reciprocal (mutual) 
-- Asymmetric -  (non-mutual), 
-- Null - Absent
-
+Classifies all dyads in the network as: - Mutual -
+Reciprocal (mutual) - Asymmetric - (non-mutual), -
+Null - Absent
 
 ```{r iGraph: Dyad Census, echo=TRUE}
 library(igraph)
@@ -240,14 +233,52 @@ igEL_Den <- graph.density(igEL)
 
 ```
 
-plot(igEL_randoGraph,
-      vertex.size = 5, 
-      vertex.label = NA, 
-      edge.curved = .1, 
-      vertex.color = "tomato", 
-      edge.arrow.size = .1, 
-      edge.width = .5, 
-     edge.color = "grey60")
+
+
+
+```{r iGraph: GRAPH: Dyad Census, echo=TRUE}
+
+plot(
+  igEL_randoGraph, 
+  vertex.size = 5,
+  vertex.label = NA, 
+  edge.curved = .1, 
+  vertex.color= "tomato", 
+  edge.arrow.size = .1, edge.width = .5,
+  edge.color = "grey60")
+
+graph.density(igEL)
+    ## Density captures, at the macro-level, the proportion of dyads that are present over the possible total number of dyads in the network
+
+      # Generating a random graph for comparison
+# ?erdos.renyi.game
+      ## In an erdos.renyi.graph, each edge has the same probability of being created. We determine the probability and it returns a random graph with a density that equals (in expectation) this probability.
+
+igELNod <- vcount(igEL)
+
+igELDen <- graph.density(igEL)
+
+smugEL_DigRandoG <- 
+  erdos.renyi.game(
+    n = igELNod, 
+    p.or.m = igELDen, 
+    directed = T) 
+      # where n is the number of nodes, 
+      # p.or.m is the probability of drawing an edge, 
+      #directed is whether the network is directed or not
+
+#**plot(smugEL_DigRandoG, ...** in .R notebook  
+     # vertex.size = 5, 
+     # vertex.label = 1, 
+     # edge.curved = .1, 
+     # vertex.color = "tomato", 
+     # edge.arrow.size = .1, 
+     # edge.width = .5, 
+     # edge.color = "grey60")
+
+```
+
+
 
 ```{r statnet: Dyad Count / Dyad Census , echo=TRUE}
 library(statnet)
@@ -294,12 +325,9 @@ mutuality(snEL)
          measure = "correlation") 
 ```
 
-
-
 ## Triad Census
 
-Classifies all triads in the network. 
-
+Classifies all triads in the network.
 
 ```{r iGraph: Triad Census, echo=TRUE}
 library(igraph)
@@ -315,6 +343,7 @@ igEL_triList <-
 
 
 ```
+
 plot(igEL_triList)
 
 ```{r statnet: Triad Census / Triad Classify, echo=TRUE}
@@ -352,15 +381,11 @@ sna::triad.classify(
      mode==c("digraph"))
 
 ```
-plot(view(
- sna::triad.census(
-     snEL,
-     mode="digraph")
-))
 
-plot(view(
-sna::triad.census(snEL,mode="graph")))
+plot(view( sna::triad.census( snEL,
+mode="digraph") ))
 
+plot(view( sna::triad.census(snEL,mode="graph")))
 
 ## Transitivity or Global Clustering
 
@@ -520,11 +545,11 @@ print("correlation: the matrix correlation of the valued adjacency matrix A with
 
 ```
 
-
-
 ## Ego Network Transivity or Local Clustering
 
-`Local transitivity` (local clustering coefficient), is a technical description of the density of an ego network.
+`Local transitivity` (local clustering
+coefficient), is a technical description of the
+density of an ego network.
 
 ```{r iGraph: Local / Ego Network Transitivity, echo=TRUE}
 #     get global clustering cofficient
@@ -644,18 +669,19 @@ gtrans(
 
 ```
 
+## Path Length and Geodesic Distance
 
+-   Nodes:
 
-##  Path Length and Geodesic Distance
+    -   (v/c) Drink Names
+    -   (v/c) Drink Ingredients
 
-- Nodes: 
-  - (v/c) Drink Names
-  - (v/c) Drink Ingredients
-- Links: 
-  - (e/c)  Ingredient Type
+-   Links:
 
-###  Statnet:   Path Length and Geodesic Distance: Networks
- 
+    -   (e/c) Ingredient Type
+
+### Statnet: Path Length and Geodesic Distance: Networks
+
 ```{r STATNET: Plot: Geodesic: Numbers and Lengths }
 library(statnet)
 library(sna)
@@ -688,8 +714,8 @@ snEL_gdCounts <- gd_snEL$counts
   log_sum_exp(snEL_gdist)
 
 ```
-gplot(gd_snEL) in 
-gplot(snEL_gdist)
+
+gplot(gd_snEL) in gplot(snEL_gdist)
 
 ```{r STATNET:Path: Reachability}
 library(statnet)
@@ -718,13 +744,22 @@ gplot(
 ```
 
     K-Path Census
-- Aggregate counts of paths/cycles by length (i.e., k).
 
-- Counts of paths/cycles to which each vertex belongs (when tabulate.byvertex==TRUE).
+-   Aggregate counts of paths/cycles by length
+    (i.e., k).
 
-- Counts of path/cycle co-memberships, potentially disaggregated by length (when the appropriate co-membership argument is set to bylength).
+-   Counts of paths/cycles to which each vertex
+    belongs (when tabulate.byvertex==TRUE).
 
-- For path.census, counts of the total number of paths from each vertex to each other vertex, possibly disaggregated by length (if dyadic.tabulation=="bylength").
+-   Counts of path/cycle co-memberships,
+    potentially disaggregated by length (when the
+    appropriate co-membership argument is set to
+    bylength).
+
+-   For path.census, counts of the total number of
+    paths from each vertex to each other vertex,
+    possibly disaggregated by length (if
+    dyadic.tabulation=="bylength").
 
 ```{r STATNET:Path: k Path Census}
 library(statnet)
@@ -761,9 +796,11 @@ gplot(kpath.census(snEL,
 
 ```
 
-###  IGRAPH:    Path Length and Geodesic Distance: Networks & Nodes
+### IGRAPH: Path Length and Geodesic Distance: Networks & Nodes
 
-  The shortest path to describe the overall network structure 
+The shortest path to describe the overall network
+structure
+
 ```{r iGraph: Path: Network & Nodes, echo=TRUE}
 library(igraph)
 
@@ -805,8 +842,8 @@ library(igraph)
   #**“epath”* edges along the paths are reported. 
   #*“both”* both forms are returned, in a named list with components “vpath” and “epath”.
     
-```   
-  
+```
+
 ```{r iGraph: PLOT: PATH: Network & Nodes, echo=TRUE}
 library(igraph)
 
@@ -851,8 +888,10 @@ ig_AllShort <-
  class(ig_histPath)
   class(ig_ShortPath)
   class(ig_AllShort)
-```   
-  Distance between two or more Nodes
+```
+
+Distance between two or more Nodes
+
 ```{r iGraph: Distances: Network & Nodes, echo=TRUE}
 
 library(igraph)
@@ -903,7 +942,8 @@ View(
 
 ```
 
-Find *all* of the shortest paths between two specific nodes in this network.
+Find *all* of the shortest paths between two
+specific nodes in this network.
 
 ```{r iGraph:Nodes & Network: Path: Shortest , echo=TRUE}
   
@@ -973,7 +1013,7 @@ View(list(
   aku_Puka)
 )
 
-```   
+```
 
 ```{r iGraph:Nodes: GRAPH: Shortest between Nodes, echo=TRUE}
 library(igraph)
@@ -995,9 +1035,6 @@ View(
 
 
 ```
-
-  
-
 
 ## Component Structure and Membership
 
@@ -1061,9 +1098,11 @@ igraph::components(igEL)$membership
  
 ```
 
-components are all the same size, so no interesting plots
+components are all the same size, so no
+interesting plots
 
 ### Statnet: Isolates & Component Structure
+
 ```{r Statnet: Isolates, echo=TRUE}
 library(statnet)
 library(sna)
@@ -1148,9 +1187,6 @@ component.size.byvertex(
 
 ```
 
-
-# Week 3: 
-
 ```{r STATNET: Component Size Distribution}
 library(statnet)
 library(sna)
@@ -1177,85 +1213,133 @@ gplot(cl_snEL)
 
 ```
 
-##### Details: Component Size Distribution 
-Components are maximal sets of mutually connected vertices; depending on the definition of “connected” one employs, one can arrive at several types of components. Those supported here are as follows (in increasing order of restrictiveness):
+# Week 3:
 
-weak: v_1 is connected to v_2 iff there exists a semi-path from v_1 to v_2 (i.e., a path in the weakly symmetrized graph)
+##### Details: Component Size Distribution
 
-unilateral: v_1 is connected to v_2 iff there exists a directed path from v_1 to v_2 or a directed path from v_2 to v_1
+Components are maximal sets of mutually connected
+vertices; depending on the definition of
+"connected" one employs, one can arrive at several
+types of components. Those supported here are as
+follows (in increasing order of restrictiveness):
 
-strong: v_1 is connected to v_2 iff there exists a directed path from v_1 to v_2 and a directed path from v_2 to v_1
+weak: v_1 is connected to v_2 iff there exists a
+semi-path from v_1 to v_2 (i.e., a path in the
+weakly symmetrized graph)
 
-recursive: v_1 is connected to v_2 iff there exists a vertex sequence v_a,...,v_z such that v_1,v_a,...,v_z,v_2 and v_2,v_z,...,v_a,v_1 are directed paths
+unilateral: v_1 is connected to v_2 iff there
+exists a directed path from v_1 to v_2 or a
+directed path from v_2 to v_1
+
+strong: v_1 is connected to v_2 iff there exists a
+directed path from v_1 to v_2 and a directed path
+from v_2 to v_1
+
+recursive: v_1 is connected to v_2 iff there
+exists a vertex sequence v_a,...,v_z such that
+v_1,v_a,...,v_z,v_2 and v_2,v_z,...,v_a,v_1 are
+directed paths
+
 
 ## Network Density
- 
- The density of a network is defined as the proportion of ties present out of all possible ties in a network. 
- 
 
- **Note:**
- 
- the network density command ignores edge values at present. 
- 
- If loops are present or there are multiple edges between two nodes, then the results may not make sense.
- 
- 
+The density of a network is defined as the
+proportion of ties present out of all possible
+ties in a network.
+
+**Note:** the network density command ignores edge
+values at present. If loops are present or there
+are multiple edges between two nodes, then the
+results may not make sense.
 
 ```{r Statnet: Network Density, echo=TRUE}
+library(statnet)
+library(sna)
 
-            # get network density: with possible loops
+  # computes network density
    network.density(snEL)
-          ##**WARNING: Network is multiplex - no general way to define density.** 
+  
+    network.density(
+     snEL, 
+     na.omit = T, # Exclude missing edges
+     discount.bipartite = FALSE)
+  
+ # computes the density of  graphs and adjusts for the type of graph 
+  gden(snEL)
+ 
+  gden(
+    snEL, 
+       g=NULL, 
+       diag=FALSE, # Set to TRUE if graph contains loops
+       mode="graph", # digraph or graph
+       ignore.eval=FALSE)
+  
 
- # get network density **with** loops: statnet
-
-  gden(snEL, diag=F)
-
+  network::is.bipartite(snEL)
+  network::has.loops(snEL)
+ 
 ```
 
- **Igraph** provides an incorrect density calculation as the default assumes  that loops are not included but does not remove them. 
- 
-```{r iGraph: edge density, echo=TRUE}
+**Igraph** provides an incorrect density
+calculation as the default assumes that loops are
+not included but does not remove them.
+
+```{r iGraph: network density / edge density, echo=TRUE}
+
 library(igraph)
+
     #get network density **with** loops
-edge_density(igEL, loops = FALSE)
+ igraph::graph.density(
+   igEL,
+   loops = F)
  
- 
- class(igEL)
+ edge_density(igEL)
           ##**NOTE** provides an incorrect density calculation 
           ## as the default assumes that loops are not included but does not remove them
  
 ```
 
-## Vertex Degree
- **Vertex degree** is a description of an individual node; each vertex in a network may have a different node degree.
- 
- 
- *Node Degree:*
-   node degree is one measure of node centrality or popularity; 
- Node degree cis a count of the relationships that a node is involved in or the count of the edges that are incident to a vertex
- 
- **use the network degree command to:**
-   *  compute network summary statistics (such as average network degree);
- *  graph the network degree distribution; or
- *  identify particular nodes (such as the five nodes with the most contacts).
- 
 
+## Network & Vertex Degree
 
-```{r Statnet: Vertex Degree, echo=TRUE}
+### **use the network degree command to:**
+
+-   compute network summary statistics (such as
+    average network degree);
+-   graph the network degree distribution; or
+-   identify particular nodes (such as the five
+    nodes with the most contacts). ##\# **Vertex
+    degree** is a description of an individual
+    node; each vertex in a network may have a
+    different node degree.
+
+###*Node Degree:* node degree is one measure of
+node centrality or popularity; Node degree cis a
+count of the relationships that a node is involved
+in or the count of the edges that are incident to
+a vertex
+
+### Statnet: Network & Vertex Degree
+
+#### Network Degree
+```{r Statnet: Network Degree, echo=TRUE}
 library(statnet)
 library(sna)
-      # statnet: Calculate average network degree
-summary(sna::degree(snEL, 
+     
+ # statnet: Calculate average network degree
+summary(  
+  sna::degree(snEL))
+  
+summary(
+  sna::degree(snEL, 
              g=1, 
              nodes=NULL, 
              gmode="digraph", #directed;
-             diag=FALSE, #excludes diagonals 
+             diag=FALSE, # contains loops
              tmaxdev=FALSE, 
              cmode="indegree", 
              rescale=FALSE, 
-             ignore.eval=FALSE))
-          # ignores loops or self-nominations 
+             ignore.eval=FALSE)) # ignores loops or self-nominations 
 summary(
   snEL_vd <- sna::degree(snEL, 
              g=1, 
@@ -1266,6 +1350,7 @@ summary(
              cmode="freeman", 
              rescale=F, #  scores rescaled to sum to 1.
              ignore.eval=FALSE))
+
 plot(snEL_vd)
 #**cmode=* degree centrality being computed. 
 #*"indegree"
@@ -1274,30 +1359,94 @@ plot(snEL_vd)
 #*total (Freeman) degree measures, respectively. 
 ```
 
-```{r iGraph: Undirected: Vertex Degree, echo=TRUE}
-# igraph: Calculate average network degree
- # provides node name along with node degree
- 
- # includes loops
-  plot(igraph::degree(igEL))
+```{r Statnet: PLOT: Network Degree, echo=TRUE}
+library(statnet)
+library(sna)
+     
+ # statnet: Calculate average network degree
 
+summary( snEL_netDeg <-
+  sna::degree(snEL))
+  
+summary( snEL_vdDig  <-
+ sna::degree(snEL, 
+             g=1, 
+             nodes=NULL, 
+             gmode="digraph", #directed;
+             diag=FALSE, # contains loops
+             tmaxdev=FALSE, 
+             cmode="indegree", 
+             rescale=FALSE, 
+             ignore.eval=FALSE)) # ignores loops or self-nominations 
+summary(
+  snEL_vdG <- sna::degree(snEL, 
+             g=1, 
+             nodes= NULL, 
+             gmode="graph", #undirected
+             diag=TRUE, #includes diagonals 
+             tmaxdev=F, 
+             cmode="freeman", 
+             rescale=F, #  scores rescaled to sum to 1.
+             ignore.eval=FALSE))
+
+plot(snEL_netDeg)
+plot(snEL_vdDig)
+plot(snEL_vdG)
+
+#**cmode=* degree centrality being computed. 
+#*"indegree"
+#*"outdegree"
+#**DEFAULT*"freeman" refer to the indegree, outdegree, 
+#*total (Freeman) degree measures, respectively. 
+```
+
+```{r Statnet: Vertex Degree (Directed Network), echo=TRUE}
+library(statnet)
+library(sna)
+
+     ## create a dataset of vertex names and degree:
+#####
+snEL_nDeg <- data.frame(
+  name=snEL%v%"vertex.names",
+  degree=sna::degree(snEL))
+
+snEL_nDegDig <-data.frame(
+    name=snEL%v%"vertex.names",
+    degree=sna::degree(snEL),
+    indegree=sna::degree(snEL,
+                         cmode="indegree"),
+    outdegree=sna::degree(snEL,
+                          cmode="outdegree"))
+
+snEL_nInDegDig <-data.frame(
+    name=snEL%v%"vertex.names",
+    indegree=sna::degree(snEL,
+                         cmode="indegree"))
+
+snEL_nOutDegDig <-data.frame(
+    name=snEL%v%"vertex.names",
+    outdegree=sna::degree(snEL,
+                          cmode="outdegree"))
 
 ```
 
+#### Network Degree Summary Statistics
 
-
-## Network Degree Summary Statistics
-
-```{r Statnet: , echo=TRUE}
+```{r Statnet: Network Degree: Summary Stats, echo=TRUE}
 library(statnet)
 library(sna)   
-   # Basic R: get summary statistics for node attributes
- 
-summary(snEL_Deg <- 
-           sna::degree(snEL))
-    plot(snEL_Deg)
+  
+ # Basic R: get summary statistics for node attributes
+ # provides range, mean, median and standard deviation of a vector.
 
-      # provides range, mean, median and standard deviation of a vector.
+  summary(snEL_nDeg)
+  summary(snEL_nDegDig)
+```
+
+```{r Statnet: PLOT: Node Degree, echo=TRUE}
+library(statnet)
+library(sna)   
+  
 
  # get summary statistics for node degree for the binary network degree
  
@@ -1362,22 +1511,334 @@ odeg_val3 <- data.frame(
 
 
 ```
+
+#### Network PLOT: Degree Distribution
+
+hist() is a basic R command that draws a histogram
+of vector of data
+
+```{r Statnet: HIST: Network Degree Distribution}
+
+library(statnet)
+library(sna)   
+
+#create a histogram 
+hist(
+  snEL_nDegDig$degree, 
+  main="Smuggler's Bay: Drink Names & Ingredients: Degree Distribution", 
+  xlab="Nominations Received")
+
+hist(
+  snEL_nDegDig$indegree, 
+  main="Smuggler's Bay: Drink Names & Ingredients: In-degree Distribution"
+  , xlab="Nominations Received")
+
+hist(
+  snEL_nDegDig$outdegree, 
+     main="Smuggler's Bay: Drink Names & Ingredients: Out-degree Distribution ", 
+     xlab="Nominations made")
+
+
+```
+
+```{r Statnet: HIST: Node Degree Distribution, echo=TRUE}
+library(statnet)
+library(sna)   
+  
+ # get summary statistics for node degree for the binary network degree
  
- 6/274 vertices, named, from 1bfe0b4:
-[1] (1-INCH-SQUARE) CHUNKS PINEAPPLE                     
-[2] MINT LEAVES                                          
-[3] LIME JUICE                                           
-[4] DEMERARA SYRUP                                       
-[5] PEACH LIQUEUR (SUCH AS MATHILDE, COMBIER, OR GIFFARD)
-[6] BLENDED LIGHTLY AGED RUM  
+### AKU AKU   
+snEL_degVNme <- data.frame(
+   name=snEL%v%"Aku Aku",
+    outdegree=sna::degree(snEL, cmode="outdegree"),
+    indegree=sna::degree(snEL, cmode="indegree"))
+   
+hist(
+  snEL_degVNme$outdegree, 
+  main="Drink Name:  Aku Aku: Out Degree Distribution", 
+  xlab="Nominations Received")
 
-## Centrilization 
+hist(
+  snEL_degVNme$indegree, 
+  main="Drink Name:  Aku Aku: Out Degree Distribution", 
+  xlab="Nominations Received")
 
-```{r iGraph: Undirected: DEGREE CENTRALITY: dnkIng}
+## "(1-INCH-SQUARE) CHUNKS PINEAPPLE"
+snEL_degVNme <- data.frame(
+   name=snEL%v%"(1-INCH-SQUARE) CHUNKS PINEAPPLE",
+   indegree=sna::degree(snEL, cmode="indegree"),
+   outdegree=sna::degree(snEL, cmode="outdegree"))
+   
+hist(
+  snEL_degVNme$outdegree, 
+  main="Drink Ingredient: (1-INCH-SQUARE) CHUNKS PINEAPPLE Out Degree Distribution", 
+  xlab="Nominations Received")
+
+hist(
+  snEL_degVNme$indegree, 
+  main="Drink Ingredient: Drink Ingredient: (1-INCH-SQUARE) CHUNKS PINEAPPLE in Degree Distribution", 
+  xlab="Nominations Received")
+
+## Mint Leaves 
+snEL_degVNme <- data.frame(
+   name=snEL%v%"MINT LEAVES",
+   indegree=sna::degree(snEL, cmode="indegree"),
+   outdegree=sna::degree(snEL, cmode="outdegree"))
+   
+hist(
+  snEL_degVNme$outdegree, 
+  main="Out Degree: Drink Ingredient: ", 
+  xlab="Nominations Received")
+
+hist(
+  snEL_degVNme$indegree, 
+  main="In Degree: Drink Ingredient: " , 
+  xlab="Nominations Received")
+
+
+## "DEMERARA SYRUP"
+snEL_degVNme <- data.frame(
+   name=snEL%v%"DEMERARA SYRUP",
+   indegree=sna::degree(snEL, cmode="indegree"),
+   outdegree=sna::degree(snEL, cmode="outdegree"))
+
+hist(
+  snEL_degVNme$outdegree, 
+  main="Out Degree: Drink Ingredient: DEMERARA SYRUP", 
+  xlab="Nominations Received")
+
+hist(
+  snEL_degVNme$indegree, 
+  main="In Degree: Drink Ingredient:  DEMERARA SYRUP", 
+  xlab="Nominations Received")
+   
+## Peach Liqueur
+odeg_peachLqr <- data.frame(
+   name=snEL%v%"PEACH LIQUEUR (SUCH AS MATHILDE, COMBIER, OR GIFFARD)",
+   indegree=sna::degree(snEL, cmode="indegree"),
+   outdegree=sna::degree(snEL, cmode="outdegree"))
+
+hist(
+  snEL_degVNme$outdegree, 
+  main="Out Degree: Drink Ingredient: PEACH LIQUEUR", 
+  xlab="Nominations Received")
+
+hist(
+  snEL_degVNme$indegree, 
+  main="In Degree: Drink Ingredient: PEACH LIQUEUR" , 
+  xlab="Nominations Received")
+
+   
+## " BLENDED LIGHTLY AGED RUM"
+odeg_blaRum <- data.frame(
+   name=snEL%v%"BLENDED LIGHTLY AGED RUM",
+   indegree=sna::degree(snEL, cmode="indegree"),
+   outdegree=sna::degree(snEL, cmode="outdegree"))
+
+
+hist(
+  snEL_degVNme$outdegree, 
+  main="Out Degree: Drink Ingredient: BLENDED LIGHTLY AGED RUM ", 
+  xlab="Nominations Received")
+
+hist(
+  snEL_degVNme$indegree, 
+  main="In Degree: Drink Ingredient: BLENDED LIGHTLY AGED RUM " , 
+  xlab="Nominations Received")
+   
+```
+
+### iGraph: Vertex Degree
+
+```{r iGraph: Vertex Degree, echo=TRUE}
+# igraph: Calculate average network degree
+ # provides node name along with node degree
+ 
+ # includes loops
+  plot(igraph::degree(igEL))
+
+
+```
+
+
+## Network degree Centrilization
+### Degree Centrality
+
+We can break large social networks down into their
+constituent parts. These constituent parts are
+referred to as "motifs". The most basic motif
+consists of two nodes and is called a dyad. Edges
+in a network signify the presence or absence of
+dyadic relations. It follows that a dyad in an
+undirected network can have two unique
+configurations: connected or disconnected; and
+three unique configurations in a directed network
+(mutual, assymetric, and null
+
+### Statnet: Degree Centraility: In/Out
+
+```{r Statnet: Network Degree centralization, eval=FALSE, include=FALSE}
+library(statnet)
+library(sna)
+
+#get network centralization score:
+ 
+# centralization(snEL, degree, cmode="indegree")
+
+```
+
+```{r Statmet: Netweork Centrality:  low & high degree nodes}
+
+#sort to find 5 highest and lowest degree nodes in trade100
+
+network::list.edge.attributes(snEL)
+
+snEL_nodeHeadTail <-data.frame(
+  name=snEL%v%"vertex.names",
+  indegree=sna::degree(snEL, cmode="indegree"),
+  outdegree=sna::degree(snEL, cmode="outdegree"))
+
+snEL_nodeHeadTail%>%
+  arrange(desc(indegree))%>%
+  slice(1:10)
+
+snEL_nodeHeadTail%>%
+  arrange(indegree)%>%
+  slice(1:10)
+
+snEL_nodeHeadTail%>%
+  arrange(desc(outdegree))%>%
+  slice(1:10)
+
+snEL_nodeHeadTail%>%
+  arrange(outdegree)%>%
+  slice(1:10)
+
+view(snEL_nodeHeadTail)
+
+
+```
+
+### Igraph: Degree Centrality 
+
+```{r iGraph: DEGREE CENTRALITY}
 library(igraph)
 library(tidyverse)
 
-plot(centr_degree(igEL)$res)
+#get network centralization score: 
+
+summary(
+  centr_degree(igEL)$res)
+
+  centr_degree(igEL)$centralization
+
+summary(
+  centr_degree(igEL)$centralization)
+
+  centr_degree(igEL)$theoretical_max
+
+
+#get network centralization score: in 
+  
+  centr_degree(
+    igEL, 
+    loops = FALSE, 
+    mode="in")$centralization
+
+summary(
+  centr_degree(
+    igEL, 
+    loops = FALSE, 
+    mode="in")$centralization)  
+  
+  centr_degree(
+    igEL, 
+    mode ="in")$theoretical_max
+
+#get network centralization score: out
+  
+  centr_degree(
+    igEL, 
+    loops = FALSE, 
+    mode="out")$centralization
+
+summary(
+  centr_degree(
+    igEL, 
+    loops = FALSE, 
+    mode="out")$centralization)
+
+  centr_degree(
+    igEL,
+    mode ="out")$theoretical_max
+  
+## get network centralization score: ALL
+  
+
+summary(
+  centr_degree(igEL,
+  mode = c("all"),
+  loops = TRUE,
+  normalized = TRUE)$res)
+
+
+centr_degree(igEL,
+  mode = c("all"),
+  loops = TRUE,
+  normalized = TRUE)$centralization
+
+
+
+centr_degree(igEL,
+  mode = c("all"),
+  loops = TRUE,
+  normalized = TRUE)$theoretical_max
+
+```
+
+```{r iGraph: PLOT: DEGREE CENTRALITY}
+library(igraph)
+library(tidyverse)
+
+# network centralization score: 
+plot(
+  centr_degree(igEL)$res)
+
+hist(
+  centr_degree(igEL)$res
+)
+
+
+#get network centralization score: in 
+
+hist(
+  centr_degree(igEL,mode = c("in"))$res)
+
+  centr_degree(
+    igEL, 
+    loops = FALSE, 
+    mode="in")$centralization
+  
+  centr_degree(igEL,
+               mode ="in")$theoretical_max
+#get network centralization score: out
+  
+  centr_degree(
+    igEL, 
+    loops = FALSE, 
+    mode="out")$centralization
+  
+  centr_degree(
+    igEL,
+    mode ="out")$theoretical_max
+  
+  ##
+summary(
+  centr_degree(
+    igEL, 
+    loops = FALSE, 
+    mode="out")$centralization)
+
 
 summary(
   centr_degree(igEL,
@@ -1406,59 +1867,22 @@ centr_degree(igEL,
 ```
 
 
-## Degree Centrality
-We can break large social networks down into their constituent parts. These constituent parts are referred to as “motifs”. The most basic motif consists of two nodes and is called a dyad. Edges in a network signify the presence or absence of dyadic relations. It follows that a dyad in an undirected network can have two unique configurations: connected or disconnected; and three unique configurations in a directed network (mutual, assymetric, and null
-
-```{r iGraph: Directed: GRAPH: Dyad Census, echo=TRUE}
-
-graph.density(igEL)
-    ## Density captures, at the macro-level, the proportion of dyads that are present over the possible total number of dyads in the network
-
-      # Generating a random graph for comparison
-# ?erdos.renyi.game
-      ## In an erdos.renyi.graph, each edge has the same probability of being created. We determine the probability and it returns a random graph with a density that equals (in expectation) this probability.
-
-igELNod <- vcount(igEL)
-
-igELDen <- graph.density(igEL)
-
-smugEL_DigRandoG <- 
-  erdos.renyi.game(
-    n = igELNod, 
-    p.or.m = igELDen, 
-    directed = T) 
-      # where n is the number of nodes, 
-      # p.or.m is the probability of drawing an edge, 
-      #directed is whether the network is directed or not
-
-#**plot(smugEL_DigRandoG, ...** in .R notebook  
-     # vertex.size = 5, 
-     # vertex.label = 1, 
-     # edge.curved = .1, 
-     # vertex.color = "tomato", 
-     # edge.arrow.size = .1, 
-     # edge.width = .5, 
-     # edge.color = "grey60")
-
-```
-
-
-```{r iGraph: Directed: Degree Centrality}
+```{r iGraph: PLOT: Degree Centrality}
 # Degree centrality is calculated using the degree function in R. It returns how many edges each node has.
 view(degree(igEL))
 
 ingT_deg <- igEL
 V(ingT_deg)$degree <- degree(ingT_deg) # assignment
 
-# plot(ingT_deg, 
-#     vertex.label.cex = .6, 
-#     vertex.label.color = "black", 
-#     vertex.size = V(igEL)$degree, 
-#     vertex.label.cex = .2) # sized by degree
+plot(ingT_deg, 
+     vertex.label.cex = .6, 
+     vertex.label.color = "black", 
+     vertex.size = V(igEL)$degree, 
+     vertex.label.cex = .2) # sized by degree
 
 ```
 
-
+# WEEK4
 ```{r iGraph: Directed: Betweenness Centrality}
 
 view(betweenness(igEL, directed = FALSE))
@@ -1481,7 +1905,6 @@ V(ingTypEL_Between)$betweenness <-
 
 ```
 
-
 ```{r iGraph: UnDirected:  Closeness Centrality}
 
 view(closeness(igEL))
@@ -1501,8 +1924,10 @@ View(ingTyp_Cent)
 
 ```
 
+Degree centrality only takes into account the
+number of edges for each node, but it leaves out
+information about ego's alters
 
-Degree centrality only takes into account the number of edges for each node, but it leaves out information about ego’s alters
 ```{r iGraph: Directed: Eigenvector Centrality}
 
 view(evcent(igEL)$vector)
@@ -1515,7 +1940,6 @@ V(ingTyp_Vector)$eigenvector <- evcent(ingTyp_Vector)$vector
 #     vertex.label.color = "black", 
 #     vertex.size = V(ingTyp_Vector)$eigenvector/max(V(ingTyp_Vector)$eigenvector) * 20)
 ```
-
 
 ```{r iGraph: Directed: Bonacich Centrality}
 
@@ -1536,7 +1960,7 @@ V(ingTyp_Cent)$page_rank <- page_rank(ingTyp_Cent, directed = TRUE)$vector
 
 ```
 
- plot(ingTyp_Cent,
-     vertex.label.cex = .6, 
-     vertex.label.color = "black", 
-     vertex.size = V(ingTyp_Cent)$page_rank/max(V(ingTyp_Cent)$page_rank) * 20)
+plot(ingTyp_Cent, vertex.label.cex = .6,
+vertex.label.color = "black", vertex.size =
+V(ingTyp_Cent)$page_rank/max(V(ingTyp_Cent)$page_rank)
+\* 20)

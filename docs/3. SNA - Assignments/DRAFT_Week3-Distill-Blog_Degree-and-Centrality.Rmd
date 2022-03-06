@@ -20,12 +20,6 @@ library(distill)
 library(blogdown)
 ```
 
-![](https://media.giphy.com/media/3ornkcUTDQyU4E6kRa/giphy.gif)
-
-![](https://media.giphy.com/media/3ornjK3aalyWAEhxDi/giphy.gif)
-
-![](https://media.giphy.com/media/3o6Yg4Hgd2bt4802xW/giphy.gif)
-
 ![](https://media.giphy.com/media/l2JJzfwyTZYUbjQn6/giphy.gif)
 
 # [Research Question:]{.smallcaps}
@@ -115,6 +109,8 @@ data-driven research.
 
 ### I'm curious to see what sort of relationships exist between the components of [Smuggler's Cove](https://www.smugglerscovesf.com/#about-section) Tiki Cocktail Recipies?
 
+![](https://media.giphy.com/media/3ornjK3aalyWAEhxDi/giphy.gif)
+
 # ## \*Write up your results briefly: \*
 
 \* focus on interpretation of the results.
@@ -126,264 +122,103 @@ results and provide an interpretation.\*\*
 
 ## \*Briefly describe the dataset:\*
 
+Network Description: Smuggler's Bay Drink Recipes
+
+:   Is an edge-list with one edge attribute:
+
+    Vertex Attributes
+
+    vertices = 274
+
+    -   Nodes:
+
+        Drink Name
+
+        Drink Ingredient
+
+    -   total edges= 671
+
+        missing edges= 0
+
+        non-missing edges= 0
+
+    Edge Attribute:
+
+    -   Drink Ingredient Type
+
+:   Ties: Are a connection between Drink Names and
+    Drink Ingredients. The network is undirected
+    and unweighted. Undirected: because the
+    relationship between Drink Names and Drink
+    Ingredients lacks any sort of power dynamic.
+    Edge weights could be added by including the
+    amount of each ingredient required for each
+    drink recipe.
+
+    -   Statnet: number, directed, unweighted
+
+    -   igraph: number, udirected, unweighted
+
+    Smuggler's Bay Edglist is long but
+    uncomplicated: which means there are few ways
+    to subset data to help answer our research
+    question: ***what sort of relationships exist
+    between the components ?***
+
+    Which makes the edge attribute really useful
+    because subsetting network data by Drink
+    Ingredient Type allows us to look at the
+    ingredients in rum-based cocktails vs those in
+    gin-based cocktails.
+
 ## \*Provide at least two or three noteworthy
 
-results\*, including:
+![](https://media.giphy.com/media/3ornkcUTDQyU4E6kRa/giphy.gif)
 
-1\. the relevant statistics and interpretation.
+**Network & Ego Network**
 
-For example, explaining which node(s) are most
-central and which are least central.
+-   Network Transitivity: 1 or 0
 
-2\. Discuss (with any related evidence) whether or
-not the node(s) behavior is in line with or
-violates expectations based on the degree
-centrality measure.
-
-3\. What do you make of network density and
-centralization measures?
-
-4\. What about differences in the binary 100
-million threshold network vs valued trade flows
-network.
-
-5.  Check tutorial for other ideas of results to
-    discuss.
-
-    *Provide at least two or three noteworthy
-    results*, including:
-
+```{=html}
 <!-- -->
+```
+-   Reach-ability:
 
-1.  the relevant statistics and interpretation.
+    -   Network: K Path Census
 
-    -   For example, explaining which **node(s)
-        are most central and which are least
-        central.**
+    -   Ego Network: Path / Distance
 
-2.  Discuss (with any related evidence) whether or
-    not the **node(s) behavior is in line with or
-    violates expectations based on the degree
-    centrality measure.**
+**Network stats VS Individual Node stats**
 
-    1.  **What do you make of network density and
-        centralization measures?\
-        **
+-   Network Density
 
-        +---+---+---+---+
-        | A | s | i | P |
-        | n | t | g | l |
-        | a | a | r | o |
-        | l | t | a | t |
-        | y | n | p |   |
-        | s | e | h |   |
-        | i | t |   |   |
-        h       | s|    |   |  |
-        +====+===+===+===+
-        | D | M | 0 | y |
-        | y | u | . | e |
-        | a | t |   | s |
-        | d | u | 0 |   |
-      |  yC | a | 1 |  |
-        | e n| l | 7 |   |
-        | n | : | 9 |   |
-        | s | 1 |   |  | 
-        |       | u |
-  |   |   |           s | A |   |   |
-          | | s |1 7| 9  
-        |
-  | y |   |   |           | | m |s y| m m
-        |   |     | |   |
-        |
-  | e |   |   |           | | t |t r| i c
-        |   | r |     | |
-        |
-  | i |   |   |           | | c |   |   |
-        |   | a |   |   |
-        |   | l |     | |
-        |
-  | : |   |   |           | | 6 |   |    
-        |   | 7 |     | |
-        |
-  | 0 |   |   |           | |   |   |   |
- |      |     N |   |   |
-        |
-  | u |   |   |           | | l |u l| l :
-        |   | l |     | |
-        |
-  | : |   |   |           | | 3 |6 7| 3 0
-        |   | 6 |   |   |
-        |   | 7 |   |   |
-        |   | 3 |     | |
-        |
-  | 0 |   |   +-----------+-+---+---+---+
-        | T | 0 | \ |   |
-        | r | : | | |   |
-        | C e n s i | 3 | l |   |
-        | a | 2 |   |   |
-        | d | 1 |       |
-|
-        C | 6 |   |       |       e | 3 |   |    
-        |       | n | 9 |   |   |
-     |    s | 1 |   |  | 1 : 7 8   |u |   |   |    
-        | s | 1 |   |   |
-        | : | : |  |
-   |
-     | A    | 7 |   | |  \|        |  | 8 |   |    
-        |   | \ |  |
-   |
-     +------| | |   |--+-----------+--+---+---+| \| l \| l \| 9 \| \| \| \| T \|
-        0 \| \| \| \|\|\| r \| \| \|\
-        \| \| i \| 2 \| \| 2 \| a \| : \| \| \| \|
-        d \| 1 \| \| \| \| \|\| \| s \| \| \| \|
-        \| \|i\| 6 \| i 4 \|n 7\|\| \| \|
+-   Degree: Network vs Node
 
-|    \|\| N \| \| \| N
-|  \| \| e \| 4 \| 4 e \| \|\| t \| \| \| \| \| w \| \| 3 \| \|\| \| \| oo \| \| \|\| \| \|r\| r \| \| \|
-|      \|\| k \| \| \| \| k +---+---+-----+ \| T \|-- \| ( \| y \| \| r \| 3 \| u \| e \| \| i \| 9 \| n \| s \| \| a \| 1 \| d \| \| \| d \| 0 \| i \| \| \| C \| 2 \| r \| \| \| e \| 4 \| e \| \| \| \| cn \| \| \| \| n \| \|\|d g\| ss s t \| \| u \| \| e \| \| \| s \| \| d \| \| \| : \| \| g \| \| \| \|aph r \| t\| \| \| at \| \| \| \| \| \|\|\| \| \| \| p \| \| \| t \| t\| h \| \| \| )a \| \| \| l \| \| \| \| \| n \| \| [ \| \| \| u \| \| 1 \| \| mber \| m \| \| 2 \|
+-   Degree Centrality: Network vs Node
 
-] \| \| b \| \| 3 \| \|\| \|\|\
-\| e e 2 \| \| \| r \| \| 1 \|665\| 9 \| 6\| o \|
-\| \| \|\
-\| f\| \| 6 \| \| riad t \| \| \| a \|a \| 5 \| l
-\| \| 9\
-\| \| l \|\| \| \| ypes \| \| [ \| f \| [] \| \|
-\|\| 16\| o o \| 2 \| \| \| u \| \| ] \| \| \| r
-\| \| 1 \| \| \| t \| \| 6 \| \| \| r \| \| 6 \|
-\| \| i \| \| 4 \| \| \| a \| \| 8 \| \| \| d \|
-\| \| \| \|6 6 6 \| \|\| t \| t \|\
-\| y \| \| [ \| \| \| p \| \| 1 \| \| \| e \| \| 1
-\| \| \| s \| \| ] \| \| \| \| \|\| \| \|\
-\| [\|11]\| 8 \| \| 8 \| \| \| 7 \|\
-\| +-\|- \| \| \| \| +-- -+---+---+---+ \| T \| u
-\| U \| \| \| r \| n \| n \| \| \| a \| d \| d \|
-\| \| n \| i \| i \| \| \| s \| r \| r \| \| \| i
-\| e \| \|\
-e e \| e \| \| c t c \| t \| i \| t \| t \| \| \|
-v \| e \| e \| \| \| i \| d \| d \| \| \| t \|
-\|\| \|--\|\| \| y \|\| \| \|\| +---+---+---+L oal
----+ \| L \|L \| \| \| \| o \| \| \| c \| \| \| \|
-\| a \| \| \| \| \| \| \|l \| l \| \| \|t \| \| \|
-\| r \| \| \|ran s \| \| \| a \| \| a \| n \|\| \|
-\| \| \| \| \| \| \| \| i \| \| \| \| \| t \| \|
-\| \| \| i \| \| \| \| \| v \| \| \| \| \| i \| \|
-\| \| \| t \| \| \| \| \|\| \| \| \| \|\| \| \| \|
-: \| \| \| \| \| N \| \| \| \| \| o \| \| \| \| \|
-d \| \| \| \| \| e \| \| \| \| \| L \| \| \| \| \|
-i \| \| \|\
-\| \| \| \|\|\| s s \| s\
-&\| Eg\| t \| \| \| \|
+    -   Most Central Nodes
 
-    & &  |
+    -   Least Central Nodes
 
-& \| \|E\| \| \|\| \| \| g \| \| \| \| \| o \| \|
-\| \| \| N \| \| \| \| \| \| \| e \| \| \| w\|ork
-\| \| \| \| \| \|\| w \| \| w \| o \| \|\| \| \|
-\|\| \| \| r \| r\| \|\
-\|k \| \| \| \| +---+---+---+---+ \| I \| n \| \|
-\| \| s \| o \| \| \| \| o \| \| \| \| \| l \| \|
-\| \| \| a \| \| \| \| \| t \| \| \| \| \| e \|---
-\|\|---\| \| \| \| \| s\| \| \| +---+---+---+---+
-\| U \| \| n \| \| \| n \| \| u \| \| \| d \| \| m
-\| \| \| i \| \| b \| \| \| r \| \| e \| \| \| e
-\| \| r \| \| \| c \| \| : \| \| \| t \| \| 1 \|
-\| \| e \| \| \| \| \| d \| \| s \| \| \| : \| \|
-i \| \| \| \| \| zC \|C \| C \| \|\| \| o \|\| \|
-\|\| \| m \| \| : \| \| \| p \| \| 2 \| \| \| o \|
-\| 7 \| \| \| n \| \| 4 \| \| \| e \| \| \| \| n
-\|\| S \|\|tru\| \| \| \| t \|\| \| S \| \| \| \|
-\| t \| \| \| \| \| r \| \| \| \| \| u \| \|274 \|
-\| c \| \| c \| \| c \| \|
+    -   Centralization Score Break Down
 
-    |t |   ||t
-    |    |        ||
+    -   <div>
 
-\| \| +- r \|\| \| \| \|\| e \| \| \| \|
-+---+---+rec + \| D \| \| i \| 0 \| y \| \| . \| e
-\|\| \| r \| \| 0 \| s \| \| e \| \| 1 \| \| \|
-6\|7 \| 6 c \| c \|\| \| d \| \| t \| \| 7 \| \|
-\|e e \| \| d \| 6 \| \| \| : \| \| 4 \| \| \| \|
-\| \| 2 G \| G 2 \| \|\| 2 R\| \|\| \| \| A \| \|
-\| \| \| P \| \| \| \| \| H \| \| \| \| \| : \| \|
-\| \| \| D \| \| \| \| \| y \| \| \| \| \| a \| \|
-\| \| \|\
-d \| C \| \| \| \| \| \| \|\| \| C \| \|\
-\| \|\| \| e \| \| \| \| \| \|\| \| s \| \| \| \|
-\| \| \| \| \| u \|\| \| s \| \| \| \|
-+---+---+---+---+ \| D \| \| \| y \| \| i \| \| \|
-e \| \| r \| \| \| s \| \| e \| \| \| \| \| \| \|
-c \| \|cy\| cs \|\| \| t \| \| \| t \|\
-\| \| \| \| d \| \| \| \| \| : \| \| \| \| \| D \|
-\| \| \| \| \| \| \|ee \| e\| \| g \| \| \| \| \|
-\| \| r \| \| e \| \| \| \| \| e \| \| \| \| \| C
-\| \| \| \| \| e \| \| \| \| \| n \| \| \| \| \| t
-\| \| \| \| \| r \| \| \| \| \| a \| \| \| \| \| l
-\| \| \| \| \| i \| \| \| \| \| \| \| --- \| t \|
-\| \| \| y \| \| \|\| \| +---+---+rec + \| D \| \|
-i \| \| y \| \| \| e \|\| \| r \| \| \| s \| \| e
-\| \| \| \| \| \| \| c \| \|cy\| cs \|\| t \| \|
-\| \| e\
-\| \| \| \| d \| \| \| \| \| : \| \| \| \| \| B \|
-\| \| \| \| e \| \| \| \| \| t \| \| \| \|
+        -   \$res
 
-     w |       | | |
+        -   \$centralization
 
-\| \|\| \| \| \| \| e \| \| e \| \| \| \| \| n \|
-\| \| \| \| n \| \| \| \| \| e \| \| \| \|
+        -   \$theoretical_max
 
-     s |       ||  |
+        </div>
 
-\| s \| \| \|\| \| \| C \| \| \| \| \| e \| \| \|
-\| \| n \| \| \| \| \| t \| \| \| \| \| \| \| \|\|
-rr \| \| \| a \| \| \| \| \| l \| \| \| \| \| i \|
-\| \| \| \| \|\| t +-\| --\|-\| \| yy \|\| \|+---
-+--+ ----+ --+---+ \| D \| \| y \| \| \| e \| \|
-\| r \| \| \| s \| \| e \| \| \| \| \| c \| \| \|
-y\| s \| \| \| tedt \| \| \| e \| \|\|\| \|\| \|
-\| \| \| \| d \|\
-d \| : \| \| \| \| \| E \| \| \| \| \| i \| \| \|
-\| \| g \| \| \| \| \| e \| \| \|\| \| \|\| n\| \|
-\| \| \| \| v \| \| \| \| \| e \| \| \| \| \| c \|
-\| \| \| \| t \| \| \| \|
+**2. Node Behavior:** Degree Centrality Meastures
 
-       o |   C||e |n||
+Is node(s) behavior in line with or violates
+expectations based on the degree centrality
+measure.
 
-\| \| \| \|\| r \| \| C \| \| \| \| \| e \| \| \|
-\| \| n \| \| \| \| \| t \| \| \| \| \| r \| \| \|
-\| \| \| a \|\| \|\| \| \| \| \| \| l \| \| \|
-\|\| i \| i \| \|t + \|\|\| \|\|\| \| y \| \| \|
-\| +---+---+---+---+ \| D \| \| \| \| \| i \| \|
-\| \| \| r \| \| \| \| \| \| e \| e\| \| \| \| c
-\| \| \|\| \| t \| \| \| \| \| e \| \| \| \| \| d
-\| \| \| \| \| : \| \| \| \| \| B \| \| \| \| \| o
-\| \| \| \| \| n \| \| \| \| \| a \| \| \| \| \| c
-\| \| \| \| \| i \| \| \| \| \| c \| \| \| \| \| h
-\| \| \| \| \| C \| \| \| \| \| e \| \| \| \| \| n
-\| \| \| \| \| t \| \| \|\| \| \|\| r\| \| \| \|
-\| \| a \| \| \| \| \| l \| \| \| \| \| i \| \| \|
-\| \| t \| \| \| \|
-
-       y |    ||  | ||
-          | 
-          |   |   |
-
-} +---+---+---+ \| ------+ +--+ \|\| D \| \|\| i
-\| \| \|\| \| \| \| r \| \| \| \| \| \| \| \|\| e
-\| \| \| \| \| \| c \|c \|\| c \| \| \|t \| k \|t
-\| t \| \| \| \|e \| \| \| \| \| \| \| \| \| \|\|:
-\| \| \| \| \| P \| \| \| \| \| \| \| \|\
-a \| \| g \|\| \| \| \| \| \| e \| \| \| \| \| R
-\| \| \| \| \|a
-
-          | a |   || a||  |
-
-| \| n\| n\| \|n \| \| \| \| \|----- --+ \|
-
--   
-
-    -   ++ + +-+---+ \|+- \| \| +-+ +> Dist+ill+
-        \| \| + is+ a publ+ic\| \| \|
-        +---+---+---+---+
+![](https://media.giphy.com/media/3o6Yg4Hgd2bt4802xW/giphy.gif)
 
 > Distill is a publicacien is a p ublicanttecnical
 > witing, native to the web.
