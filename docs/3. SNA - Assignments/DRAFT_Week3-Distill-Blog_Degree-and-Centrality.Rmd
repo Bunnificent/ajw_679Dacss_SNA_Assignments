@@ -105,9 +105,7 @@ data-driven research.
 
 ![](https://media.giphy.com/media/3oz8xxBsDMZWcMCHoQ/giphy.gif)
 
-## To start:
-
-### I'm curious to see what sort of relationships exist between the components of [Smuggler's Cove](https://www.smugglerscovesf.com/#about-section) Tiki Cocktail Recipies?
+### Which drink ingredients in [Smuggler's Cove](https://www.smugglerscovesf.com/#about-section)'s have the most connections and are the most central in this network of Tiki Cocktail Recipes?
 
 ![](https://media.giphy.com/media/3ornjK3aalyWAEhxDi/giphy.gif)
 
@@ -128,13 +126,11 @@ Network Description: Smuggler's Bay Drink Recipes
 
     Vertex Attributes
 
-    vertices = 274
+    -   Nodes = 274
 
-    -   Nodes:
+        -   Drink Name
 
-        Drink Name
-
-        Drink Ingredient
+        -   Drink Ingredient
 
     -   total edges= 671
 
@@ -171,6 +167,16 @@ Network Description: Smuggler's Bay Drink Recipes
     ingredients in rum-based cocktails vs those in
     gin-based cocktails.
 
+    Edge attributes: Ingredient Type
+
+    > 10 most common values are:
+    >
+    > JUICE : 135 , RUM: 125, SYRUP: 115, LIQUEUR
+    > : 84 , BITTERS: 54 ,
+    >
+    > SODA : 28 , SPICE: 19, GIN: 12, BRANDY: 9,
+    > FRUIT: 7
+
 ## \*Provide at least two or three noteworthy
 
 ![](https://media.giphy.com/media/3ornkcUTDQyU4E6kRa/giphy.gif)
@@ -179,9 +185,21 @@ Network Description: Smuggler's Bay Drink Recipes
 
 -   Network Transitivity: 1 or 0
 
-```{=html}
-<!-- -->
-```
+    Network Transitivity is either 1 or 0. Statnet
+    read in the edgelist as "directed", which
+    igraph is "undirected" .
+
+    According to statnet the network is entirely
+    transitive because the graph is composed
+    entirely of dyads and potential traids
+
+    Igraph: Transitivity is near 0 (0.018) because
+    network is composed of 627 mutual ties, no
+    Asymetic ties, and 36,729 null ties.
+
+    statnet: 0 mutual, 671 asymetric, 36,730
+    potential ties
+
 -   Reach-ability:
 
     -   Network: K Path Census
@@ -190,27 +208,115 @@ Network Description: Smuggler's Bay Drink Recipes
 
 **Network stats VS Individual Node stats**
 
--   Network Density
+1 component in graph
 
--   Degree: Network vs Node
+all components are connected
 
--   Degree Centrality: Network vs Node
+### Network Density: Low Transitivity == Low Density
 
-    -   Most Central Nodes
+*The density of a network is defined as the
+proportion of ties present out of all possible
+ties in a network.*
 
-    -   Least Central Nodes
+statnet:
 
-    -   Centralization Score Break Down
+-   Network Density: 0
 
-    -   <div>
+-   gDen() - Edgelist Network Density: 0.0089
 
-        -   \$res
+igraph:
 
-        -   \$centralization
+-   Graph Density: 0.0179
 
-        -   \$theoretical_max
+-   Edge Density: 0.0179
 
-        </div>
+### Degree: Network vs Vertex
+
+\*\*Vertex Degree\*\* measures an individual
+node's centrality o; each vertex in a network may
+have a different node degree.
+
+#### Degree: Network vs Node
+
+[Network Degree Summary Stats]{.ul}
+
++-----+---+------+---+------+---+
+| deg |   | inde |   | o    |   |
+| ree |   | gree |   | utde |   |
+|     |   |      |   | gree |   |
++=====+===+======+===+======+===+
+| M   | 0 | Min. | 0 | Min. | 0 |
+| in. |   |      | . |      |   |
+|     |   |      | 0 |      |   |
+|     |   |      | 0 |      |   |
+|     |   |      | 0 |      |   |
++-----+---+------+---+------+---+
+| 1st | 0 | 1st  | 0 | 1st  | 0 |
+| Qu. |   | Qu.  |   | Qu.  |   |
++-----+---+------+---+------+---+
+| Med | 1 | Me   | 1 | Me   | 0 |
+| ian |   | dian |   | dian |   |
++-----+---+------+---+------+---+
+| M   | 2 | Mean | 2 | Mean | 2 |
+| ean | . |      | . |      | . |
+|     | 4 |      | 4 |      | 4 |
+|     | 5 |      | 4 |      | 4 |
+|     |   |      | 9 |      | 9 |
++-----+---+------+---+------+---+
+| 3rd | 2 | 3rd  | 2 | 3rd  | 5 |
+| Qu. |   | Qu.  |   | Qu.  |   |
++-----+---+------+---+------+---+
+| M   | 6 | Max. | 6 | Max. | 1 |
+| ax. | 2 |      | 2 |      | 1 |
++-----+---+------+---+------+---+
+|     |   |      |   |      |   |
++-----+---+------+---+------+---+
+
+[Vertex Degree Summary Stats]{.ul}
+
++-----------+-------------+-----------------+
+| degree    | indegree    | outdegree       |
++===========+=============+=================+
+| Min:      | Min: 0.000  | Min: 0.000      |
+| 1.000     |             |                 |
++-----------+-------------+-----------------+
+| 1st Qu:   | 1st Qu:     | 1st Qu: 0.000   |
+| 1.000     | 0.000       |                 |
++-----------+-------------+-----------------+
+| Median:   | Median:     | Median: 0.000   |
+| 4.000     | 1.000       |                 |
++-----------+-------------+-----------------+
+| Mean:     | Mean: 2.449 | Mean: 2.449     |
+| 4.898     |             |                 |
++-----------+-------------+-----------------+
+| 3rd Qu:   | 3rd Qu:     | 3rd Qu: 5.000   |
+| 6.000     | 2.000       |                 |
++-----------+-------------+-----------------+
+| Max:      | Max: 62.000 | Max: 11.000     |
+| 62.000    |             |                 |
++-----------+-------------+-----------------+
+
+[Network Degree Distribution Graphs]{.ul}
+
+#### Degree Centrality: Network vs Node
+
+Vertex Degree Centrality:
+
+-   Most Central Nodes
+
+-   Least Central Nodes
+
+-   Centralization Score Break Down
+
+-   <div>
+
+    -   \$res
+
+    -   \$centralization
+
+    -   \$theoretical_max
+
+    </div>
 
 **2. Node Behavior:** Degree Centrality Meastures
 

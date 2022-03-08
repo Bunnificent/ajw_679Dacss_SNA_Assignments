@@ -157,7 +157,11 @@ library(statnet)
 snEL <- 
   network(as.matrix
           (sourceEL[1:2], 
-            matrix.type = 'edgelist',
+            matrix.type = "edgelist",
+            bipartite=T,
+            directed=F,
+            loops=T,
+            multiple=T
             ))
                   
 #**Assign:**VERTICES atributes <aka colnames>
@@ -178,10 +182,10 @@ snEL%e%"ingTyp" <- sourceEL$ingTyp
           network::delete.edge.attribute(snEL,"na")
   
   #######**VERIFY**
-          network::list.vertex.attributes(snEL)
-          network::list.edge.attributes(snEL)
+          is.network(snEL)
           class(snEL)
           print(snEL)
+          
 #
 ##          
 ###
