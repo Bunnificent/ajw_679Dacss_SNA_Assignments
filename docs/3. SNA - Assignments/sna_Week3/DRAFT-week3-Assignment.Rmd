@@ -1680,34 +1680,71 @@ library(sna)
 
 ```
 
-```{r Statmet: Netweork Centrality:  low & high degree nodes}
-
+```{r Statnet:Centrality: High Degree Nodes}
+library(statnet)
+library(sna)
 #sort to find 5 highest and lowest degree nodes in trade100
 
-network::list.edge.attributes(snEL)
-
-snEL_nodeHeadTail <-data.frame(
+snel_HiStatus<-data.frame(
   name=snEL%v%"vertex.names",
+  sna::degree(snEL),
   indegree=sna::degree(snEL, cmode="indegree"),
   outdegree=sna::degree(snEL, cmode="outdegree"))
 
-snEL_nodeHeadTail%>%
+
+temp_in <- temp%>%
   arrange(desc(indegree))%>%
   slice(1:10)
-
-snEL_nodeHeadTail%>%
+temp%>%
   arrange(indegree)%>%
   slice(1:10)
 
-snEL_nodeHeadTail%>%
+temp_out <- temp%>%
   arrange(desc(outdegree))%>%
   slice(1:10)
-
-snEL_nodeHeadTail%>%
+temp%>%
   arrange(outdegree)%>%
   slice(1:10)
+ 
+  summary(temp)
+  summary(temp_in)
+  summary(temp_out)
 
-view(snEL_nodeHeadTail)
+
+```
+
+
+```{r Statnet: Centrality: Low Degree Nodes}
+library(statnet)
+library(sna)
+#sort to find 5 highest and lowest degree nodes in trade100
+
+temp <-data.frame(
+  name=snEL%v%"vertex.names",
+  sna::degree(snEL),
+  indegree=sna::degree(snEL, cmode="indegree"),
+  outdegree=sna::degree(snEL, cmode="outdegree"))
+
+
+low_in <- temp%>%
+  arrange(tail(indegree))%>%
+  slice(1:10)
+temp%>%
+  arrange(indegree)%>%
+  slice(1:10)
+
+low_out <- temp%>%
+  arrange(tail(outdegree))%>%
+  slice(1:10)
+temp%>%
+  arrange(outdegree)%>%
+  slice(1:10)
+ 
+  summary(temp)
+  summary(low_in)
+  summary(low_out)
+  
+ 
 
 
 ```
